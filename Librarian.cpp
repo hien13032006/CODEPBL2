@@ -10,7 +10,7 @@ Librarian::Librarian() {
     maID = "L" + to_string(LibrarianCount);
 }
 
-Librarian::void SingUp(string hoTen, string SDT, string Email, string username, string password) {
+void Librarian::SignUp(string hoTen, string SDT, string Email, string username, string password) {
     this->hoTen = hoTen;
     this->SDT = SDT;
     this->Email = Email;
@@ -19,11 +19,25 @@ Librarian::void SingUp(string hoTen, string SDT, string Email, string username, 
     cout << "Dang ky thanh cong! Ma ID cua ban la: " << maID << endl;
 }
 
-Librarian::void HienThiThongTin() const {
-    cout << "=== Thong tin thu thu ===" << endl;
+void Librarian::HienThiThongTin() const {
+    cout << "\n--- THONG TIN THU THU ---\n";
     USER::HienThiThongTin();
-    cout << "Quyen han: " << quyenHan << endl;
 }
+
+void Librarian::ThemSach(LibrarySystem &L) {
+    Sach sachMoi;
+    sachMoi.nhapThongTin();
+    L.ThemSach(sachMoi);
+}
+
+void Librarian::XoaSach(LibrarySystem &L) {
+    string maSach;
+    cout << "Nhap ma sach can xoa: ";
+    getline(cin,maSach);
+    L.XoaSach();
+}
+
+
 
 
 

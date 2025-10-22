@@ -282,7 +282,7 @@ void LibrarySystem::LuuDuLieu() const {
     // Luu danh sach sach vao file
     ofstream outFile("DanhSachSach.txt");
     if(!outFile) {
-        cout << "Khong the mo file DsSach\n";
+        cout << "Khong the mo file DanhSachSach\n";
         return;
     }
     NodeBook *currentBook = HeadDsSach;
