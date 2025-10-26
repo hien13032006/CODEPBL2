@@ -1,22 +1,16 @@
 #include "Librarian.h"
+#include "LibrarySystem.h"
 #include "Book.h"
 #include <iostream>
 using namespace std;
 
-int Librarian::LibrarianCount = 0;
-
-Librarian::Librarian() {
-    LibrarianCount++;
-    maID = "L" + to_string(LibrarianCount);
-}
-
-void Librarian::SignUp(string hoTen, string SDT, string Email, string username, string password) {
+void Librarian::SetThongTin(string maID,string hoTen, string SDT, string Email, string username, string password) {
+    this->maID = maID;
     this->hoTen = hoTen;
     this->SDT = SDT;
     this->Email = Email;
     this->username = username;
     this->password = password;
-    cout << "Dang ky thanh cong! Ma ID cua ban la: " << maID << endl;
 }
 
 void Librarian::HienThiThongTin() const {
@@ -34,7 +28,7 @@ void Librarian::XoaSach(LibrarySystem &L) {
     string maSach;
     cout << "Nhap ma sach can xoa: ";
     getline(cin,maSach);
-    L.XoaSach();
+    L.XoaSach(maSach);
 }
 
 

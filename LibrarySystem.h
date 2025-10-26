@@ -18,12 +18,12 @@ class LibrarySystem {
         void ThemSach(Sach &book);
         void XoaSach(const string &maSach);
         void TimSach();
+        void MuonSach(Reader* docGia, const string& maSach);
+        void TraSach(Reader* docGia, const string& maSach);
         void HienThiDanhSachSach() const;
         bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
         void DangKyDocGia();
         void HienThiTatCaDocGia() const;
-        bool KiemTraThuThuDaDangKy(const string& tenDangNhap) const;
-        void DangKyThuThu();
         bool DangNhapDocGia(const string &username, const string &password, USER* &currentUser);
         bool DangNhapThuThu(const string &username, const string &password, USER* &currentUser);
         bool DangXuat(USER* &currentUser);

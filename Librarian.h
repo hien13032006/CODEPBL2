@@ -5,11 +5,8 @@
 class LibrarySystem;
 
 class Librarian : public USER {
-    private:
-        static int LibrarianCount;
     public:
-        Librarian();
-        void SignUp(string hoTen, string SDT, string Email, string username, string password);
+        void SetThongTin(string maID, string hoTen, string SDT, string Email, string username, string password);
         void HienThiThongTin() const override;
         void ThemSach(LibrarySystem &L);
         void XoaSach(LibrarySystem &L);

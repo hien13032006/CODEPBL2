@@ -1,5 +1,7 @@
 #include "LibrarySystem.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 LibrarySystem::LibrarySystem() {
@@ -155,32 +157,93 @@ void LibrarySystem::HienThiDanhSachSach() const {
     }
 }
 
-void LibrarySystem::DangKyDocGia() {
-    
-    string hoTen, sdt, email, user, pass;
-    cout << "Nhap ho ten: "; getline(cin, hoTen);
-    cout << "Nhap SDT: "; getline(cin, sdt);
-    cout << "Nhap Email: "; getline(cin, email);
-    cout << "Nhap ten dang nhap: "; getline(cin, user);
+void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
+    NodeBook* current = HeadDsSach;
+    while (current != nullptr) {
+        if (current->data.getMaSach() == maSach) {
+            if (current->data.getSoLuong() <= 0) {
+                cout << "Sach da het khong the muon\n";
+                return;
+            }
 
-    if (KiemTraDocGiaDaDangKy(user)) {
-        cout << "Ten dang nhap da ton tai. Vui long chon ten khac\n";
+            if (docGia->DaMuonSach(maSach)) {
+                cout << "Ban da muon sach nay roi.\n";
+                return;
+            }
+
+            if (docGia->DemSachDaMuon() >= 5) {
+                cout << "Ban da muon toi da so sach cho phep.\n";
+                return;
+            }
+
+            current->data.muonSach(); // cap nhat so luong sach trong thu vien (giam)
+
+            docGia->themSachDaMuon(current->data); // luu vao danh sach da muon cua doc gia
+
+            docGia->ghiLichSu("Muon", current->data);
+
+            cout << "Muon sach thanh cong " << current->data.getTenSach() << endl;
+            return;
+        }
+        current = current->next;
+    }
+
+    cout << "Khong tim thay sach voi ma: " << maSach << endl;
+}
+
+void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
+    if (!docGia->DaMuonSach(maSach)) {
+        cout << "Ban chua muon sach co ma: " << maSach << endl;
         return;
     }
 
-    cout << "Nhap mat khau: "; getline(cin, pass);
+    NodeBook* current = HeadDsSach;
+    while (current != nullptr) {
+        if (current->data.getMaSach() == maSach) {
 
-    Reader dg;
-    dg.SignUp(hoTen, sdt, email, user, pass);
+            current->data.traSach(); // Tang so luong cua sach nay trong thu vien
 
-    NodeReader* newNode = new NodeReader(dg);
-    newNode->next = HeadDsDocGia;
-    HeadDsDocGia = newNode;
+            docGia->xoaSachDaMuon(maSach);// xoa khoi danh sach da muon cua doc gia
 
-    cout << "Dang ky doc gia thanh cong.\n";
+            docGia->ghiLichSu("Tra", current->data);
 
+            cout << "Tra sach thanh cong: " << current->data.getTenSach() << endl;
+            return;
+        }
+        current = current->next;
+    }
+
+    cout << "Khong tim thay sach trong he thong.\n";
 }
 
+//kiểm tra tính hợp lệ của SĐT
+bool kiemTraSDT(const string& sdt) {
+    if (sdt.length() != 10 || sdt[0] != '0') return false; // phải đủ 10 số và bắt đầu bằng số 0
+    // số thứ 2 phải trong các số 3,5,7,8,9
+    char dauSo = sdt[1];
+    if (dauSo != '3' && dauSo != '5' && dauSo != '7' && dauSo != '8' && dauSo != '9') {
+        return false;
+    }
+    // Kiểm tra tất cả là số
+    for (char c : sdt) {
+        if (!isdigit(c)) return false;
+    }
+    return true;
+}
+
+//kiểm tra tính hợp lệ của email với đuôi @gmail.com
+bool kiemTraEmail(const string& email) {
+    const string duoi = "@gmail.com";
+    if (email.length() <= duoi.length()) return false;
+    return email.substr(email.length() - duoi.length()) == duoi;
+}
+
+//Kiểm tra độ dài của mật khẩu: giới hạn = 8
+bool kiemTraMatKhau(const string& pass) {
+    return pass.length() == 8;
+}
+
+//kiểm tra xem username đã tồn tại hay chưa
 bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
     NodeReader* current = HeadDsDocGia;
     while (current != nullptr) {
@@ -189,6 +252,57 @@ bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
         current = current->next;
     }
     return false;
+}
+
+void LibrarySystem::DangKyDocGia() {
+    
+    string hoTen, sdt, email, user, pass;
+    cout << "Nhap ho ten: "; getline(cin, hoTen);
+    while (true) {
+        cout << "Nhap SDT: ";
+        getline(cin, sdt);
+        if (kiemTraSDT(sdt)) break;
+        cout << "So dien thoai khong hop le. Vui long nhap lai.\n";
+    }
+
+    while (true) {
+        cout << "Nhap Email: ";
+        getline(cin, email);
+        if (kiemTraEmail(email)) break;
+        cout << "Email khong hop le. Vui long nhap lai.\n";
+    }
+
+    while (true) {
+        cout << "Nhap username: ";
+        getline(cin, user);
+        if (!KiemTraDocGiaDaDangKy(user)) break;
+        cout << "Username da ton tai. Vui long chon ten khac.\n";
+    }
+
+    while (true) {
+        cout << "Nhap password (Hay nhap dung 8 ki tu): ";
+        getline(cin, pass);
+        if (kiemTraMatKhau(pass)) break;
+        cout << "Password khong hop le. Vui long nhap lai.\n";
+    }
+
+    Reader dg;
+    dg.SignUp(hoTen, sdt, email, user, pass);
+
+    NodeReader* newNode = new NodeReader(dg);
+    newNode->next = HeadDsDocGia;
+    HeadDsDocGia = newNode;
+    
+    ofstream out("DocGia.txt", ios::app); // mở file ở chế độ ghi thêm
+    if (out.is_open()) {
+        out << dg.toCSV() << endl;
+        out.close();
+        cout << "Da luu vao file.\n";
+    } else {
+        cout << "Khong the mo file de luu doc gia.\n";
+    }
+
+
 }
 
 void LibrarySystem::HienThiTatCaDocGia() const {
@@ -202,43 +316,6 @@ void LibrarySystem::HienThiTatCaDocGia() const {
         current = current->next;
     }
 }
-
-void LibrarySystem::DangKyThuThu() {
-    
-    string hoTen, sdt, email, user, pass;
-    cout << "Nhap ho ten: "; getline(cin, hoTen);
-    cout << "Nhap SDT: "; getline(cin, sdt);
-    cout << "Nhap Email: "; getline(cin, email);
-    cout << "Nhap ten dang nhap: "; getline(cin, user);
-
-    if (KiemTraThuThuDaDangKy(user)) {
-        cout << "Ten dang nhap da ton tai. Vui long chon ten khac\n";
-        return;
-    }
-
-    cout << "Nhap mat khau: "; getline(cin, pass);
-
-    Librarian tt;
-    tt.SignUp(hoTen, sdt, email, user, pass);
-
-    NodeLibrarian* newNode = new NodeLibrarian(tt);
-    newNode->next = HeadDsTThu;
-    HeadDsTThu = newNode;
-
-    cout << "Dang ky thu thu thanh cong.\n";
-
-}
-
-bool LibrarySystem::KiemTraThuThuDaDangKy(const string& tenDangNhap) const {
-    NodeLibrarian* current = HeadDsTThu;
-    while (current != nullptr) {
-        if (current->data.getUsername() == tenDangNhap)
-            return true;
-        current = current->next;
-    }
-    return false;
-}
-
 
 bool LibrarySystem::DangNhapDocGia(const string &username, const string &password, USER* &currentUser) {
     NodeReader *current = HeadDsDocGia;
@@ -255,16 +332,32 @@ bool LibrarySystem::DangNhapDocGia(const string &username, const string &passwor
 }
 
 bool LibrarySystem::DangNhapThuThu(const string &username, const string &password, USER* &currentUser) {
-    NodeLibrarian *current = HeadDsTThu;
-    while (current != nullptr) {
-        if (current->data.Login(username, password)) {
-            currentUser = &current->data;
-            cout << "Thu thu " << username << " da dang nhap thanh cong." << endl;
+    ifstream in("ThuThu.txt");
+    if (!in) {
+        cout << "Khong the mo file ThuThu.txt\n";
+        return false;
+    }
+
+    string line;
+    while (getline(in, line)) {
+        stringstream ss(line);
+        string maID, hoTen, sdt, email, user, pass;
+        getline(ss, maID, '|');
+        getline(ss, hoTen, '|');
+        getline(ss, sdt, '|');
+        getline(ss, email, '|');
+        getline(ss, user, '|');
+        getline(ss, pass, '|');
+
+        if (user == username && pass == password) {
+            Librarian* tt = new Librarian();
+            tt->SetThongTin(maID,hoTen, sdt, email, user, pass); // dùng lại hàm SignUp để gán thông tin
+            currentUser = tt;
+            cout << "Dang nhap thanh cong!\n";
             return true;
         }
-        current = current->next;
     }
-    cout << "Dang nhap that bai. Vui long kiem tra lai thong tin." << endl;
+    cout << "Dang nhap that bai. Vui long kiem tra lai thong tin.\n";
     return false;
 }
 

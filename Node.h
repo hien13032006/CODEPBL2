@@ -7,7 +7,6 @@ struct NodeBook {
     Sach data;
     NodeBook *next;
 
-    
     NodeBook(const Sach& s) {
         data = s;
         next = nullptr;
@@ -34,4 +33,5 @@ struct NodeLibrarian {
         next = nullptr;
     }
 };
+
 #endif
