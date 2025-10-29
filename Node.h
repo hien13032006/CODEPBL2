@@ -1,13 +1,15 @@
 #ifndef Node_h
 #define Node_h
-#include "Book.h"
 #include "Reader.h"
+#include "Librarian.h"
+
+class Sach;
 
 struct NodeBook {
-    Sach data;
+    Sach* data;
     NodeBook *next;
 
-    NodeBook(const Sach& s) {
+    NodeBook(Sach *s) {
         data = s;
         next = nullptr;
     }

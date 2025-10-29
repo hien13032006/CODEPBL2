@@ -1,110 +1,92 @@
 #include "Book.h"
-#include <iomanip>
- 
-Sach::Sach() {
-    maSach = "";
-    tenSach = "";
-    tacGia = "";
-    nhaXuatBan = "";
-    namXuatBan = 0;
-    soLuong = 0;
-}
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include "Node.h"
 
-Sach::~Sach() {}
-
-void Sach::nhapThongTin() {
-    cout << "Nhap ten sach: ";
-    getline(cin, tenSach);
-    cout << "Nhap tac gia: ";
-    getline(cin, tacGia);
-    cout << "Nhap nha xuat ban: ";
-    getline(cin, nhaXuatBan);
-    cout << "Nhap nam xuat ban: ";
-    cin >> namXuatBan;
-    cout << "Nhap so luong: ";
-    cin >> soLuong;
-    cin.ignore();
-}
-
-void Sach::hienThiThongTin() const {
-    cout << "Ma: " << maSach << "| Ten: " << tenSach << "| Tac gia: " << tacGia
-         << "| NXB: " << nhaXuatBan << "| Nam xuat ban: " << namXuatBan
-         << "| So luong: " << soLuong << endl;
-}
-
-const string& Sach::getMaSach() const {
-    return maSach;
-}
-const string& Sach::getTenSach() const {
-    return tenSach;
-}
-
-const string& Sach::getTacGia() const {
-    return tacGia;
-}
-const string& Sach::getNhaXuatBan() const {
-    return nhaXuatBan;
-}
-int Sach::getNamXuatBan() const {
-    return namXuatBan;
-}
-int Sach::getSoLuong() const {
-    return soLuong;
-}
-
-void Sach::setMaSach(const string& m) {
-    maSach = m;
-}
-void Sach::setTenSach(const string& t) {
-    tenSach = t;
-}
-void Sach::setTacGia(const string& tg) {
-    tacGia = tg;
-}
-void Sach::setNhaXuatBan(const string& nxb) {
-    nhaXuatBan = nxb;
-}
-void Sach::setNamXuatBan(int n) {
-    namXuatBan = n;
-}
-void Sach::setSoLuong(int s) {
-    soLuong = s;
-}
-
-void Sach::setautoMaSach(int stt) {
-    // stt: số thứ tự (1-based). Format 4 chữ số, zero-padded.
+string Sach::toCSV() const {
     ostringstream oss;
-    oss << prefix();
-    char buf[8];
-    std::sprintf(buf, "%04d", stt);
-    oss << buf;
-    maSach = oss.str();
-}
-
-string Sach::tocsv() const {
-    ostringstream oss;
-   
-    oss << maSach << "," << tenSach << "," << tacGia << "," << nhaXuatBan << "," << namXuatBan << "," << soLuong;
+    oss << maSach << "|" << tenSach << "|" << tacGia << "|"
+        << theLoai << "|" << namXuatBan << "|" << nhaXuatBan << "|"
+        << tinhTrang;
     return oss.str();
 }
 
-GiaoTrinh::GiaoTrinh() : Sach() {}
-std::string GiaoTrinh::prefix() const { return "GTR"; }
+void Sach::hienThiThongTin() const {
+    cout <<"-----------------------------------------\n";
+    cout <<"Ma sach: " << maSach << endl;
+    cout <<"Ten sach: " << tenSach << endl;
+    cout <<"Tac gia: " << tacGia << endl;
+    cout <<"The loai: " << theLoai << endl;
+    cout <<"Nam xuat ban: " << namXuatBan << endl;
+    cout << "Nha xuat ban: " << nhaXuatBan << endl;
+    cout << "Tinh trang: " << tinhTrang << endl;
+}
 
-ThamKhao::ThamKhao() : Sach() {}
-std::string ThamKhao::prefix() const { return "STK"; }
+// 🏭 Factory: Tạo đúng lớp con dựa trên thể loại
+Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb) {
+    Sach* s = nullptr;
+    if (tl == "Giao trinh") s = new GiaoTrinh(ten, tg, tl, nam, nxb);
+    else if (tl == "Tham khao") s = new ThamKhao(ten, tg, tl, nam, nxb);
+    else if (tl == "Tieu thuyet") s = new TieuThuyet(ten, tg, tl, nam, nxb);
+    else if (tl == "Truyen ngan") s = new TruyenNgan(ten, tg, tl, nam, nxb);
+    else if (tl == "Truyen tranh") s = new TruyenTranh(ten, tg, tl, nam, nxb);
+    else if (tl == "Sach ki nang") s = new SachKiNang(ten, tg, tl, nam, nxb);
+    else s = new GiaoTrinh(ten, tg, tl, nam, nxb); // mặc định
 
-TieuThuyet::TieuThuyet() : Sach() {}
-std::string TieuThuyet::prefix() const { return "TIE"; }
+    // Tự tạo mã ID (dựa prefix)
+    static int stt = 1;
+    string id = s->prefix() + (stt < 10 ? "0" + to_string(stt) : to_string(stt));
+    s->setMaSach(id);
+    stt++;
+    return s;
+}
 
-TruyenNgan::TruyenNgan() : Sach() {}
-std::string TruyenNgan::prefix() const { return "TRN"; }
+void Sach::docFileInput(const string& fileName, NodeBook*& head) {
+    ifstream in(fileName);
+    if (!in.is_open()) {
+        cerr << " Khong mo duoc file: " << fileName << endl;
+        return;
+    }
 
-TapChi::TapChi() : Sach() {}
-std::string TapChi::prefix() const { return "TAP"; }
+    string line;
+    NodeBook* tail = nullptr;
+    while (getline(in, line)) {
+        if (line.empty()) continue;
+        string ten, tg, tl, nxb, namStr;
+        stringstream ss(line);
+        getline(ss, ten, '|');
+        getline(ss, tg, '|');
+        getline(ss, tl, '|');
+        getline(ss, namStr, '|');
+        getline(ss, nxb, '|');
 
-TruyenTranh::TruyenTranh() : Sach() {}
-std::string TruyenTranh::prefix() const { return "TRC"; }
+        int nam = stoi(namStr);
+        Sach* s = Sach::createFromData(ten, tg, tl, nam, nxb);
 
-SachKiNang::SachKiNang() : Sach() {}
-std::string SachKiNang::prefix() const { return "SKN"; }
+        NodeBook* newNode = new NodeBook(s);
+        newNode->next = head;
+        head = newNode;
+    }
+    in.close();
+    cout << "Doc file thanh cong: " << fileName << endl;
+}
+
+void Sach::ghiFile(const string& fileName, NodeBook* head) {
+    ofstream out(fileName);
+    if (!out.is_open()) {
+        cerr << " Khong mo duoc file de ghi: " << fileName << endl;
+        return;
+    }
+
+    NodeBook* p = head;
+    while (p) {
+        out << p->data->toCSV() << endl;
+        p = p->next;
+    }
+
+    out.close();
+    cout << " Da ghi danh sach sach vao: " << fileName << endl;
+}
+
+

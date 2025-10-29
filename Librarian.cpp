@@ -19,9 +19,7 @@ void Librarian::HienThiThongTin() const {
 }
 
 void Librarian::ThemSach(LibrarySystem &L) {
-    Sach sachMoi;
-    sachMoi.nhapThongTin();
-    L.ThemSach(sachMoi);
+
 }
 
 void Librarian::XoaSach(LibrarySystem &L) {

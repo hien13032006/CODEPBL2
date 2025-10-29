@@ -27,19 +27,23 @@ LibrarySystem::~LibrarySystem() {
     }
 }
 
-void LibrarySystem::ThemSach(Sach &SachMoi) {
-    SachMoi.nhapThongTin();
-    NodeBook *newNode = new NodeBook(SachMoi);
-    newNode->next = HeadDsSach;
-    HeadDsSach = newNode;
-    cout << "Da them sach: " << SachMoi.getTenSach() << endl;
+
+void LibrarySystem::DocFileSach(const string& fileName) {
+    Sach::docFileInput(fileName, HeadDsSach);
+    cout << " Da nap danh sach sach tu file: " << fileName << endl;
 }
+
+void LibrarySystem::GhiFileSach(const string& fileName) const {
+    Sach::ghiFile(fileName, HeadDsSach);
+    cout << " Da luu danh sach sach vao file: " << fileName << endl;
+}
+
 
 void LibrarySystem::XoaSach(const string &maSach) {
     NodeBook *current = HeadDsSach;
     NodeBook *prev = nullptr;
     while (current != nullptr) {
-        if (current->data.getMaSach() == maSach) {
+        if (current->data->getMaSach() == maSach) {
             if (prev == nullptr) {
                 HeadDsSach = current->next;
             } else {
@@ -75,8 +79,8 @@ void LibrarySystem::TimSach() {
             cout << "Nhap ma sach can tim: ";
             getline(cin, maSach);
             while (current != nullptr) {
-                if (current->data.getMaSach() == maSach) {
-                    current->data.hienThiThongTin();
+                if (current->data->getMaSach() == maSach) {
+                    current->data->hienThiThongTin();
                     found = true;
                 }
                 current = current->next;
@@ -88,8 +92,8 @@ void LibrarySystem::TimSach() {
             cout << "Nhap ten sach can tim: ";
             getline(cin, tenSach);
             while (current != nullptr) {
-                if (current->data.getTenSach() == tenSach) {
-                    current->data.hienThiThongTin();
+                if (current->data->getTenSach() == tenSach) {
+                    current->data->hienThiThongTin();
                     found = true;
                 }
                 current = current->next;
@@ -101,8 +105,8 @@ void LibrarySystem::TimSach() {
             cout << "Nhap tac gia can tim: ";
             getline(cin, tacGia);
             while (current != nullptr) {
-                if (current->data.getTacGia() == tacGia) {
-                    current->data.hienThiThongTin();
+                if (current->data->getTacGia() == tacGia) {
+                    current->data->hienThiThongTin();
                     found = true;
                 }
                 current = current->next;
@@ -115,8 +119,8 @@ void LibrarySystem::TimSach() {
             cin >> namXB;
             cin.ignore();
             while (current != nullptr) {
-                if (current->data.getNamXB() == namXB) {
-                    current->data.hienThiThongTin();
+                if (current->data->getNamXuatBan() == namXB) {
+                    current->data->hienThiThongTin();
                     found = true;
                 }
                 current = current->next;
@@ -128,8 +132,8 @@ void LibrarySystem::TimSach() {
             cout << "Nhap the loai can tim: ";
             getline(cin, theLoai);
             while (current != nullptr) {
-                if (current->data.getTheLoai() == theLoai) {
-                    current->data.hienThiThongTin();
+                if (current->data->getTheLoai() == theLoai) {
+                    current->data->hienThiThongTin();
                     found = true;
                 }
                 current = current->next;
@@ -152,7 +156,7 @@ void LibrarySystem::HienThiDanhSachSach() const {
         return;
     }
     while (current != nullptr) {
-        current->data.hienThiThongTin();
+        current->data->hienThiThongTin();
         current = current->next;
     }
 }
@@ -160,8 +164,8 @@ void LibrarySystem::HienThiDanhSachSach() const {
 void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
     NodeBook* current = HeadDsSach;
     while (current != nullptr) {
-        if (current->data.getMaSach() == maSach) {
-            if (current->data.getSoLuong() <= 0) {
+        if (current->data->getMaSach() == maSach) {
+            if (current->data->getTinhTrang() == "Da muon") {
                 cout << "Sach da het khong the muon\n";
                 return;
             }
@@ -176,13 +180,14 @@ void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
                 return;
             }
 
-            current->data.muonSach(); // cap nhat so luong sach trong thu vien (giam)
+            current->data->muonSach(); 
 
-            docGia->themSachDaMuon(current->data); // luu vao danh sach da muon cua doc gia
-
+            docGia->themSachDaMuon(current->data); 
             docGia->ghiLichSu("Muon", current->data);
 
-            cout << "Muon sach thanh cong " << current->data.getTenSach() << endl;
+            GhiFileHeThong("DanhSachSach.txt");
+
+            cout << "Muon sach thanh cong " << current->data->getTenSach() << endl;
             return;
         }
         current = current->next;
@@ -199,15 +204,17 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
 
     NodeBook* current = HeadDsSach;
     while (current != nullptr) {
-        if (current->data.getMaSach() == maSach) {
+        if (current->data->getMaSach() == maSach) {
 
-            current->data.traSach(); // Tang so luong cua sach nay trong thu vien
+            current->data->traSach(); // Tang so luong cua sach nay trong thu vien
 
             docGia->xoaSachDaMuon(maSach);// xoa khoi danh sach da muon cua doc gia
 
             docGia->ghiLichSu("Tra", current->data);
 
-            cout << "Tra sach thanh cong: " << current->data.getTenSach() << endl;
+            GhiFileHeThong("DanhSachSach.txt");
+
+            cout << "Tra sach thanh cong: " << current->data->getTenSach() << endl;
             return;
         }
         current = current->next;
@@ -371,49 +378,111 @@ bool LibrarySystem::DangXuat(USER* &currentUser) {
     return false;
 }
 
-void LibrarySystem::LuuDuLieu() const {
-    // Luu danh sach sach vao file
-    ofstream outFile("DanhSachSach.txt");
-    if(!outFile) {
-        cout << "Khong the mo file DanhSachSach\n";
+void LibrarySystem::DocFileHeThong(const string& fileName) {
+    ifstream in(fileName);
+    if (!in.is_open()) {
+        cerr << "Khong the mo file " << fileName << endl;
         return;
     }
-    NodeBook *currentBook = HeadDsSach;
-    while (currentBook != nullptr) {
-        currentBook->data.ghiFile(outFile);
-        currentBook = currentBook->next;
-    }
-    outFile.close();
-    cout << "Da luu danh sach sach vao file!\n";
 
-    // Luu danh sach doc gia vao file
-    ofstream outReaderFile("DanhSachReader.txt");
-    if(!outReaderFile) {
-        cout << "Khong the mo file DsReader\n";
-        return;
-    }
-    NodeReader *currentReader = HeadDsDocGia;
-    while (currentReader != nullptr) {
-        currentReader->data.HienThiThongTin();
-        currentReader = currentReader->next;
-    }
-    outReaderFile.close();
-    cout << "Da luu danh sach doc gia vao file!\n";
+    string line;
+    while (getline(in, line)) {
+        if (line.empty()) continue;
 
-    // Luu danh sach thu thu vao file
-    ofstream outLibrarianFile("DanhSachLibrarian.txt");
-    if(!outLibrarianFile) {
-        cout << "Khong the mo file DsLibrarian\n";
-        return;
+        stringstream ss(line);
+        string ma, ten, tacGia, theLoai, nhaXB, tinhTrangStr;
+        int namXB;
+
+        getline(ss, ma, '|');
+        getline(ss, ten, '|');
+        getline(ss, tacGia, '|');
+        getline(ss, theLoai, '|');
+        ss >> namXB;
+        ss.ignore();
+        getline(ss, nhaXB, '|');
+        getline(ss, tinhTrangStr);
+
+        bool tinhTrang = (tinhTrangStr == "Dang con");
+
+        // Tạo đối tượng phù hợp với thể loại
+        Sach* sachMoi = Sach::createFromData(ten, tacGia, theLoai, namXB, nhaXB);
+        sachMoi->setMaSach(ma);
+        sachMoi->setTinhTrang(tinhTrang ? "Dang con" : "Da muon");
+        // Thêm vào danh sách liên kết
+        NodeBook* newNode = new NodeBook(sachMoi);
+        newNode->next = HeadDsSach;
+        HeadDsSach = newNode;
     }
-    NodeLibrarian *currentLibrarian = HeadDsTThu;
-    while (currentLibrarian != nullptr) {
-        currentLibrarian->data.HienThiThongTin();
-        currentLibrarian = currentLibrarian->next;
-    }
-    outLibrarianFile.close();
-    cout << "Da luu danh sach thu thu vao file!\n";
+
+    in.close();
+    cout << " Doc du lieu tu file he thong thanh cong!\n";
 }
+
+void LibrarySystem::GhiFileHeThong(const string& fileName) const {
+    ofstream out(fileName);
+    if (!out.is_open()) {
+        cerr << "Khong the mo file " << fileName << " de ghi.\n";
+        return;
+    }
+
+    NodeBook* current = HeadDsSach;
+    while (current != nullptr) {
+        out << current->data->getMaSach() << "|"
+            << current->data->getTenSach() << "|"
+            << current->data->getTacGia() << "|"
+            << current->data->getTheLoai() << "|"
+            << current->data->getNamXuatBan() << "|"
+            << current->data->getNhaXuatBan() << "|"
+            << (current->data->getTinhTrang())
+            << "\n";
+        current = current->next;
+    }
+
+    out.close();
+    cout << "Da cap nhat file he thong sau khi muon/tra sach.\n";
+}
+
+
+void LibrarySystem::DocFileDocGia() {
+    ifstream in("DocGia.txt");
+    if (!in.is_open()) {
+        cerr << "Khong tim thay file DanhSachDocGia.txt.\n";
+        return;
+    }
+
+    string line;
+    while (getline(in, line)) {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string ma, hoten, sdt, email, user, pass;
+        getline(ss, ma, '|');
+        getline(ss, hoten, '|');
+        getline(ss, sdt, '|');
+        getline(ss, email, '|');
+        getline(ss, user, '|');
+        getline(ss, pass, '|');
+        
+
+        Reader newReader;
+        newReader.setMaReader(ma);
+        newReader.setHoTen(hoten);
+        newReader.setSDT(sdt);
+        newReader.setEmail(email);
+        newReader.setUsername(user);
+        newReader.setPassword(pass);
+        
+        NodeReader* newNode = new NodeReader(newReader);
+        newNode->next = HeadDsDocGia;
+        HeadDsDocGia = newNode;
+    }
+
+    in.close();
+    cout << "Da nap danh sach doc gia tu file.\n";
+}
+
+
+
 
 
 

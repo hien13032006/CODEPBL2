@@ -1,7 +1,10 @@
 #include "Reader.h"
+#include "Book.h"
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <sstream>
+#include "Node.h"
 using namespace std;
 
 string layThoiGianHeThong() {
@@ -27,6 +30,7 @@ Reader::Reader() {
     readerCount++;
     maID = "R" + formatSo(readerCount);
     HeadDsMuonSach = nullptr; // Khoi tao danh sach muon sach rong
+    fileLichSu = "LichSu_" + maID + ".txt";
 }
 
 Reader::~Reader() {
@@ -52,7 +56,7 @@ void Reader::SignUp(string hoTen, string SDT, string Email, string username, str
 bool Reader::DaMuonSach(const string maSach) const {
     NodeMuonSach* current = HeadDsMuonSach;
         while (current != nullptr) {
-            if (current->data.getMaSach() == maSach)
+            if (current->data->getMaSach() == maSach)
                 return true;
             current = current->next;
         }
@@ -70,8 +74,8 @@ int Reader::DemSachDaMuon() const {
     return count;
 }
 
-void Reader::themSachDaMuon(const Sach& s) {
-    NodeMuonSach* newNode = new NodeMuonSach{s, HeadDsMuonSach};
+void Reader::themSachDaMuon(const Sach* s) {
+    NodeMuonSach* newNode = new NodeMuonSach{s->clone(), HeadDsMuonSach};
     HeadDsMuonSach = newNode;
 }
 
@@ -79,7 +83,7 @@ void Reader::xoaSachDaMuon(const string& maSach) {
     NodeMuonSach* current = HeadDsMuonSach;
     NodeMuonSach* prev = nullptr;
     while (current != nullptr) {
-        if (current->data.getMaSach() == maSach) {
+        if (current->data->getMaSach() == maSach) {
             if (prev == nullptr)
                 HeadDsMuonSach = current->next;
             else
@@ -99,28 +103,21 @@ void Reader::HienThiSachDaMuon() const {
         return;
     }
     while (current != nullptr) {
-        current->data.hienThiThongTin();
+        current->data->hienThiThongTin();
         current = current->next;
     }
 }
 
-void Reader::ghiLichSu(const string& hanhDong, const Sach& s) { 
-    LichSuMuonTra ls = {
-        hanhDong,
-        s.getMaSach(),
-        s.getTenSach(),
-        layThoiGianHeThong()
-    };
-    LichSu.push(ls);
-
-    ofstream out("LichSuMuonTra.txt", ios::app);
+void Reader::ghiLichSu(const string& hanhDong, const Sach* s) { 
+    ofstream out(fileLichSu, ios::app); // Ghi vào file riêng
     if (out.is_open()) {
-        out << ls.toCSV() << endl;
+        out << hanhDong << "|" << maID << "|" << s->getMaSach() 
+            << "|" << s->getTenSach() 
+            << "|" << layThoiGianHeThong() << "\n";
         out.close();
     } else {
-        cout << "Khong the mo file de ghi lich su muon/tra.\n";
+        cout << "Khong the mo file " << fileLichSu << " de ghi lich su muon/tra.\n";
     }
-
 }
 
 void Reader::HienThiThongTin() const {
@@ -136,15 +133,15 @@ string Reader::toCSV() const {
 }
 
 void Reader::HienThiLichSuMuonTra() const {
-    ifstream in("LichSuMuonTra.txt");
+    ifstream in(fileLichSu);
     if (!in.is_open()) {
-        cout << "Khong the mo file LichSuMuonTra.txt\n";
+        cout << "Khong tim thay file lich su cho doc gia " << maID << ".\n";
         return;
     }
 
     string line;
-    bool found = false;
-    cout << "\n--- LICH SU MUON - TRA CUA DOC GIA " << hoTen << "VOI ID " << maID <<" ---\n";
+    cout << "\n--- LICH SU MUON - TRA CUA DOC GIA " << hoTen 
+         << " (ID: " << maID << ") ---\n";
     while (getline(in, line)) {
         stringstream ss(line);
         string hanhDong, maDG, maSach, tenSach, thoiGian;
@@ -153,15 +150,8 @@ void Reader::HienThiLichSuMuonTra() const {
         getline(ss, maSach, '|');
         getline(ss, tenSach, '|');
         getline(ss, thoiGian, '|');
-
-        if (maDG == maID) {
-            found = true;
-            cout << hanhDong << " | " << maSach << " | " << tenSach << " | " << thoiGian << endl;
-        }
-    }
-
-    if (!found) {
-        cout << "Khong co lich su muon/tra nao.\n";
+        cout << hanhDong << " | " << maSach << " | " << tenSach 
+             << " | " << thoiGian << endl;
     }
 
     in.close();

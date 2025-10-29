@@ -5,7 +5,6 @@
 #include "USER.h"
 #include "Librarian.h"
 #include "Reader.h"
-#include "Node.h"
 
 class LibrarySystem {
     private:
@@ -15,7 +14,9 @@ class LibrarySystem {
     public:
         LibrarySystem();
         ~LibrarySystem();
-        void ThemSach(Sach &book);
+        void DocFileSach(const string& fileName);
+        void GhiFileSach(const string& fileName) const;
+        void GhiFileHeThong(const string& fileName) const;
         void XoaSach(const string &maSach);
         void TimSach();
         void MuonSach(Reader* docGia, const string& maSach);
@@ -27,6 +28,7 @@ class LibrarySystem {
         bool DangNhapDocGia(const string &username, const string &password, USER* &currentUser);
         bool DangNhapThuThu(const string &username, const string &password, USER* &currentUser);
         bool DangXuat(USER* &currentUser);
-        void LuuDuLieu() const;
+        void DocFileHeThong(const string& fileName);
+        void DocFileDocGia();
 };
 #endif

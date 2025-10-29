@@ -1,83 +1,115 @@
-#ifndef Book_H
-#define Book_H
-
-#include <iostream>
+#ifndef BOOK_H
+#define BOOK_H
 #include <string>
-
+#include <iostream>
+#include <sstream>
+#include "Node.h"
 using namespace std;
 
 class Sach {
-    protected:
-        string maSach;
-        string tenSach;
-        string tacGia;
-        string nhaXuatBan;
-        int namXuatBan;
-        int soLuong;
-    public:
-        Sach();
-        virtual ~Sach();
-        virtual void nhapThongTin();
-        virtual void hienThiThongTin() const;
-        const string& getMaSach() const;
-        const string& getTenSach() const;
-        const string& getTacGia() const;
-        const string& getNhaXuatBan() const;
-        int getNamXuatBan() const;
-        int getSoLuong() const;
+protected:
+    string maSach;
+    string tenSach;
+    string tacGia;
+    string theLoai;
+    int namXuatBan;
+    string nhaXuatBan;
+    string tinhTrang; // "Dang con" hoặc "Da muon"
 
-        void setMaSach(const string& m);
-        void setTenSach(const string& t);
-        void setTacGia(const string& tg);
-        void setNhaXuatBan(const string& nxb);
-        void setNamXuatBan(int n);
-        void setSoLuong(int s);
+public:
+    Sach() : namXuatBan(0), tinhTrang("Dang con") {}
+    Sach(string ten, string tg, string tl, int nam, string nxb)
+        : tenSach(ten), tacGia(tg), theLoai(tl), namXuatBan(nam), nhaXuatBan(nxb), tinhTrang("Dang con") {}
 
-        virtual string prefix() const = 0;
+    virtual ~Sach() = default;
 
-        void setautoMaSach(int id);
-        string tocsv() const;
+    // Các phương thức ảo
+    virtual string prefix() const = 0;     // Mã loại, ví dụ: "GT", "TT"
+    virtual Sach* clone() const = 0;       // Tạo bản sao (dùng khi thêm vào danh sách)
+    virtual string toCSV() const;          // Xuất ra file
+    virtual void hienThiThongTin() const;
+
+    void muonSach() { tinhTrang = "Da muon"; }
+    void traSach() { tinhTrang = "Dang con"; }
+
+    // Getter / Setter
+    string getMaSach() const { return maSach; }
+    string getTenSach() const { return tenSach; }
+    string getTacGia() const { return tacGia; }
+    string getTheLoai() const { return theLoai; }
+    int getNamXuatBan() const { return namXuatBan; }
+    string getNhaXuatBan() const { return nhaXuatBan; }
+    string getTinhTrang() const { return tinhTrang; }
+
+    void setMaSach(string m) { maSach = m; }
+    void setTinhTrang(string t) { tinhTrang = t; }
+
+    // Factory method: tạo lớp con phù hợp từ dữ liệu file
+    static Sach* createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb);
+    static void docFileInput(const string& fileName, NodeBook*& head);
+    static void ghiFile(const string& fileName, NodeBook* head);
 };
 
 class GiaoTrinh : public Sach {
-    public:
-        GiaoTrinh();
-        string prefix() const override;
+public:
+    GiaoTrinh() {}
+    GiaoTrinh(string ten, string tg, string tl, int nam, string nxb)
+        : Sach(ten, tg, tl, nam, nxb) {}
+
+    string prefix() const override { return "GT"; }
+    Sach* clone() const override { return new GiaoTrinh(*this); }
 };
 
 class ThamKhao : public Sach {
-    public:
-        ThamKhao();
-        string prefix() const override;
+public:
+    ThamKhao() {}
+    ThamKhao(string ten, string tg, string tl, int nam, string nxb)
+        : Sach(ten, tg, tl, nam, nxb) {}
+
+    string prefix() const override { return "TK"; }
+    Sach* clone() const override { return new ThamKhao(*this); }
 };
 
 class TieuThuyet : public Sach {
-    public:
-        TieuThuyet();
-        string prefix() const override;
+public:
+    TieuThuyet() {}
+    TieuThuyet(string ten, string tg, string tl, int nam, string nxb)
+        : Sach(ten, tg, tl, nam, nxb) {}
+
+    string prefix() const override { return "TT"; }
+    Sach* clone() const override { return new TieuThuyet(*this); }
 };
 
 class TruyenNgan : public Sach {
     public:
-        TruyenNgan();
-        string prefix() const override;
+        TruyenNgan(string ten, string tg, string tl, int nam, string nxb)
+            : Sach(ten, tg, tl, nam, nxb) {}
+        string prefix() const override { return "TN";}
+        Sach* clone() const override { return new TruyenNgan(*this); }
 };
 
 class TapChi : public Sach {
     public:
-        TapChi();
-        string prefix() const override;
+        TapChi(string ten, string tg, string tl, int nam, string nxb)
+            : Sach(ten, tg, tl, nam, nxb) {}
+        string prefix() const override { return "TC";}
+        Sach* clone() const override { return new TapChi(*this); }
 };
 
 class TruyenTranh : public Sach {
     public:
-        TruyenTranh();
-        string prefix() const override;
+        TruyenTranh(string ten, string tg, string tl, int nam, string nxb)
+            : Sach(ten, tg, tl, nam, nxb) {}
+        string prefix() const override { return "TTR";}
+        Sach* clone() const override { return new TruyenTranh(*this); }
 };
 
 class SachKiNang : public Sach {
     public:
-        SachKiNang();
-        string prefix() const override;
+        SachKiNang(string ten, string tg, string tl, int nam, string nxb)
+            : Sach(ten, tg, tl, nam, nxb) {}
+        string prefix() const override { return "KN";}
+        Sach* clone() const override { return new SachKiNang(*this); }
 };
+
 #endif
