@@ -17,19 +17,22 @@ string layThoiGianHeThong() {
     return string(buffer);
 }
 
-//chuẩn hóa định dạng MaID với R + 4 số. R0001
-string formatSo(int so) {
-    ostringstream oss;
-    oss << setw(4) << setfill('0') << so;
-    return oss.str(); 
-}
-
-int Reader::readerCount = 0;
+int Reader::readerCount = 1;
 
 Reader::Reader() {
-    readerCount++;
-    maID = "R" + formatSo(readerCount);
-    HeadDsMuonSach = nullptr; // Khoi tao danh sach muon sach rong
+    stringstream ss;
+    ss << "R" << setw(4) << setfill('0') << readerCount++;
+    maID = ss.str();
+    fileLichSu = "LichSu_" + maID + ".txt";
+}
+
+Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password) {
+    maID = ma;
+    setHoTen(hoTen);
+    setSDT(sdt);
+    setEmail(email);
+    setUsername(username);
+    setPassword(password);
     fileLichSu = "LichSu_" + maID + ".txt";
 }
 

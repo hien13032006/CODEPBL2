@@ -14,21 +14,30 @@ class LibrarySystem {
     public:
         LibrarySystem();
         ~LibrarySystem();
-        void DocFileSach(const string& fileName);
-        void GhiFileSach(const string& fileName) const;
+
+        void DocFileSach(const string& fileName);//them sach tu file
+        void GhiFileSach(const string& fileName) const;//luu thong tin sach vua them vao file sau khi cap maSach
         void GhiFileHeThong(const string& fileName) const;
+        void DocFileHeThong(const string& fileName);
+        void DocFileDocGia();
+
         void XoaSach(const string &maSach);
+        void CapNhatThongTinSach();
         void TimSach();
         void MuonSach(Reader* docGia, const string& maSach);
         void TraSach(Reader* docGia, const string& maSach);
+
+        void DanhGiaSach(Reader* docGia, Sach* sach);
+        double TinhDiemTrungBinhTuFile(const string& tenSach,const string& tacGia,int namXB,const string& nhaXB);
         void HienThiDanhSachSach() const;
+
         bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
         void DangKyDocGia();
-        void HienThiTatCaDocGia() const;
         bool DangNhapDocGia(const string &username, const string &password, USER* &currentUser);
         bool DangNhapThuThu(const string &username, const string &password, USER* &currentUser);
         bool DangXuat(USER* &currentUser);
-        void DocFileHeThong(const string& fileName);
-        void DocFileDocGia();
+        void HienThiTatCaDocGia() const;
+
 };
+        
 #endif

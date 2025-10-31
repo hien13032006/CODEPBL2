@@ -1,4 +1,5 @@
 #include "Book.h"
+#include <iomanip>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -21,9 +22,10 @@ void Sach::hienThiThongTin() const {
     cout <<"Nam xuat ban: " << namXuatBan << endl;
     cout << "Nha xuat ban: " << nhaXuatBan << endl;
     cout << "Tinh trang: " << tinhTrang << endl;
+
 }
 
-// 🏭 Factory: Tạo đúng lớp con dựa trên thể loại
+//Tạo đúng lớp con dựa trên thể loại
 Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb) {
     Sach* s = nullptr;
     if (tl == "Giao trinh") s = new GiaoTrinh(ten, tg, tl, nam, nxb);
@@ -36,9 +38,12 @@ Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl
 
     // Tự tạo mã ID (dựa prefix)
     static int stt = 1;
-    string id = s->prefix() + (stt < 10 ? "0" + to_string(stt) : to_string(stt));
+    ostringstream oss;
+    oss << setw(8) << setfill('0') << stt;
+    string id = s->prefix() + oss.str();
     s->setMaSach(id);
     stt++;
+
     return s;
 }
 

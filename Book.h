@@ -15,6 +15,8 @@ protected:
     int namXuatBan;
     string nhaXuatBan;
     string tinhTrang; // "Dang con" hoặc "Da muon"
+    double tongDiemDanhGia = 0;
+    int soLuotDanhGia = 0;
 
 public:
     Sach() : namXuatBan(0), tinhTrang("Dang con") {}
@@ -31,6 +33,10 @@ public:
 
     void muonSach() { tinhTrang = "Da muon"; }
     void traSach() { tinhTrang = "Dang con"; }
+    void themDanhGia(int diem) {
+        tongDiemDanhGia += diem;
+        soLuotDanhGia++;
+    }
 
     // Getter / Setter
     string getMaSach() const { return maSach; }
@@ -40,8 +46,16 @@ public:
     int getNamXuatBan() const { return namXuatBan; }
     string getNhaXuatBan() const { return nhaXuatBan; }
     string getTinhTrang() const { return tinhTrang; }
+    double getDiemTrungBinh() const {
+        return soLuotDanhGia == 0 ? 0 : tongDiemDanhGia / soLuotDanhGia;
+    }
 
-    void setMaSach(string m) { maSach = m; }
+    void setMaSach(string ma) { maSach = ma; }
+    void setTenSach(string ten) { tenSach = ten; }
+    void setTacGia(string tg) { tacGia = tg; }
+    void setTheLoai(string tl) { theLoai = tl; }
+    void setNamXuatBan(int nxb) { namXuatBan = nxb; }
+    void setNhaXuatBan(string nhxb) { nhaXuatBan = nhxb; }
     void setTinhTrang(string t) { tinhTrang = t; }
 
     // Factory method: tạo lớp con phù hợp từ dữ liệu file
