@@ -33,7 +33,7 @@ class LibrarySystem {
 
         bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
         void DangKyDocGia();
-        bool DangNhapDocGia(const string &username, const string &password, USER* &currentUser);
+        bool DangNhapDocGia(USER* &currentUser);
         bool DangNhapThuThu(const string &username, const string &password, USER* &currentUser);
         bool DangXuat(USER* &currentUser);
         void HienThiTatCaDocGia() const;

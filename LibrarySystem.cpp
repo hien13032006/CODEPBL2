@@ -1,5 +1,6 @@
 #include "LibrarySystem.h"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <fstream>
 #include <sstream>
@@ -152,7 +153,6 @@ void LibrarySystem::DocFileDocGia() {
 
     cin.clear();
 }
-
 
 
 void LibrarySystem::XoaSach(const string &maSach) {
@@ -421,7 +421,6 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
 
             docGia->ghiLichSu("Tra", current->data);
 
-            GhiFileHeThong("DanhSachSach.txt");
 
             cout << "Tra sach thanh cong: " << current->data->getTenSach() << endl;
             
@@ -433,6 +432,8 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
             if (luaChon == 1) {
                 DanhGiaSach(docGia, current->data);
             }
+
+            GhiFileHeThong("DanhSachSach.txt");
 
             return;
         }
@@ -539,10 +540,24 @@ void LibrarySystem::HienThiDanhSachSach() const {
         cout << "Khong co sach trong thu vien." << endl;
         return;
     }
+
+    cout << "+-------------------------------------------------------------------------------------------------------------------------------+\n";
+    cout << "| " << left << setw(10) << "Ma sach"
+         << "| " << setw(25) << "Ten sach"
+         << "| " << setw(20) << "Tac gia"
+         << "| " << setw(12) << "The loai"
+         << "| " << setw(6)  << "NamXB"
+         << "| " << setw(35) << "Nha xuat ban"
+         << "| " << setw(10) << "Tinh trang"
+         << "|\n";
+    cout << "+-------------------------------------------------------------------------------------------------------------------------------+\n";
+
     while (current != nullptr) {
         current->data->hienThiThongTin();
         current = current->next;
     }
+
+    cout << "+-------------------------------------------------------------------------------------------------------------------------------+\n";
     
 }
 
@@ -635,19 +650,33 @@ void LibrarySystem::DangKyDocGia() {
 }
 
 
-bool LibrarySystem::DangNhapDocGia(const string &username, const string &password, USER* &currentUser) {
-    NodeReader *current = HeadDsDocGia;
-    while (current != nullptr) {
-        if (current->data.Login(username, password)) {
-            currentUser = &current->data;
-            cout << "Doc gia " << username << " da dang nhap thanh cong." << endl;
-            return true;
+bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {
+    string username, password;
+
+    while (true) {
+        cout << "\n===== DANG NHAP DOC GIA =====\n";
+        cout << "Nhap username: ";
+        getline(cin, username);
+
+        cout << "Nhap password: ";
+        getline(cin, password);
+
+        NodeReader *current = HeadDsDocGia;
+        bool found = false;
+
+        while (current != nullptr) {
+            if (current->data.Login(username, password)) {
+                currentUser = &current->data;
+                cout << "Doc gia \"" << username << "\" da dang nhap thanh cong.\n";
+                return true;
+            }
+            current = current->next;
         }
-        current = current->next;
+
+        cout << " Sai ten dang nhap hoac mat khau. Vui long nhap lai.\n";
     }
-    cout << "Dang nhap that bai. Vui long kiem tra lai thong tin." << endl;
-    return false;
 }
+
 
 bool LibrarySystem::DangNhapThuThu(const string &username, const string &password, USER* &currentUser) {
     ifstream in("ThuThu.txt");
