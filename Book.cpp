@@ -13,17 +13,22 @@ string Sach::toCSV() const {
     return oss.str();
 }
 
-void Sach::hienThiThongTin() const {
-    cout <<"-----------------------------------------\n";
-    cout <<"Ma sach: " << maSach << endl;
-    cout <<"Ten sach: " << tenSach << endl;
-    cout <<"Tac gia: " << tacGia << endl;
-    cout <<"The loai: " << theLoai << endl;
-    cout <<"Nam xuat ban: " << namXuatBan << endl;
-    cout << "Nha xuat ban: " << nhaXuatBan << endl;
-    cout << "Tinh trang: " << tinhTrang << endl;
+#include <iomanip> // để dùng setw, left, right
 
+void Sach::hienThiThongTin() const {
+    cout << "| " << left << setw(10) << maSach
+         << "| " << setw(25) << tenSach
+         << "| " << setw(20) << tacGia
+         << "| " << setw(12) << theLoai
+         << "| " << setw(6)  << namXuatBan
+         << "| " << setw(35) << nhaXuatBan
+         << "| " << setw(10) << tinhTrang
+         << "|\n";
+    cout << "Diem danh gia TB: " << fixed << setprecision(1) << getDiemTrungBinh() << "/10\n";
 }
+
+
+
 
 //Tạo đúng lớp con dựa trên thể loại
 Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb) {
