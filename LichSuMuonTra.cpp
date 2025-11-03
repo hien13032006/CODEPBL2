@@ -31,3 +31,4 @@ void StackLichSu::hienThiLichSu() const {
         current = current->next;
     }
 }
+

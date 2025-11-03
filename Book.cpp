@@ -16,15 +16,16 @@ string Sach::toCSV() const {
 #include <iomanip> // để dùng setw, left, right
 
 void Sach::hienThiThongTin() const {
-    cout << "| " << left << setw(10) << maSach
-         << "| " << setw(25) << tenSach
-         << "| " << setw(20) << tacGia
-         << "| " << setw(12) << theLoai
-         << "| " << setw(6)  << namXuatBan
-         << "| " << setw(35) << nhaXuatBan
-         << "| " << setw(10) << tinhTrang
-         << "|\n";
-    cout << "Diem danh gia TB: " << fixed << setprecision(1) << getDiemTrungBinh() << "/10\n";
+    cout << left << setw(15) << maSach
+         <<  setw(25) << tenSach
+         <<  setw(20) << tacGia
+         <<  setw(15) << theLoai
+         <<  setw(8)  << namXuatBan
+         <<  setw(25) << nhaXuatBan
+         <<  setw(13) << tinhTrang
+         << fixed << setprecision(1) << getDiemTrungBinh()
+         << "\n";
+    
 }
 
 

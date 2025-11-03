@@ -1,4 +1,5 @@
 #include "USER.h"
+#include <iomanip> 
 #include <iostream>
 using namespace std;
 
@@ -23,12 +24,18 @@ USER::USER(string maID, string hoTen, string SDT, string Email, string username,
 
 USER::~USER() {}
 
+#include <iomanip> 
+
 void USER::HienThiThongTin() const {
-    cout << "Ma ID: " << maID << endl;
-    cout << "Ho Ten: " << hoTen << endl;
-    cout << "SDT: " << SDT << endl;
-    cout << "Email: " << Email << endl;
-    cout << "Uername: " << username << endl;
+
+    cout << left << setw(10) << maID 
+                 << setw(25) << hoTen  
+                 <<setw(20)  << SDT      
+                 << setw(30) << Email    
+                 << setw(15) << username 
+                 << "\n";
+
+    cout << "-------------------------------------------------------------------------------------\n";
 }
 
 void USER::CapNhatThongTin() {

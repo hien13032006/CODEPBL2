@@ -46,6 +46,8 @@ public:
     int getNamXuatBan() const { return namXuatBan; }
     string getNhaXuatBan() const { return nhaXuatBan; }
     string getTinhTrang() const { return tinhTrang; }
+    double getTongDiem() const { return tongDiemDanhGia; }
+    int getSoDanhGia() const { return soLuotDanhGia; }
     double getDiemTrungBinh() const {
         return soLuotDanhGia == 0 ? 0 : tongDiemDanhGia / soLuotDanhGia;
     }
@@ -57,6 +59,12 @@ public:
     void setNamXuatBan(int nxb) { namXuatBan = nxb; }
     void setNhaXuatBan(string nhxb) { nhaXuatBan = nhxb; }
     void setTinhTrang(string t) { tinhTrang = t; }
+
+
+    void setDanhGia(double tong, int so) {
+        tongDiemDanhGia = tong;
+        soLuotDanhGia = so;
+    }
 
     // Factory method: tạo lớp con phù hợp từ dữ liệu file
     static Sach* createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb);

@@ -102,7 +102,7 @@ void Reader::xoaSachDaMuon(const string& maSach) {
 void Reader::HienThiSachDaMuon() const {
     NodeMuonSach *current = HeadDsMuonSach;
     if (current == nullptr) {
-        cout << "Ban chua muon sach nao." << endl;
+        cout << "Chua muon sach nao." << endl;
         return;
     }
     while (current != nullptr) {
@@ -135,17 +135,33 @@ string Reader::toCSV() const {
     return oss.str();
 }
 
+#include <iomanip> // để dùng setw, left, right
+
 void Reader::HienThiLichSuMuonTra() const {
     ifstream in(fileLichSu);
     if (!in.is_open()) {
-        cout << "Khong tim thay file lich su cho doc gia " << maID << ".\n";
+        cout << " Khong tim thay file lich su cho doc gia.\n";
         return;
     }
 
     string line;
-    cout << "\n--- LICH SU MUON - TRA CUA DOC GIA " << hoTen 
-         << " (ID: " << maID << ") ---\n";
+    bool hasData = false;
+
+    cout << " =====LICH SU MUON - TRA SACH =====\n";
+
+    cout << left
+         << setw(5)  << "STT"
+         << setw(15) << "Hanh dong"
+         << setw(12) << "Ma sach"
+         << setw(35) << "Ten sach"
+         << setw(25) << "Thoi gian"
+         << endl;
+    cout << string(90, '-') << endl;
+
+    int stt = 1;
     while (getline(in, line)) {
+        if (line.empty()) continue;
+
         stringstream ss(line);
         string hanhDong, maDG, maSach, tenSach, thoiGian;
         getline(ss, hanhDong, '|');
@@ -153,9 +169,23 @@ void Reader::HienThiLichSuMuonTra() const {
         getline(ss, maSach, '|');
         getline(ss, tenSach, '|');
         getline(ss, thoiGian, '|');
-        cout << hanhDong << " | " << maSach << " | " << tenSach 
-             << " | " << thoiGian << endl;
+
+        if (maDG == maID) {
+            cout << left
+                 << setw(5)  << stt++
+                 << setw(15) << hanhDong
+                 << setw(12) << maSach
+                 << setw(35) << tenSach
+                 << setw(25) << thoiGian
+                 << endl;
+            hasData = true;
+        }
     }
+
+    if (!hasData)
+        cout << "Khong co lich su muon/tra nao duoc ghi lai.\n";
+
+    cout << string(90, '-') << endl;
 
     in.close();
 }

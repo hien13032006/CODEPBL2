@@ -52,7 +52,7 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         if (line.empty()) continue;
 
         stringstream ss(line);
-        string ma, ten, tacGia, theLoai, nhaXB, tinhTrangStr;
+        string ma, ten, tacGia, theLoai, nhaXB, tinhTrangStr, diemTBStr, soDanhGiaStr;
         int namXB;
 
         getline(ss, ma, '|');
@@ -62,14 +62,22 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         ss >> namXB;
         ss.ignore();
         getline(ss, nhaXB, '|');
-        getline(ss, tinhTrangStr);
+        getline(ss, tinhTrangStr,'|');
+        getline(ss, diemTBStr, '|');
+        getline(ss, soDanhGiaStr);
 
         bool tinhTrang = (tinhTrangStr == "Dang con");
+
+        double tong = 0;
+        int soDG = 0;
+        if (!diemTBStr.empty()) tong = stod(diemTBStr);
+        if (!soDanhGiaStr.empty()) soDG = stoi(soDanhGiaStr);
 
         // Tạo đối tượng phù hợp với thể loại
         Sach* sachMoi = Sach::createFromData(ten, tacGia, theLoai, namXB, nhaXB);
         sachMoi->setMaSach(ma);
         sachMoi->setTinhTrang(tinhTrang ? "Dang con" : "Da muon");
+        sachMoi->setDanhGia(tong, soDG);
         // Thêm vào danh sách liên kết
         NodeBook* newNode = new NodeBook(sachMoi);
         newNode->next = HeadDsSach;
@@ -95,7 +103,9 @@ void LibrarySystem::GhiFileHeThong(const string& fileName) const {
             << current->data->getTheLoai() << "|"
             << current->data->getNamXuatBan() << "|"
             << current->data->getNhaXuatBan() << "|"
-            << (current->data->getTinhTrang())
+            << (current->data->getTinhTrang()) << "|"
+            << current->data->getTongDiem() << "|"
+            << current->data->getSoDanhGia()
             << "\n";
         current = current->next;
     }
@@ -474,6 +484,7 @@ void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach) {
 
     // Cập nhật điểm trung bình của sách
     sach->themDanhGia(diem);
+    GhiFileHeThong("DanhSachSach.txt");
 
     // Ghi vào file đánh giá
     ofstream out("DanhGia.txt", ios::app);
@@ -534,7 +545,8 @@ double LibrarySystem::TinhDiemTrungBinhTuFile(const string& tenSach,
 
 
 
-void LibrarySystem::HienThiDanhSachSach() const {
+void LibrarySystem::HienThiDanhSachSach()  {
+    DocFileHeThong("DanhSachSach.txt");
     NodeBook *current = HeadDsSach;
     if (current == nullptr) {
         cout << "Khong co sach trong thu vien." << endl;
@@ -542,22 +554,23 @@ void LibrarySystem::HienThiDanhSachSach() const {
     }
 
     cout << "+-------------------------------------------------------------------------------------------------------------------------------+\n";
-    cout << "| " << left << setw(10) << "Ma sach"
-         << "| " << setw(25) << "Ten sach"
-         << "| " << setw(20) << "Tac gia"
-         << "| " << setw(12) << "The loai"
-         << "| " << setw(6)  << "NamXB"
-         << "| " << setw(35) << "Nha xuat ban"
-         << "| " << setw(10) << "Tinh trang"
+    cout << left << setw(15) << "Ma sach"
+         << setw(25) << "Ten sach"
+         << setw(20) << "Tac gia"
+         << setw(15) << "The loai"
+         << setw(10)  << "NamXB"
+         << setw(21) << "Nha xuat ban"
+         << setw(15) << "Tinh trang"
+         << setw(10) << "Diem danh gia"
          << "|\n";
-    cout << "+-------------------------------------------------------------------------------------------------------------------------------+\n";
+    cout << "+-----------------------------------------------------------------------------------------------------------------------------+\n";
 
     while (current != nullptr) {
         current->data->hienThiThongTin();
         current = current->next;
     }
 
-    cout << "+-------------------------------------------------------------------------------------------------------------------------------+\n";
+    cout << "+--------------------------------------------------------------------------------------------------------------------------+\n";
     
 }
 
@@ -600,7 +613,7 @@ bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
 }
 
 void LibrarySystem::DangKyDocGia() {
-    
+     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string hoTen, sdt, email, user, pass;
     cout << "Nhap ho ten: "; getline(cin, hoTen);
     while (true) {
@@ -678,35 +691,50 @@ bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {
 }
 
 
-bool LibrarySystem::DangNhapThuThu(const string &username, const string &password, USER* &currentUser) {
-    ifstream in("ThuThu.txt");
-    if (!in) {
-        cout << "Khong the mo file ThuThu.txt\n";
-        return false;
-    }
+bool LibrarySystem::DangNhapThuThu(const string &usernameInput, const string &passwordInput, USER* &currentUser) {
+    string username = usernameInput;
+    string password = passwordInput;
 
-    string line;
-    while (getline(in, line)) {
-        stringstream ss(line);
-        string maID, hoTen, sdt, email, user, pass;
-        getline(ss, maID, '|');
-        getline(ss, hoTen, '|');
-        getline(ss, sdt, '|');
-        getline(ss, email, '|');
-        getline(ss, user, '|');
-        getline(ss, pass, '|');
-
-        if (user == username && pass == password) {
-            Librarian* tt = new Librarian();
-            tt->SetThongTin(maID,hoTen, sdt, email, user, pass); // dùng lại hàm SignUp để gán thông tin
-            currentUser = tt;
-            cout << "Dang nhap thanh cong!\n";
-            return true;
+    while (true) {
+        ifstream in("ThuThu.txt");
+        if (!in.is_open()) {
+            cout << "Khong the mo file ThuThu.txt\n";
+            return false;
         }
+
+        bool found = false;
+        string line;
+
+        while (getline(in, line)) {
+            stringstream ss(line);
+            string maID, hoTen, sdt, email, user, pass;
+            getline(ss, maID, '|');
+            getline(ss, hoTen, '|');
+            getline(ss, sdt, '|');
+            getline(ss, email, '|');
+            getline(ss, user, '|');
+            getline(ss, pass, '|');
+
+            if (user == username && pass == password) {
+                Librarian* tt = new Librarian();
+                tt->SetThongTin(maID, hoTen, sdt, email, user, pass);
+                currentUser = tt;
+                cout << "Dang nhap thanh cong!\n";
+                found = true;
+                break;
+            }
+        }
+        in.close();
+
+        if (found) return true;
+
+        cout << "Ten dang nhap: ";
+        getline(cin, username);
+        cout << "Mat khau: ";
+        getline(cin, password);
     }
-    cout << "Dang nhap that bai. Vui long kiem tra lai thong tin.\n";
-    return false;
 }
+
 
 bool LibrarySystem::DangXuat(USER* &currentUser) {
     if (currentUser != nullptr) {
@@ -724,15 +752,126 @@ void LibrarySystem::HienThiTatCaDocGia() const {
         cout << "Khong co doc gia nao dang ky." << endl;
         return;
     }
+    cout << "=====THONG TIN TAT CA NGUOI DUNG=====\n";
+    cout << left << setw(13) << "Ma ID"      
+                 << setw(23) << "Ho Ten"     
+                 << setw(17) << "So DT"      
+                 << setw(20) << "Email"      
+                 << setw(15) << "Username"
+                 << "\n";  
+
     while (current != nullptr) {
         current->data.HienThiThongTin();
         current = current->next;
     }
 }
 
+void LibrarySystem::XepHangSach() {
+    if (HeadDsSach == nullptr) {
+        cout << "Thu vien chua co sach nao!\n";
+        return;
+    }
 
+    //Danh sách thống kê trung gian
+    struct NodeThongKe {
+        string tenSach;
+        string tacGia;
+        int namXB;
+        string nhaXB;
+        double tongDiem;
+        int soDanhGia;
+        NodeThongKe* next;
+        NodeThongKe(string ten, string tg, int nxb, string nxbx,
+                    double tong, int so)
+            : tenSach(ten), tacGia(tg), namXB(nxb), nhaXB(nxbx),
+              tongDiem(tong), soDanhGia(so), next(nullptr) {}
+        double diemTB() const {
+            return soDanhGia == 0 ? 0 : tongDiem / soDanhGia;
+        }
+    };
 
+    NodeThongKe* headTK = nullptr;
 
+    //Gom nhóm sách giống nhau
+    for (NodeBook* cur = HeadDsSach; cur != nullptr; cur = cur->next) {
+        Sach* s = cur->data;
+
+        NodeThongKe* p = headTK;
+        bool found = false;
+        while (p != nullptr) {
+            if (p->tenSach == s->getTenSach() &&
+                p->tacGia == s->getTacGia() &&
+                p->namXB == s->getNamXuatBan() &&
+                p->nhaXB == s->getNhaXuatBan()) {
+                p->tongDiem += s->getTongDiem();
+                p->soDanhGia += s->getSoDanhGia();
+                found = true;
+                break;
+            }
+            p = p->next;
+        }
+
+        if (!found) {
+            NodeThongKe* newNode = new NodeThongKe(
+                s->getTenSach(),
+                s->getTacGia(),
+                s->getNamXuatBan(),
+                s->getNhaXuatBan(),
+                s->getTongDiem(),
+                s->getSoDanhGia()
+            );
+            newNode->next = headTK;
+            headTK = newNode;
+        }
+    }
+
+    if (headTK == nullptr) {
+        cout << "Chua co sach nao duoc danh gia.\n";
+        return;
+    }
+
+    //Sắp xếp giảm dần theo điểm trung bình
+    for (NodeThongKe* i = headTK; i != nullptr; i = i->next) {
+        for (NodeThongKe* j = i->next; j != nullptr; j = j->next) {
+            if (i->diemTB() < j->diemTB()) {
+                swap(i->tenSach, j->tenSach);
+                swap(i->tacGia, j->tacGia);
+                swap(i->namXB, j->namXB);
+                swap(i->nhaXB, j->nhaXB);
+                swap(i->tongDiem, j->tongDiem);
+                swap(i->soDanhGia, j->soDanhGia);
+            }
+        }
+    }
+
+    cout << "\n=====TOP 10 SACH DUOC DANH GIA CAO NHAT =====\n";
+    cout << left << setw(5) << "STT"
+         << setw(30) << "Ten sach"
+         << setw(20) << "Tac gia"
+         << setw(8)  << "NamXB"
+         << setw(20) << "NhaXB"
+         << setw(10) << "DiemTB" << endl;
+    cout << string(95, '-') << endl;
+
+    int stt = 1;
+    for (NodeThongKe* p = headTK; p != nullptr && stt <= 10; p = p->next) {
+        cout << setw(5) << stt++
+             << setw(30) << p->tenSach
+             << setw(20) << p->tacGia
+             << setw(8)  << p->namXB
+             << setw(20) << p->nhaXB
+             << setw(10) << fixed << setprecision(1) << p->diemTB()
+             << endl;
+    }
+    cout << string(95, '-') << endl;
+
+    // Giải phóng bộ nhớ tạm 
+    while (headTK != nullptr) {
+        NodeThongKe* temp = headTK;
+        headTK = headTK->next;
+        delete temp;
+    }
+}
 
 
 

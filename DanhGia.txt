@@ -1,0 +1,15 @@
+
+GT00000001|Co so du lieu|Dang Thien Binh|2006|Dai hoc Bach Khoa - Dai hoc Da Nang|R0001|hien2006|Rat hay|10
+GT00000002|Toan cao cap|Tran Van Su|2006|Dai hoc Da Nang|R0001|hien2006|Rat hay|10
+GT00000002|Toan cao cap|Tran Van Su|2006|Dai hoc Da Nang|R0002|an123|Hay|8
+TT00000003|De men phieu luu ki|To Hoai|1941|NXB Kim Dong|R0001|hien2006|Hay|8
+GT00000001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0001|hien2006|Hay|8
+GT00000001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0002|an123|Rat hay|10
+GT00000001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0001|hien2006|Rat hay|10
+TN00000008|Tat den|Ngo Tat To|1950|NXB Viet Nam|R0002|an123|Hay|8
+TT00000003|De men phieu luu ki|To Hoai|1941|NXB Kim Dong|R0003|nhi123|Binh thuong|5
+TN00000008|Tat den|Ngo Tat To|1950|NXB Viet Nam|R0003|nhi123|Khong hay|4
+GT00000001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0001|hien2006|Rat hay|10
+TN00000008|Tat den|Ngo Tat To|1950|NXB Viet Nam|R0001|hien2006|Hay|8
+GT00000005|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0002|an123|Binh thuong|5
+TN00000008|Tat den|Ngo Tat To|1950|NXB Viet Nam|R0002|an123|Rat hay|10

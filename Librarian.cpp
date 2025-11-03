@@ -18,10 +18,6 @@ void Librarian::HienThiThongTin() const {
     USER::HienThiThongTin();
 }
 
-void Librarian::ThemSach(LibrarySystem &L) {
-
-}
-
 void Librarian::XoaSach(LibrarySystem &L) {
     string maSach;
     cout << "Nhap ma sach can xoa: ";

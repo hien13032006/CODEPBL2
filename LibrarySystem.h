@@ -29,14 +29,15 @@ class LibrarySystem {
 
         void DanhGiaSach(Reader* docGia, Sach* sach);
         double TinhDiemTrungBinhTuFile(const string& tenSach,const string& tacGia,int namXB,const string& nhaXB);
-        void HienThiDanhSachSach() const;
+        void HienThiDanhSachSach() ;
 
         bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
         void DangKyDocGia();
         bool DangNhapDocGia(USER* &currentUser);
-        bool DangNhapThuThu(const string &username, const string &password, USER* &currentUser);
+        bool DangNhapThuThu(const string &usernameInput, const string &passwordInput, USER* &currentUser);
         bool DangXuat(USER* &currentUser);
         void HienThiTatCaDocGia() const;
+        void XepHangSach();
 
 };
         
