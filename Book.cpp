@@ -13,7 +13,7 @@ string Sach::toCSV() const {
     return oss.str();
 }
 
-#include <iomanip> // để dùng setw, left, right
+#include <iomanip>
 
 void Sach::hienThiThongTin() const {
     cout << left << setw(15) << maSach

@@ -22,6 +22,8 @@ class USER {
         string getMaID() const;
         string getHoTen() const;
         string getUsername() const;
+        string getSDT() const;
+        string getEmail() const;
         void setPassword(string newPassword);
 };
 #endif

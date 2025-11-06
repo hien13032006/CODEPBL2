@@ -6,36 +6,14 @@
 #include "Librarian.h"
 #include "Reader.h"
 
-struct TreeNode {
-    Sach* data;
-    TreeNode* left;
-    TreeNode* right;
-
-    TreeNode(Sach* s) : data(s), left(nullptr), right(nullptr) {}
-};
-
 class LibrarySystem {
     private:
         NodeBook *HeadDsSach; //con tro den dau danh sach sach
         NodeReader *HeadDsDocGia; //con tro den dau danh sach doc gia
         NodeLibrarian *HeadDsTThu; //con tro den dau danh sach thu thu
-       
-        TreeNode *rootMaSach;
-        TreeNode *rootTenSach;
-        TreeNode *rootTacGia;
-        TreeNode *rootTheLoai;
-        TreeNode *rootNamXB;
-
-        TreeNode* insertByKey(TreeNode* root, Sach* s, const string& key);
-        TreeNode* insertByIntKey(TreeNode* root, Sach* s, int key);
-
-        void inOrderSearchKey(TreeNode* root, const string& key, int tieuChi, bool &found) const;
-        void inOrderSearchInt(TreeNode* root, int key, bool &found) const;
-
     public:
         LibrarySystem();
         ~LibrarySystem();
-        void XayDungTatCaCay();
 
         void DocFileSach(const string& fileName);//them sach tu file
         void GhiFileSach(const string& fileName) const;//luu thong tin sach vua them vao file sau khi cap maSach

@@ -68,6 +68,13 @@ string USER::getMaID() const {
 string USER::getUsername() const {
     return username;
 }
+string USER::getSDT() const {
+    return SDT;
+}
+
+string USER::getEmail() const {
+    return Email;
+}
 
 void USER::setPassword(string newPassword) {
     password = newPassword;

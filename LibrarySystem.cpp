@@ -6,73 +6,6 @@
 #include <sstream>
 using namespace std;
 
-TreeNode* LibrarySystem::insertByKey(TreeNode* root, Sach* s, const string& key) {
-    if (root == nullptr) return new TreeNode(s);
-    if (key < root->data->getTenSach())
-        root->left = insertByKey(root->left, s, key);
-    else
-        root->right = insertByKey(root->right, s, key);
-    return root;
-}
-
-TreeNode* LibrarySystem::insertByIntKey(TreeNode* root, Sach* s, int key) {
-    if (root == nullptr) return new TreeNode(s);
-    if (key < root->data->getNamXuatBan())
-        root->left = insertByIntKey(root->left, s, key);
-    else
-        root->right = insertByIntKey(root->right, s, key);
-    return root;
-}
-
-void LibrarySystem::XayDungTatCaCay() {
-    rootMaSach = rootTenSach = rootTacGia = rootTheLoai = rootNamXB = nullptr;
-
-    NodeBook* current = HeadDsSach;
-    while (current != nullptr) {
-        Sach* s = current->data;
-        rootMaSach   = insertByKey(rootMaSach, s, s->getMaSach());
-        rootTenSach  = insertByKey(rootTenSach, s, s->getTenSach());
-        rootTacGia   = insertByKey(rootTacGia, s, s->getTacGia());
-        rootTheLoai  = insertByKey(rootTheLoai, s, s->getTheLoai());
-        rootNamXB    = insertByIntKey(rootNamXB, s, s->getNamXuatBan());
-        current = current->next;
-    }
-}
-
-//Duyệt toàn bộ cây
-void LibrarySystem::inOrderSearchKey(TreeNode* root, const string& key, int tieuChi, bool &found) const {
-    if (!root) return;
-    inOrderSearchKey(root->left, key, tieuChi, found);
-
-    string value;
-    switch (tieuChi) {
-        case 1: value = root->data->getMaSach(); break;
-        case 2: value = root->data->getTenSach(); break;
-        case 3: value = root->data->getTacGia(); break;
-        case 5: value = root->data->getTheLoai(); break;
-    }
-
-    if (value == key) {
-        root->data->hienThiThongTin();
-        found = true;
-    }
-
-    inOrderSearchKey(root->right, key, tieuChi, found);
-}
-
-void LibrarySystem::inOrderSearchInt(TreeNode* root, int key, bool &found) const {
-    if (!root) return;
-    inOrderSearchInt(root->left, key, found);
-
-    if (root->data->getNamXuatBan() == key) {
-        root->data->hienThiThongTin();
-        found = true;
-    }
-
-    inOrderSearchInt(root->right, key, found);
-}
-
-
 LibrarySystem::LibrarySystem() {
     HeadDsSach = nullptr;
     HeadDsDocGia = nullptr;
@@ -145,21 +78,10 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         sachMoi->setMaSach(ma);
         sachMoi->setTinhTrang(tinhTrang ? "Dang con" : "Da muon");
         sachMoi->setDanhGia(tong, soDG);
-
-        // Thêm vào cuối danh sách liên kết
+        // Thêm vào danh sách liên kết
         NodeBook* newNode = new NodeBook(sachMoi);
-        newNode->next = nullptr;
-
-        if (HeadDsSach == nullptr) {
-            HeadDsSach = newNode; 
-        } else {
-            NodeBook* temp = HeadDsSach;
-            while (temp->next != nullptr) {
-                temp = temp->next;
-            }
-            temp->next = newNode; // thêm vào cuối danh sách
-        }
-
+        newNode->next = HeadDsSach;
+        HeadDsSach = newNode;
     }
 
     in.close();
@@ -219,19 +141,10 @@ void LibrarySystem::DocFileDocGia() {
         // Tạo đối tượng Reader bằng new (trên heap)
         Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass);
 
-
-        NodeReader* newNode = new NodeReader(newReader);
-        newNode->next = nullptr;
-
-        if (HeadDsDocGia == nullptr) {
-            HeadDsDocGia = newNode; 
-        } else {
-            NodeReader* temp = HeadDsDocGia;
-            while (temp->next != nullptr) {
-                temp = temp->next;
-            }
-            temp->next = newNode; // thêm vào cuối danh sách
-        }
+        // Tạo node mới trỏ đến Reader này
+        NodeReader* newNode = new NodeReader(*newReader);
+        newNode->next = HeadDsDocGia;
+        HeadDsDocGia = newNode;
 
         try {
             int idNum = stoi(ma.substr(1));
@@ -375,60 +288,97 @@ void LibrarySystem::CapNhatThongTinSach() {
     cout << "\nDa cap nhat va luu thay doi vao file he thong.\n";
 }
 
-void LibrarySystem::TimSach() {
-    if (!rootTenSach) XayDungTatCaCay();
 
-    cout << "\n========= TIM KIEM SACH (BST) =========\n";
+void LibrarySystem::TimSach() {
+    cout << "Chon tieu chi tim kiem:\n";
     cout << "1. Ma sach\n";
     cout << "2. Ten sach\n";
-    cout << "3. Tac gia\n";
+    cout << "3. Tac gia\n"; 
     cout << "4. Nam xuat ban\n";
     cout << "5. The loai\n";
-    cout << "Chon tieu chi: ";
-
-    int chon;
-    cin >> chon;
+    cout << "Nhap lua chon cua ban: ";
+    int choice;
+    cin >> choice;
     cin.ignore();
-
+    NodeBook *current = HeadDsSach;
     bool found = false;
-    cout << "\n--- KET QUA TIM KIEM ---\n";
-
-    switch (chon) {
+    
+    switch(choice) {
         case 1: {
-            string ma; cout << "Nhap ma sach: "; getline(cin, ma);
-            inOrderSearchKey(rootMaSach, ma, 1, found);
+            string maSach;
+            cout << "Nhap ma sach can tim: ";
+            getline(cin, maSach);
+            while (current != nullptr) {
+                if (current->data->getMaSach() == maSach) {
+                    current->data->hienThiThongTin();
+                    found = true;
+                }
+                current = current->next;
+            }
             break;
         }
         case 2: {
-            string ten; cout << "Nhap ten sach: "; getline(cin, ten);
-            inOrderSearchKey(rootTenSach, ten, 2, found);
+            string tenSach;
+            cout << "Nhap ten sach can tim: ";
+            getline(cin, tenSach);
+            while (current != nullptr) {
+                if (current->data->getTenSach() == tenSach) {
+                    current->data->hienThiThongTin();
+                    found = true;
+                }
+                current = current->next;
+            }
             break;
         }
         case 3: {
-            string tg; cout << "Nhap ten tac gia: "; getline(cin, tg);
-            inOrderSearchKey(rootTacGia, tg, 3, found);
+            string tacGia;
+            cout << "Nhap tac gia can tim: ";
+            getline(cin, tacGia);
+            while (current != nullptr) {
+                if (current->data->getTacGia() == tacGia) {
+                    current->data->hienThiThongTin();
+                    found = true;
+                }
+                current = current->next;
+            }
             break;
         }
         case 4: {
-            int nam; cout << "Nhap nam xuat ban: "; cin >> nam;
-            inOrderSearchInt(rootNamXB, nam, found);
+            int namXB;
+            cout << "Nhap nam xuat ban can tim: ";
+            cin >> namXB;
+            cin.ignore();
+            while (current != nullptr) {
+                if (current->data->getNamXuatBan() == namXB) {
+                    current->data->hienThiThongTin();
+                    found = true;
+                }
+                current = current->next;
+            }
             break;
         }
         case 5: {
-            string tl; cout << "Nhap the loai: "; getline(cin, tl);
-            inOrderSearchKey(rootTheLoai, tl, 5, found);
+            string theLoai;
+            cout << "Nhap the loai can tim: ";
+            getline(cin, theLoai);
+            while (current != nullptr) {
+                if (current->data->getTheLoai() == theLoai) {
+                    current->data->hienThiThongTin();
+                    found = true;
+                }
+                current = current->next;
+            }
             break;
         }
         default:
-            cout << "Lua chon khong hop le!\n";
+            cout << "Lua chon khong hop le." << endl;
             return;
     }
-
-    if (!found)
-        cout << "Khong tim thay ket qua phu hop.\n";
-    else
-        cout << "-----------------------------------------\n";
+    if (!found) {
+        cout << "Khong tim thay sach." << endl;
+    }
 }
+
 
 void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
     NodeBook* current = HeadDsSach;
@@ -596,6 +546,7 @@ double LibrarySystem::TinhDiemTrungBinhTuFile(const string& tenSach,
 
 
 void LibrarySystem::HienThiDanhSachSach()  {
+    DocFileHeThong("DanhSachSach.txt");
     NodeBook *current = HeadDsSach;
     if (current == nullptr) {
         cout << "Khong co sach trong thu vien." << endl;
@@ -654,7 +605,7 @@ bool kiemTraMatKhau(const string& pass) {
 bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
     NodeReader* current = HeadDsDocGia;
     while (current != nullptr) {
-        if (current->data->getUsername() == tenDangNhap)
+        if (current->data.getUsername() == tenDangNhap)
             return true;
         current = current->next;
     }
@@ -662,6 +613,7 @@ bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
 }
 
 void LibrarySystem::DangKyDocGia() {
+     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string hoTen, sdt, email, user, pass;
     cout << "Nhap ho ten: "; getline(cin, hoTen);
     while (true) {
@@ -692,17 +644,16 @@ void LibrarySystem::DangKyDocGia() {
         cout << "Password khong hop le. Vui long nhap lai.\n";
     }
 
-    Reader* dg = new Reader();
-    dg->SignUp(hoTen, sdt, email, user, pass);
+    Reader dg;
+    dg.SignUp(hoTen, sdt, email, user, pass);
 
     NodeReader* newNode = new NodeReader(dg);
-
     newNode->next = HeadDsDocGia;
     HeadDsDocGia = newNode;
     
     ofstream out("DocGia.txt", ios::app); // mở file ở chế độ ghi thêm
     if (out.is_open()) {
-        out << dg->toCSV() << endl;
+        out << dg.toCSV() << endl;
         out.close();
         cout << "Da luu vao file.\n";
     } else {
@@ -727,8 +678,8 @@ bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {
         bool found = false;
 
         while (current != nullptr) {
-            if (current->data->Login(username, password)) {
-                currentUser = current->data;
+            if (current->data.Login(username, password)) {
+                currentUser = &current->data;
                 cout << "Doc gia \"" << username << "\" da dang nhap thanh cong.\n";
                 return true;
             }
@@ -810,7 +761,7 @@ void LibrarySystem::HienThiTatCaDocGia() const {
                  << "\n";  
 
     while (current != nullptr) {
-        current->data->HienThiThongTin();
+        current->data.HienThiThongTin();
         current = current->next;
     }
 }
