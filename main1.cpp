@@ -45,10 +45,7 @@ int main() {
         switch (luaChonDG) {
             case 1:
                 system.DangKyDocGia();
-                cout << "\nDang ky thanh cong!";
-                cin.get(); // đợi người dùng nhấn Enter
                 break;
-
             case 2:
                 if (system.DangNhapDocGia(currentUser)) {
                     MenuDocGia(system, currentUser);

@@ -220,7 +220,7 @@ void LibrarySystem::DocFileDocGia() {
         Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass);
 
 
-        NodeReader* newNode = new NodeReader(*newReader);
+        NodeReader* newNode = new NodeReader(newReader);
         newNode->next = nullptr;
 
         if (HeadDsDocGia == nullptr) {
@@ -654,7 +654,7 @@ bool kiemTraMatKhau(const string& pass) {
 bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
     NodeReader* current = HeadDsDocGia;
     while (current != nullptr) {
-        if (current->data.getUsername() == tenDangNhap)
+        if (current->data->getUsername() == tenDangNhap)
             return true;
         current = current->next;
     }
@@ -662,7 +662,6 @@ bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
 }
 
 void LibrarySystem::DangKyDocGia() {
-     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     string hoTen, sdt, email, user, pass;
     cout << "Nhap ho ten: "; getline(cin, hoTen);
     while (true) {
@@ -693,16 +692,17 @@ void LibrarySystem::DangKyDocGia() {
         cout << "Password khong hop le. Vui long nhap lai.\n";
     }
 
-    Reader dg;
-    dg.SignUp(hoTen, sdt, email, user, pass);
+    Reader* dg = new Reader();
+    dg->SignUp(hoTen, sdt, email, user, pass);
 
     NodeReader* newNode = new NodeReader(dg);
+
     newNode->next = HeadDsDocGia;
     HeadDsDocGia = newNode;
     
     ofstream out("DocGia.txt", ios::app); // mở file ở chế độ ghi thêm
     if (out.is_open()) {
-        out << dg.toCSV() << endl;
+        out << dg->toCSV() << endl;
         out.close();
         cout << "Da luu vao file.\n";
     } else {
@@ -727,8 +727,8 @@ bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {
         bool found = false;
 
         while (current != nullptr) {
-            if (current->data.Login(username, password)) {
-                currentUser = &current->data;
+            if (current->data->Login(username, password)) {
+                currentUser = current->data;
                 cout << "Doc gia \"" << username << "\" da dang nhap thanh cong.\n";
                 return true;
             }
@@ -810,7 +810,7 @@ void LibrarySystem::HienThiTatCaDocGia() const {
                  << "\n";  
 
     while (current != nullptr) {
-        current->data.HienThiThongTin();
+        current->data->HienThiThongTin();
         current = current->next;
     }
 }

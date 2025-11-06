@@ -17,14 +17,15 @@ struct NodeBook {
 };
 
 struct NodeReader {
-    Reader data;
-    NodeReader *next;
+    Reader* data;
+    NodeReader* next;
 
-    NodeReader(const Reader& r) {
+    NodeReader(Reader* r) {
         data = r;
         next = nullptr;
     }
 };
+
 
 struct NodeLibrarian {
     Librarian data;
