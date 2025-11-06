@@ -16,6 +16,7 @@ int main() {
 
     system.DocFileHeThong("DanhSachSach.txt");
     system.DocFileDocGia();
+    system.XayDungTatCaCay();
 
     int luaChonChinh;
     do {
