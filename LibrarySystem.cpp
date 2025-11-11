@@ -4,7 +4,28 @@
 #include <limits>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
 using namespace std;
+
+
+namespace {
+    string normalizeString(const string& s) {
+        // collapse whitespace and trim
+        istringstream iss(s);
+        string word;
+        string out;
+        bool first = true;
+        while (iss >> word) {
+            if (!first) out += ' ';
+            out += word;
+            first = false;
+        }
+        // to lower
+        transform(out.begin(), out.end(), out.begin(), [](unsigned char c){ return std::tolower(c); });
+        return out;
+    }
+}
 
 TreeNode* LibrarySystem::insertByKey(TreeNode* root, Sach* s, const string& key) {
     if (root == nullptr) return new TreeNode(s);
@@ -50,12 +71,18 @@ void LibrarySystem::inOrderSearchKey(TreeNode* root, const string& key, int tieu
         case 2: value = root->data->getTenSach(); break;
         case 3: value = root->data->getTacGia(); break;
         case 5: value = root->data->getTheLoai(); break;
+        default: value = ""; break;
     }
 
-    if (value == key) {
+    string normValue = normalizeString(value);
+    string normKey = normalizeString(key);
+
+    // Nếu key rỗng thì bỏ qua
+    if (!normKey.empty() && normValue.find(normKey) != string::npos) {
         root->data->hienThiThongTin();
         found = true;
     }
+
 
     inOrderSearchKey(root->right, key, tieuChi, found);
 }
@@ -391,8 +418,6 @@ void LibrarySystem::TimSach() {
     cin.ignore();
 
     bool found = false;
-    cout << "\n--- KET QUA TIM KIEM ---\n";
-
     switch (chon) {
         case 1: {
             string ma; cout << "Nhap ma sach: "; getline(cin, ma);
