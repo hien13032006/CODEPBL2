@@ -1,60 +1,84 @@
-#pragma once
+#ifndef POPUP_H
+#define POPUP_H
+
 #include <SFML/Graphics.hpp>
 #include <string>
 #include "Theme.h"
 
-
 class Popup {
-sf::Font font;
-sf::RectangleShape overlay;
-sf::RectangleShape box;
-sf::Text text;
-
-
-bool visible = false;
-sf::Clock timer;
-float anim = 0.f; // 0..1
-
+private:
+    sf::Font &font;
+    sf::Text text;
+    sf::RectangleShape box;
+    bool visible;
+    float timer; // thời gian đếm auto close
 
 public:
-Popup(){
-font.loadFromFile("assets/DejaVuSans.ttf");
-overlay.setFillColor(sf::Color(0,0,0,120));
-box.setSize({520.f, 120.f});
-box.setFillColor(Theme::Panel);
-box.setOutlineColor(Theme::PanelOutline);
-box.setOutlineThickness(3.f);
-text.setFont(font);
-text.setCharacterSize(22);
-text.setFillColor(Theme::Text);
-}
+    
+    Popup(sf::Font &f)
+        : font(f), visible(false), timer(0)
+    {
+        text.setFont(font);
+        text.setCharacterSize(20);
+        text.setFillColor(sf::Color::White);
 
+        box.setSize({360,130});
+        box.setFillColor(sf::Color(0,0,0,180));
+        box.setOutlineThickness(2);
+        box.setOutlineColor(sf::Color::White);
+    }
 
-void show(const std::string& s){ text.setString(s); visible = true; anim = 0.f; timer.restart(); }
-void hide(){ visible = false; }
-bool isVisible() const { return visible; }
+    void show(const std::string &msg, sf::Color color = Theme::OK, float duration = 2.5f){
+        text.setString(msg);
+        text.setFillColor(sf::Color::White);
 
+        box.setFillColor(color);
 
-void update(const sf::RenderWindow& w){
-if(!visible) return;
-float t = timer.getElapsedTime().asSeconds();
-anim = (t < 0.2f) ? (t/0.2f) : 1.f;
-overlay.setSize( sf::Vector2f((float)w.getSize().x, (float)w.getSize().y) );
+        // Center
+        float x = 320 - box.getSize().x/2;
+        float y = 260 - box.getSize().y/2;
+        box.setPosition(x,y);
 
+        text.setPosition(
+            x + (box.getSize().x - text.getLocalBounds().width)/2,
+            y + (box.getSize().y - text.getLocalBounds().height)/2 - 5
+        );
 
-sf::Vector2f center( w.getSize().x*0.5f, w.getSize().y*0.5f );
-auto tb = text.getLocalBounds();
-box.setOrigin(box.getSize()*0.5f);
-box.setPosition(center);
-text.setPosition(center.x - tb.width*0.5f - tb.left, center.y - tb.height*0.5f - tb.top);
-}
+        visible = true;
+        timer = duration;
+    }
 
+    bool isOpen() const {
+        return visible;
+    }
 
-void draw(sf::RenderTarget& t){
-if(!visible) return;
-t.draw(overlay);
-sf::RenderStates st; sf::Transform tr; float s = 0.85f + 0.15f*anim;
-tr.translate(box.getPosition()); tr.scale(s,s); tr.translate(-box.getPosition()); st.transform = tr;
-t.draw(box, st); t.draw(text, st);
-}
+    void close(){
+        visible = false;
+    }
+
+    void update(float dt){
+        if(!visible) return;
+        timer -= dt;
+        if(timer <= 0){
+            visible = false;
+        }
+    }
+
+    void handleEvent(sf::Event &e){
+        if(!visible) return;
+        if(e.type == sf::Event::MouseButtonPressed){
+            close();
+        }
+        if(e.type == sf::Event::KeyPressed){
+            close();
+        }
+    }
+
+    void draw(sf::RenderWindow &w){
+        if(!visible) return;
+        w.draw(box);
+        w.draw(text);
+    }
 };
+
+#endif

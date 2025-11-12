@@ -25,5 +25,6 @@ class USER {
         string getSDT() const;
         string getEmail() const;
         void setPassword(string newPassword);
+        string getPassword() const;
 };
 #endif

@@ -24,9 +24,3 @@ void Librarian::XoaSach(LibrarySystem &L) {
     getline(cin,maSach);
     L.XoaSach(maSach);
 }
-
-
-
-
-
-

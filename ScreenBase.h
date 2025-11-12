@@ -1,10 +1,13 @@
-#pragma once
-#include <SFML/Graphics.hpp>
+#ifndef SCREENBASE_H
+#define SCREENBASE_H
 
+#include <SFML/Graphics.hpp>
+#include "AppState.h"
 class ScreenBase {
 public:
-    virtual void init() {}
-    virtual void handle(const sf::Event& evt) {}
-    virtual void update(const sf::RenderWindow& win) {}
-    virtual void draw(sf::RenderTarget& t) {}
+    virtual void handleEvent(sf::Event&, AppState&) = 0;
+    virtual void update() {}
+    virtual void draw(sf::RenderWindow&) = 0;
+    virtual ~ScreenBase(){}
 };
+#endif

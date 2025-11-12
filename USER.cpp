@@ -80,3 +80,6 @@ void USER::setPassword(string newPassword) {
     password = newPassword;
     cout << "Mat khau da duoc cap nhat." << endl;
 }
+string USER::getPassword() const {
+    return password;
+}

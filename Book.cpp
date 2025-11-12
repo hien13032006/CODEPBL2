@@ -27,10 +27,6 @@ void Sach::hienThiThongTin() const {
          << "\n";
     
 }
-
-
-
-
 //Tạo đúng lớp con dựa trên thể loại
 Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb) {
     Sach* s = nullptr;
