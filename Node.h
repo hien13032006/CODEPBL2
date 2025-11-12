@@ -1,5 +1,4 @@
-#ifndef Node_h
-#define Node_h
+#pragma once
 #include "Reader.h"
 #include "Librarian.h"
 
@@ -36,5 +35,3 @@ struct NodeLibrarian {
         next = nullptr;
     }
 };
-
-#endif

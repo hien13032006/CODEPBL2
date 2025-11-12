@@ -1,6 +1,5 @@
 #ifndef SCREEN_LIB_SHOW_H
 #define SCREEN_LIB_SHOW_H
-
 #include "ScreenBase.h"
 #include "UI_Button.h"
 #include "LibrarySystem.h"

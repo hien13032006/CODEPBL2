@@ -1,6 +1,7 @@
 #ifndef UI_BUTTON_H
 #define UI_BUTTON_H
-
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include <string>
 

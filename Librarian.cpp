@@ -1,7 +1,7 @@
+#include <iostream>
 #include "Librarian.h"
 #include "LibrarySystem.h"
 #include "Book.h"
-#include <iostream>
 using namespace std;
 
 void Librarian::SetThongTin(string maID,string hoTen, string SDT, string Email, string username, string password) {
@@ -13,10 +13,6 @@ void Librarian::SetThongTin(string maID,string hoTen, string SDT, string Email, 
     this->password = password;
 }
 
-void Librarian::HienThiThongTin() const {
-    cout << "\n--- THONG TIN THU THU ---\n";
-    USER::HienThiThongTin();
-}
 
 void Librarian::XoaSach(LibrarySystem &L) {
     string maSach;

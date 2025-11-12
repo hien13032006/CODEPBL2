@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <functional>
@@ -131,3 +133,5 @@ private:
         onChoose(p->data);
     }
 };
+
+#endif

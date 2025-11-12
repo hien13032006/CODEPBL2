@@ -1,6 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <string>
+#include <SFML/Graphics.hpp>
 #include <functional>
 #include "Node.h"
 #include "Book.h"
@@ -194,3 +196,5 @@ private:
         popup.show("Da luu!");
     }
 };
+
+#endif

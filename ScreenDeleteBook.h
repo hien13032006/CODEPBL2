@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <functional>
@@ -203,3 +205,5 @@ private:
         selectedIndex = -1;
     }
 };
+
+#endif

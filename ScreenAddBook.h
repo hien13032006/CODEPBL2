@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <functional>
@@ -183,3 +185,5 @@ private:
         popup.show("Da them thanh cong!");
     }
 };
+
+#endif

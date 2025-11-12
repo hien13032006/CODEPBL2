@@ -26,7 +26,7 @@ NodeReader* loadReaders(const std::string& filename)
 
         Reader r(id, name, phone, mail, user, pass);
 
-        NodeReader* n = new NodeReader(r);
+        NodeReader* n = new NodeReader(&r);
         n->next = head;
         head = n;
     }
@@ -43,11 +43,11 @@ void saveReaders(const std::string& filename,
 
     for(NodeReader* p = head; p != nullptr; p = p->next)
     {
-        out << p->data.getMaID()   << "|"
-            << p->data.getHoTen()  << "|"
-            << p->data.getSDT()    << "|"
-            << p->data.getEmail()  << "|"
-            << p->data.getUsername()<< "|"
+        out << p->data->getMaID()   << "|"
+            << p->data->getHoTen()  << "|"
+            << p->data->getSDT()    << "|"
+            << p->data->getEmail()  << "|"
+            << p->data->getUsername()<< "|"
             << "xxxxxxxx"          << "\n";   // pass
     }
     out.close();

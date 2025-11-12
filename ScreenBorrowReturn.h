@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <fstream>
@@ -169,3 +171,5 @@ private:
         out.close();
     }
 };
+
+#endif

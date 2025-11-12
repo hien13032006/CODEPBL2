@@ -12,7 +12,7 @@ private:
     LibrarySystem *L;
     Reader **current;
 
-    Textbox boxID;
+    TextBox boxID;
     Button btnOK;
     Button btnBack;
 

@@ -1,5 +1,6 @@
 #ifndef THEME_H
 #define THEME_H
+
 #include <SFML/Graphics.hpp>
 
 namespace Theme {

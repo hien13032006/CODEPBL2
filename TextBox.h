@@ -11,9 +11,21 @@ private:
     bool focused = false;
     bool password = false;
     std::string value;
+    std::string placeholder;
 
 public:
     TextBox() {}
+
+    TextBox(sf::Font &font, int width, int height, bool center = false) {
+        box.setSize(sf::Vector2f(width, height));
+        text.setFont(font);
+        text.setCharacterSize(20);
+        if (center) {
+            sf::FloatRect bounds = text.getLocalBounds();
+            text.setOrigin(bounds.width / 2, bounds.height / 2);
+            text.setPosition(width / 2, height / 2);
+        }
+}
 
     TextBox(sf::Font &font, sf::Vector2f pos, sf::Vector2f size) {
         box.setPosition(pos);
@@ -36,6 +48,11 @@ public:
 
     std::string get() { return value; }
 
+    std::string getText() const {
+        return text.getString();
+
+    }
+
     void handleEvent(sf::Event &e) {
         if (e.type == sf::Event::MouseButtonPressed) {
             auto m = sf::Vector2f(e.mouseButton.x, e.mouseButton.y);
@@ -56,6 +73,11 @@ public:
         w.draw(box);
         w.draw(text);
     }
+
+    void setPlaceholder(const std::string& text) {
+        placeholder = text;
+    }
+
 };
 
 #endif

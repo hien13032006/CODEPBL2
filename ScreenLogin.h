@@ -1,7 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <functional>
+
 #include <string>
+#include <functional>
+#include <SFML/Graphics.hpp>
 #include "Button.h"
 
 class ScreenLogin {

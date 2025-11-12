@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <cstddef>
@@ -106,3 +107,4 @@ private:
     float         m_radius;
     std::size_t   m_cornerPointCount;
 };
+

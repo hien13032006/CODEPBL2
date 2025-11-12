@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 
 class Background {
@@ -35,3 +37,4 @@ public:
         if (loaded) t.draw(spr);
     }
 };
+#endif

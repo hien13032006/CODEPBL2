@@ -1,9 +1,7 @@
-#ifndef BOOK_H
-#define BOOK_H
-#include <string>
+#pragma once
+#include <string>  
 #include <iostream>
-#include <sstream>
-#include "Node.h"
+#include "Node.h"  
 using namespace std;
 
 class Sach {
@@ -14,7 +12,7 @@ protected:
     string theLoai;
     int namXuatBan;
     string nhaXuatBan;
-    string tinhTrang; // "Dang con" hoặc "Da muon"
+    string tinhTrang; // Dang con/da muon
     double tongDiemDanhGia = 0;
     int soLuotDanhGia = 0;
 
@@ -25,10 +23,10 @@ public:
 
     virtual ~Sach() = default;
 
-    // Các phương thức ảo
-    virtual string prefix() const = 0;     // Mã loại, ví dụ: "GT", "TT"
-    virtual Sach* clone() const = 0;       // Tạo bản sao (dùng khi thêm vào danh sách)
-    virtual string toCSV() const;          // Xuất ra file
+    // Cac phuong thuc ao
+    virtual string prefix() const = 0;     // Ma loai: GT, TT
+    virtual Sach* clone() const = 0;       // Tao ban dao 
+    virtual string toCSV() const;          
     virtual void hienThiThongTin() const;
 
     void muonSach() { tinhTrang = "Da muon"; }
@@ -134,4 +132,3 @@ class SachKiNang : public Sach {
         Sach* clone() const override { return new SachKiNang(*this); }
 };
 
-#endif

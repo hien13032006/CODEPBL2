@@ -1,9 +1,9 @@
 #ifndef SCREEN_HISTORY_H
 #define SCREEN_HISTORY_H
 
-#include <SFML/Graphics.hpp>
 #include <fstream>
 #include <sstream>
+#include <SFML/Graphics.hpp>
 #include "ScreenBase.h"
 #include "AppState.h"
 #include "LibrarySystem.h"

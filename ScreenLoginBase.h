@@ -1,7 +1,8 @@
 #pragma once
+
+#include <string>
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include <string>
 #include "Button.h"
 #include "Popup.h"
 #include "Theme.h"

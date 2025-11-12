@@ -1,4 +1,6 @@
 #pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include "Node.h"
 #include "Book.h"
@@ -65,3 +67,5 @@ public:
         btnBack.draw(t);
     }
 };
+
+#endif

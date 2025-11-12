@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <SFML/Graphics.hpp>
 #include "AppState.h"
 #include "ScreenBase.h"
@@ -33,7 +34,7 @@ int main(){
     window.setFramerateLimit(60);
 
     sf::Font font;
-    font.loadFromFile("assets/DejaVuSans.ttf");
+    font.loadFromFile("DejaVuSans.ttf");
 
     Reader *currentReader = nullptr;
 
@@ -42,7 +43,7 @@ int main(){
     ScreenRole          scrRole(font);
     ScreenReaderLogin   scrRLogin(font,&L,&currentReader);
     ScreenReaderRegister scrRReg(font,&L);
-    ScreenReaderMenu    scrRMenu(font);
+    ScreenReaderMenu    scrRMenu(font,&window);
 
     ScreenSearchBook    scrSearch(font,&L);
     ScreenViewBook      scrViewBook(font,&L);

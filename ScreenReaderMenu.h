@@ -2,13 +2,17 @@
 #define SCREEN_READER_MENU_H
 
 #include "Button.h"
+#include "ScreenBase.h"
+#include "AppState.h"
+#include <SFML/Graphics.hpp>
 
-class ScreenReaderMenu {
-public:
+class ScreenReaderMenu : public ScreenBase {
+private:
     Button btn1, btn2, btn3, btn4, btn5, btn6, btnExit;
+    sf::RenderWindow* window; // lưu pointer window để dùng trong checkClick
 
-    ScreenReaderMenu(sf::Font &f)
-    {
+public:
+    ScreenReaderMenu(sf::Font &f, sf::RenderWindow *w) : window(w) {
         float x = 260, y = 100, dy = 60;
         btn1 = Button("Xem sách", f, {x,y},{250,50});
         btn2 = Button("Tìm sách", f, {x,y+dy},{250,50});
@@ -17,6 +21,17 @@ public:
         btn5 = Button("Đánh giá", f,{x,y+dy*4},{250,50});
         btn6 = Button("Top sách", f,{x,y+dy*5},{250,50});
         btnExit = Button("Thoát", f,{x,y+dy*6},{250,50});
+    }
+
+    void handleEvent(sf::Event &e, AppState &state) override {
+        // gọi checkClick với event và window
+        btn1.checkClick(e, *window);
+        btn2.checkClick(e, *window);
+        btn3.checkClick(e, *window);
+        btn4.checkClick(e, *window);
+        btn5.checkClick(e, *window);
+        btn6.checkClick(e, *window);
+        btnExit.checkClick(e, *window);
     }
 
     void draw(sf::RenderWindow &w) {
