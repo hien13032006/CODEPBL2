@@ -2,82 +2,87 @@
 #define TEXTBOX_H
 
 #include <SFML/Graphics.hpp>
-#include <string>
+#include "Theme.h"
 
 class TextBox {
 private:
     sf::RectangleShape box;
     sf::Text text;
+    sf::Text placeholder;
     bool focused = false;
-    bool password = false;
+    bool passwordMode = false;
     std::string value;
-    std::string placeholder;
 
 public:
     TextBox() {}
 
-    TextBox(sf::Font &font, int width, int height, bool center = false) {
-        box.setSize(sf::Vector2f(width, height));
-        text.setFont(font);
-        text.setCharacterSize(20);
-        if (center) {
-            sf::FloatRect bounds = text.getLocalBounds();
-            text.setOrigin(bounds.width / 2, bounds.height / 2);
-            text.setPosition(width / 2, height / 2);
-        }
-}
-
-    TextBox(sf::Font &font, sf::Vector2f pos, sf::Vector2f size) {
-        box.setPosition(pos);
-        box.setSize(size);
+    TextBox(sf::Font &font, float w, float h, bool isPassword=false)
+    {
+        box.setSize({w,h});
         box.setFillColor(sf::Color::White);
-        box.setOutlineColor(sf::Color::Black);
         box.setOutlineThickness(2);
+        box.setOutlineColor(Theme::Border);
 
         text.setFont(font);
+        text.setCharacterSize(22);
         text.setFillColor(sf::Color::Black);
-        text.setCharacterSize(20);
-        text.setPosition(pos.x + 6, pos.y + 8);
+
+        placeholder.setFont(font);
+        placeholder.setCharacterSize(22);
+        placeholder.setFillColor(sf::Color(150,150,150));
+
+        passwordMode = isPassword;
     }
 
-    void setPassword(bool p) { password = p; }
-    void setPosition(float x, float y) {
-        box.setPosition({x,y});
-        text.setPosition(x+6, y+6);
+    void setPosition(float x,float y){
+        box.setPosition(x,y);
+        text.setPosition(x+10,y+7);
+        placeholder.setPosition(x+10,y+7);
     }
 
-    std::string get() { return value; }
-
-    std::string getText() const {
-        return text.getString();
-
+    void setPlaceholder(const std::string &s){
+        placeholder.setString(s);
     }
 
-    void handleEvent(sf::Event &e) {
-        if (e.type == sf::Event::MouseButtonPressed) {
-            auto m = sf::Vector2f(e.mouseButton.x, e.mouseButton.y);
-            focused = box.getGlobalBounds().contains(m);
+    void toggleShow(){
+        passwordMode = !passwordMode;
+        refreshText();
+    }
+
+    bool isShown() const { return !passwordMode; }
+
+    std::string get() const { return value; }
+
+    void refreshText(){
+        if(passwordMode){
+            text.setString(std::string(value.size(),'●'));
+        }else{
+            text.setString(value);
         }
+    }
 
-        if (e.type == sf::Event::TextEntered && focused) {
-            if (e.text.unicode == 8) {     // backspace
-                if (!value.empty()) value.pop_back();
-            } else if (e.text.unicode >= 32 && e.text.unicode < 127) {
+    void handleEvent(sf::Event &e){
+        if(e.type == sf::Event::MouseButtonPressed){
+            focused = box.getGlobalBounds()
+                        .contains(e.mouseButton.x,e.mouseButton.y);
+            box.setOutlineColor(focused?Theme::BorderFocus:Theme::Border);
+        }
+        if(focused && e.type == sf::Event::TextEntered){
+            if(e.text.unicode == 8){
+                if(!value.empty()) value.pop_back();
+            }
+            else if(e.text.unicode >= 32 && e.text.unicode <= 126){
                 value.push_back((char)e.text.unicode);
             }
-            text.setString(password ? std::string(value.size(), '*') : value);
+            refreshText();
         }
     }
 
-    void draw(sf::RenderWindow &w) {
+    void draw(sf::RenderWindow &w){
         w.draw(box);
-        w.draw(text);
+        if(value.empty()) w.draw(placeholder);
+        else w.draw(text);
     }
-
-    void setPlaceholder(const std::string& text) {
-        placeholder = text;
-    }
-
 };
 
 #endif

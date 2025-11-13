@@ -1,8 +1,16 @@
-#pragma once
-#include <string>   
+#ifndef LIBRARYSYSTEM_H
+#define LIBRARYSYSTEM_H
+
+#include <iostream>
 #include <fstream>
-#include "Book.h" 
+#include <sstream>
 using namespace std;
+
+#include "Book.h"
+#include "USER.h"
+#include "Librarian.h"
+#include "Reader.h"
+#include "Node.h"
 
 // ========== cây tìm kiếm ==========
 struct TreeNode {
@@ -40,10 +48,10 @@ public:
     NodeReader* getReaderHead() const { return HeadDsDocGia; }
 
     void XayDungTatCaCay();
-    bool deleteBook(const string& id);
-    bool updateBook(const string& id, string tenMoi, string tacGiaMoi, int namMoi, int soLuongMoi);
-    Sach* findBookByName(const string& name);
-    Sach* findBookByID(const string& id);
+bool deleteBook(const string& id);
+bool updateBook(const string& id, string tenMoi, string tacGiaMoi, int namMoi, int soLuongMoi);
+Sach* findBookByName(const string& name);
+Sach* findBookByID(const string& id);
 
     // ==============================
     void DocFileSach(const string& fileName);
@@ -94,7 +102,7 @@ public:
         node->next = HeadDsDocGia;
         HeadDsDocGia = node;
 
-        ofstream out("Reader.txt", ios::app);
+        ofstream out("assets/Reader.txt", ios::app);
         if (out.is_open()) {
             out << r->toCSV() << "\n";
             out.close();
@@ -105,7 +113,7 @@ public:
 
     // --- SAVE ALL READER ---
     void updateReaderFile() {
-        ofstream out("Reader.txt", ios::trunc);
+        ofstream out("assets/Reader.txt", ios::trunc);
         NodeReader* p = HeadDsDocGia;
         while (p) {
             out << p->data->toCSV() << "\n";
@@ -137,4 +145,7 @@ public:
     bool DangXuat(USER* &currentUser);
     void HienThiTatCaDocGia() const;
 
+
 };
+
+#endif

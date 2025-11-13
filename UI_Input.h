@@ -1,6 +1,6 @@
 #ifndef UI_INPUT_H
 #define UI_INPUT_H
-#define NOMINMAX
+
 #include <SFML/Graphics.hpp>
 #include <string>
 

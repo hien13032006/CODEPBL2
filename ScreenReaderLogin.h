@@ -1,59 +1,84 @@
 #ifndef SCREEN_READER_LOGIN_H
 #define SCREEN_READER_LOGIN_H
 
-#include <SFML/Graphics.hpp>
+#include "ScreenBase.h"
 #include "TextBox.h"
 #include "Button.h"
-#include "Reader.h"
 #include "LibrarySystem.h"
-#include "ScreenBase.h"
+#include "Reader.h"
 
 class ScreenReaderLogin : public ScreenBase {
 private:
-    sf::Font &font;           
-    LibrarySystem *library;
+    sf::Font &font;
+    LibrarySystem *L;
     Reader **currentReader;
 
-public:
     TextBox boxUser;
     TextBox boxPass;
-    Button btnOK;
-    Button btnBack;
+    Button btnOK, btnShow, btnBack;
 
-   
-    ScreenReaderLogin(sf::Font &f)
-    : font(f), library(nullptr), currentReader(nullptr)
+public:
+    ScreenReaderLogin(sf::Font &f, LibrarySystem *lib, Reader **cur)
+        : font(f), L(lib), currentReader(cur),
+          boxUser(f,260,40,false),
+          boxPass(f,260,40,true),
+          btnOK("Dang nhap",f,{0,0},{200,45}),
+          btnShow("Show",f,{0,0},{80,40}),
+          btnBack("Quay lai",f,{0,0},{200,45})
     {
-        boxUser = TextBox(f, {260,150}, {320,40});
-        boxPass = TextBox(f, {260,220}, {320,40});
-        boxPass.setPassword(true);
+        boxUser.setPosition(190,150);
+        boxPass.setPosition(190,220);
+        boxUser.setPlaceholder("ten dang nhap...");
+        boxPass.setPlaceholder("mat khau...");
 
-        btnOK   = Button("Đăng nhập", f, {260,290}, {150,50});
-        btnBack = Button("Quay lại",   f, {430,290}, {150,50});
+        btnOK.setPosition(220,290);
+        btnShow.setPosition(470,220);
+        btnBack.setPosition(220,360);
     }
 
-   
-    ScreenReaderLogin(sf::Font &f, LibrarySystem *lib, Reader **curReader)
-    : font(f), library(lib), currentReader(curReader)
-    {
-        boxUser = TextBox(f, {260,150}, {320,40});
-        boxPass = TextBox(f, {260,220}, {320,40});
-        boxPass.setPassword(true);
-
-        btnOK   = Button("Đăng nhập", f, {260,290}, {150,50});
-        btnBack = Button("Quay lại",   f, {430,290}, {150,50});
-    }
-
-  
-    void handleEvent(sf::Event &e, AppState &state) override {
+    void handleEvent(sf::Event &e, AppState &cur) override {
         boxUser.handleEvent(e);
         boxPass.handleEvent(e);
+
+        btnOK.handleEvent(e);
+        btnShow.handleEvent(e);
+        btnBack.handleEvent(e);
+
+        if(e.type==sf::Event::MouseButtonReleased){
+            float mx=e.mouseButton.x, my=e.mouseButton.y;
+
+            if(btnShow.hit(mx,my)){
+                boxPass.toggleShow();
+                btnShow.setText(boxPass.isShown() ? "Hide" : "Show");
+            }
+
+            if(btnOK.hit(mx,my)){
+                Reader *u = L->loginReader(boxUser.get(), boxPass.get());
+                if(u){
+                    *currentReader = u;
+                    cur = SCREEN_READER_MENU;   // FIX OK
+                }
+            }
+
+                        if(btnBack.hit(mx,my)){
+                            cur = SCREEN_ROLE;
+                        }
+        }
     }
 
-    void draw(sf::RenderWindow &w) {
+    void update() override {
+        sf::Vector2i m = sf::Mouse::getPosition();
+        btnOK.update((float)m.x,(float)m.y);
+        btnShow.update((float)m.x,(float)m.y);
+        btnBack.update((float)m.x,(float)m.y);
+    }
+
+    void draw(sf::RenderWindow &w) override {
+        w.clear(Theme::BG);
         boxUser.draw(w);
         boxPass.draw(w);
         btnOK.draw(w);
+        btnShow.draw(w);
         btnBack.draw(w);
     }
 };

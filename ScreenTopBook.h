@@ -2,48 +2,46 @@
 #define SCREEN_TOP_BOOK_H
 
 #include "ScreenBase.h"
-#include "LibrarySystem.h"
-#include "ListView.h"
 #include "Button.h"
+#include "LibrarySystem.h"
 
 class ScreenTopBook : public ScreenBase {
 private:
     sf::Font &font;
     LibrarySystem *L;
 
-    ListView list;
     Button btnBack;
+    sf::Text title;
 
 public:
     ScreenTopBook(sf::Font &f, LibrarySystem *lib)
-        : font(f),L(lib),list(f,500,380),btnBack("Quay lai",f,22)
+        : font(f), L(lib),
+          btnBack("Quay lai",f,{240,400},{200,45})
     {
-        list.setPosition(70,60);
-        btnBack.setSize(200,45);
-        btnBack.setPosition(220,460);
-    }
-
-    void load(){
-        list.clear();
-        L->XepHangSach();
-        // data đã được in console
-        // UI chỉ show basic
+        title.setFont(font);
+        title.setString("Top sach duoc yeu thich");
+        title.setCharacterSize(36);
+        title.setFillColor(Theme::Title);
+        title.setPosition(150,60);
     }
 
     void handleEvent(sf::Event &e, AppState &cur) override {
-        list.handleScroll(e);
+        btnBack.handleEvent(e);
 
-        if(e.type==sf::Event::MouseButtonPressed){
+        if(e.type==sf::Event::MouseButtonReleased){
             float mx=e.mouseButton.x,my=e.mouseButton.y;
-            if(btnBack.hit(mx,my)){
-                cur = SCREEN_READER_MENU;
-            }
+            if(btnBack.hit(mx,my)) cur = SCREEN_READER_MENU;
         }
     }
 
-    void update() override {}
+    void update() override {
+        sf::Vector2i m=sf::Mouse::getPosition();
+        btnBack.update(m.x,m.y);
+    }
+
     void draw(sf::RenderWindow &w) override {
-        list.draw(w);
+        w.clear(Theme::BG);
+        w.draw(title);
         btnBack.draw(w);
     }
 };

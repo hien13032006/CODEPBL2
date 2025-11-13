@@ -1,7 +1,10 @@
-#pragma once
+
+#ifndef LICHSUMUONTRA_H
+#define LICHSUMUONTRA_H
+
 #include <ctime>
-#include <string>   
-#include <iostream> 
+#include <string>
+#include <iostream>
 using namespace std;
 
 struct LichSuMuonTra {
@@ -33,3 +36,5 @@ class StackLichSu {
         bool isEmpty() const;
         void hienThiLichSu() const;
 };
+
+#endif

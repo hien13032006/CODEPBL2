@@ -5,6 +5,8 @@
 #include "TextBox.h"
 #include "Button.h"
 #include "LibrarySystem.h"
+#include "USER.h"
+#include "Librarian.h"
 
 class ScreenLibLogin : public ScreenBase {
 private:
@@ -12,36 +14,25 @@ private:
     LibrarySystem *L;
     USER **currentUser;
 
-    TextBox boxUser;
-    TextBox boxPass;
-    Button btnOK;
-    Button btnShow;
-    Button btnBack;
+    TextBox boxUser, boxPass;
+    Button btnOK, btnShow, btnBack;
 
 public:
     ScreenLibLogin(sf::Font &f, LibrarySystem *lib, USER **cur)
-        : font(f),
-          L(lib),
-          currentUser(cur),
+        : font(f), L(lib), currentUser(cur),
           boxUser(f,260,40,false),
           boxPass(f,260,40,true),
-          btnOK("Dang nhap",f,22),
-          btnShow("show",f,18),
-          btnBack("Quay lai",f,22)
+          btnOK("Dang nhap",f,{0,0},{200,45}),
+          btnShow("Show",f,{0,0},{80,40}),
+          btnBack("Quay lai",f,{0,0},{200,45})
     {
         boxUser.setPosition(190,150);
         boxPass.setPosition(190,220);
-
-        boxUser.setPlaceholder("ten dang nhap...");
+        boxUser.setPlaceholder("username thu thu...");
         boxPass.setPlaceholder("mat khau...");
 
-        btnOK.setSize(200,45);
         btnOK.setPosition(220,290);
-
-        btnShow.setSize(70,40);
-        btnShow.setPosition(460,220);
-
-        btnBack.setSize(200,45);
+        btnShow.setPosition(470,220);
         btnBack.setPosition(220,360);
     }
 
@@ -49,18 +40,22 @@ public:
         boxUser.handleEvent(e);
         boxPass.handleEvent(e);
 
-        if(e.type == sf::Event::MouseButtonPressed){
-            float mx=e.mouseButton.x, my=e.mouseButton.y;
+        btnOK.handleEvent(e);
+        btnShow.handleEvent(e);
+        btnBack.handleEvent(e);
+
+        if(e.type==sf::Event::MouseButtonReleased){
+            float mx=e.mouseButton.x,my=e.mouseButton.y;
 
             if(btnShow.hit(mx,my)){
                 boxPass.toggleShow();
-                btnShow.setText( boxPass.isShown() ? "hide" : "show" );
+                btnShow.setText(boxPass.isShown()?"Hide":"Show");
             }
 
             if(btnOK.hit(mx,my)){
-                USER *usr=nullptr;
-                if(L->DangNhapThuThu(boxUser.get(),boxPass.get(),usr)){
-                    *currentUser = usr;
+                USER *u=nullptr;
+                if(L->DangNhapThuThu(boxUser.get(), boxPass.get(), u)){
+                    *currentUser = u;
                     cur = SCREEN_LIB_MENU;
                 }
             }
@@ -70,13 +65,18 @@ public:
             }
         }
     }
-    
-    void update() override {}
+
+    void update() override {
+        sf::Vector2i m=sf::Mouse::getPosition();
+        btnOK.update((float)m.x,(float)m.y);
+        btnShow.update((float)m.x,(float)m.y);
+        btnBack.update((float)m.x,(float)m.y);
+    }
 
     void draw(sf::RenderWindow &w) override {
+        w.clear(Theme::BG);
         boxUser.draw(w);
         boxPass.draw(w);
-
         btnOK.draw(w);
         btnShow.draw(w);
         btnBack.draw(w);

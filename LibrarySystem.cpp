@@ -185,7 +185,7 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
 
 
 void LibrarySystem::DocFileDocGia() {
-    ifstream in("DocGia.txt");
+    ifstream in("assets/DocGia.txt");
     if (!in.is_open()) {
         cerr << "Khong tim thay file DocGia.txt.\n";
         return;
@@ -308,7 +308,7 @@ void LibrarySystem::DangKyDocGia() {
     newNode->next = HeadDsDocGia;
     HeadDsDocGia = newNode;
 
-    ofstream out("DocGia.txt", ios::app);
+    ofstream out("assets/DocGia.txt", ios::app);
     if(out.is_open()){
         out << dg->toCSV() << endl;
         out.close();
@@ -351,7 +351,7 @@ bool LibrarySystem::DangNhapThuThu(const string &usernameInput,
     string password = passwordInput;
 
     while(true){
-        ifstream in("ThuThu.txt");
+        ifstream in("assets/ThuThu.txt");
         if(!in.is_open()){
             cout << "Khong the mo file ThuThu.txt\n";
             return false;
@@ -478,7 +478,7 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
                 DanhGiaSach(docGia, current->data);
             }
 
-            GhiFileHeThong("DanhSachSach.txt");
+            GhiFileHeThong("assets/DanhSachSach.txt");
             return;
         }
         current = current->next;
@@ -515,9 +515,9 @@ void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach) {
     }
 
     sach->themDanhGia(diem);
-    GhiFileHeThong("DanhSachSach.txt");
+    GhiFileHeThong("assets/DanhSachSach.txt");
 
-    ofstream out("DanhGia.txt", ios::app);
+    ofstream out("assets/DanhGia.txt", ios::app);
     if (out.is_open()) {
         out << sach->getMaSach() << "|"
             << sach->getTenSach() << "|"
@@ -537,7 +537,7 @@ double LibrarySystem::TinhDiemTrungBinhTuFile(const string& tenSach,
                                               const string& tacGia,
                                               int namXB,
                                               const string& nhaXB) {
-    ifstream in("DanhGia.txt");
+    ifstream in("assets/DanhGia.txt");
     if (!in.is_open()) return 0.0;
 
     string line;
@@ -753,7 +753,7 @@ void LibrarySystem::addBook(Sach* s) {
     NodeBook* newNode = new NodeBook(s);
     newNode->next = HeadDsSach;
     HeadDsSach = newNode;
-    GhiFileHeThong("DanhSachSach.txt");
+    GhiFileHeThong("assets/DanhSachSach.txt");
 }
 bool LibrarySystem::XoaSach(const string &maSach) {
     NodeBook* p = HeadDsSach;
@@ -768,7 +768,7 @@ bool LibrarySystem::XoaSach(const string &maSach) {
             delete p->data;
             delete p;
 
-            GhiFileHeThong("DanhSachSach.txt");
+            GhiFileHeThong("assets/DanhSachSach.txt");
             return true;
         }
         prev = p;
@@ -786,7 +786,7 @@ bool LibrarySystem::deleteBook(const string& id){
             else HeadDsSach = p->next;
 
             delete p;
-            GhiFileHeThong("DanhSachSach.txt");
+            GhiFileHeThong("assets/DanhSachSach.txt");
             return true;
         }
         prev = p;

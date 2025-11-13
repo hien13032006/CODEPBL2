@@ -1,15 +1,9 @@
 #ifndef SCREEN_HISTORY_H
 #define SCREEN_HISTORY_H
 
-#include <fstream>
-#include <sstream>
-#include <SFML/Graphics.hpp>
 #include "ScreenBase.h"
-#include "AppState.h"
-#include "LibrarySystem.h"
-#include "Reader.h"
-#include "ListView.h"
 #include "Button.h"
+#include "LibrarySystem.h"
 
 class ScreenHistory : public ScreenBase {
 private:
@@ -17,77 +11,39 @@ private:
     LibrarySystem *L;
     Reader **currentReader;
 
-    ListView listBox;
-    Button btnReload, btnBack;
-    std::string msg;
+    Button btnBack;
+    sf::Text title;
 
 public:
-    ScreenHistory(sf::Font &f, LibrarySystem *lib, Reader **cr)
-        : font(f), L(lib), currentReader(cr),
-          listBox(f,520,360),
-          btnReload("tai lai",f,20),
-          btnBack("quay lai",f,20),
-          msg("")
+    ScreenHistory(sf::Font &f, LibrarySystem *lib, Reader **cur)
+        : font(f), L(lib), currentReader(cur),
+          btnBack("Quay lai",f,{240,350},{200,45})
     {
-        listBox.setPosition(50,120);
+        title.setFont(font);
+        title.setString("Lich su muon - tra");
+        title.setCharacterSize(36);
+        title.setFillColor(Theme::Title);
+        title.setPosition(190,50);
     }
 
-    void reload(){
-        listBox.clear();
-        if(*currentReader==nullptr){ msg="ban chua dang nhap"; return; }
-        std::string user = (*currentReader)->getUsername();
+    void handleEvent(sf::Event &e, AppState &cur) override {
+        btnBack.handleEvent(e);
 
-        std::ifstream in("DanhGia.txt");
-        if(!in.is_open()){ msg="khong mo duoc DanhGia.txt"; return; }
-
-        std::string line;
-        while(std::getline(in,line)){
-            // ma|ten|tg|nam|nxb|maDG|user|text|diem
-            std::stringstream ss(line);
-            std::string ma, ten, tg, nam, nxb, maDG, u, text, diem;
-            std::getline(ss, ma, '|');
-            std::getline(ss, ten, '|');
-            std::getline(ss, tg,  '|');
-            std::getline(ss, nam, '|');
-            std::getline(ss, nxb, '|');
-            std::getline(ss, maDG,'|');
-            std::getline(ss, u,   '|');
-            std::getline(ss, text,'|');
-            std::getline(ss, diem,'|');
-
-            if(u == user){
-                std::string row = ma + " | " + ten + " | " + tg + " | " + text + " (" + diem + ")";
-                listBox.addLine(row);
-            }
-        }
-        in.close();
-        msg = "";
-    }
-
-    void handleEvent(sf::Event &e, AppState &current){
-        listBox.handleScroll(e);
-        if(e.type==sf::Event::MouseButtonPressed){
-            float mx=e.mouseButton.x, my=e.mouseButton.y;
-            if(btnReload.hit(mx,my)) reload();
-            else if(btnBack.hit(mx,my)) current = SCREEN_READER_MENU;
+        if(e.type==sf::Event::MouseButtonReleased){
+            float mx=e.mouseButton.x,my=e.mouseButton.y;
+            if(btnBack.hit(mx,my)) cur = SCREEN_READER_MENU;
         }
     }
 
-    void update(){}
+    void update() override {
+        sf::Vector2i m=sf::Mouse::getPosition();
+        btnBack.update(m.x,m.y);
+    }
 
-    void draw(sf::RenderWindow &w){
-        sf::Text title("Lich su danh gia cua ban", font, 26);
-        title.setFillColor(sf::Color::Black);
-        title.setPosition(90,60);
+    void draw(sf::RenderWindow &w) override {
+        w.clear(Theme::BG);
         w.draw(title);
-
-        btnReload.setPosition(50,85); btnReload.draw(w);
-        btnBack.setPosition(20,20);   btnBack.draw(w);
-
-        listBox.draw(w);
-
-        sf::Text m(msg,font,18); m.setFillColor(sf::Color::Red); m.setPosition(50,490);
-        w.draw(m);
+        btnBack.draw(w);
     }
 };
 

@@ -2,124 +2,78 @@
 #define SCREEN_LIB_UPDATE_H
 
 #include "ScreenBase.h"
-#include "Textbox.h"
+#include "TextBox.h"
 #include "Button.h"
 #include "LibrarySystem.h"
-#include <SFML/Graphics.hpp>
-#include <string>
 
 class ScreenLibUpdate : public ScreenBase {
 private:
-    LibrarySystem* lib;
+    sf::Font &font;
+    LibrarySystem *L;
 
-    // label
-    sf::Text title;
-    sf::Text lID, lName, lAuthor, lCate, lYear, lNXB;
-
-    // input
-    TextBox boxID;
-    TextBox boxName;
-    TextBox boxAuthor;
-    TextBox boxCate;
-    TextBox boxYear;
-    TextBox boxNXB;
-
-    // button
+    TextBox boxID, boxTitle, boxAuthor;
     Button btnOK, btnBack;
+    sf::Text title;
 
 public:
-    ScreenLibUpdate(sf::Font &font, LibrarySystem *L) {
-        lib = L;
-
-        float px = 360.f;      // goc x
-        float py = 140.f;      // goc y
-        float dy = 58.f;       // step
-
+    ScreenLibUpdate(sf::Font &f, LibrarySystem *lib)
+        : font(f), L(lib),
+          boxID(f,260,40,false),
+          boxTitle(f,260,40,false),
+          boxAuthor(f,260,40,false),
+          btnOK("Cap nhat",f,{0,0},{200,45}),
+          btnBack("Quay lai",f,{0,0},{200,45})
+    {
         title.setFont(font);
         title.setString("Cap nhat sach");
-        title.setCharacterSize(28);
-        title.setPosition(px - 140, py - 70);
+        title.setCharacterSize(36);
+        title.setFillColor(Theme::Title);
+        title.setPosition(210,40);
 
-        lID.setFont(font);     lID.setString("Ma sach");   lID.setCharacterSize(20); lID.setPosition(px-220, py+dy*0);
-        lName.setFont(font);   lName.setString("Ten sach");lName.setCharacterSize(20);lName.setPosition(px-220, py+dy*1);
-        lAuthor.setFont(font); lAuthor.setString("Tac gia");lAuthor.setCharacterSize(20);lAuthor.setPosition(px-220, py+dy*2);
-        lCate.setFont(font);   lCate.setString("The loai");lCate.setCharacterSize(20); lCate.setPosition(px-220, py+dy*3);
-        lYear.setFont(font);   lYear.setString("Nam XB");  lYear.setCharacterSize(20); lYear.setPosition(px-220, py+dy*4);
-        lNXB.setFont(font);    lNXB.setString("Nha XB");   lNXB.setCharacterSize(20);  lNXB.setPosition(px-220, py+dy*5);
+        boxID.setPosition(200,120);
+        boxTitle.setPosition(200,190);
+        boxAuthor.setPosition(200,260);
 
-        boxID     = TextBox(font, {px, py+dy*0}, {330,40});
-        boxName   = TextBox(font, {px, py+dy*1}, {330,40});
-        boxAuthor = TextBox(font, {px, py+dy*2}, {330,40});
-        boxCate   = TextBox(font, {px, py+dy*3}, {330,40});
-        boxYear   = TextBox(font, {px, py+dy*4}, {330,40});
-        boxNXB    = TextBox(font, {px, py+dy*5}, {330,40});
+        boxID.setPlaceholder("Nhap ID...");
+        boxTitle.setPlaceholder("Ten moi...");
+        boxAuthor.setPlaceholder("Tac gia moi...");
 
-        btnOK   = Button("Cap nhat", font, {px,        py+dy*7}, {200,50});
-        btnBack = Button("Quay lai", font, {px+220.f,  py+dy*7}, {200,50});
+        btnOK.setPosition(230,330);
+        btnBack.setPosition(230,390);
     }
 
-    void handleEvent(sf::Event &e, AppState &state) override {
+    void handleEvent(sf::Event &e, AppState &cur) override {
         boxID.handleEvent(e);
-        boxName.handleEvent(e);
+        boxTitle.handleEvent(e);
         boxAuthor.handleEvent(e);
-        boxCate.handleEvent(e);
-        boxYear.handleEvent(e);
-        boxNXB.handleEvent(e);
 
-        if (e.type == sf::Event::MouseButtonPressed) {
-            float mx = e.mouseButton.x, my = e.mouseButton.y;
+        btnOK.handleEvent(e);
+        btnBack.handleEvent(e);
 
-            if (btnBack.hit(mx,my)) {
-                state = SCREEN_LIB_MENU;
-                return;
+        if(e.type==sf::Event::MouseButtonReleased){
+            float mx=e.mouseButton.x,my=e.mouseButton.y;
+
+            if(btnOK.hit(mx,my)){
+                // L->UpdateBook(...)
             }
 
-            if (btnOK.hit(mx,my)) {
-                std::string id   = boxID.getText();
-                std::string ten  = boxName.getText();
-                std::string tac  = boxAuthor.getText();
-                std::string loai = boxCate.getText();
-                std::string nam  = boxYear.getText();
-                std::string nxb  = boxNXB.getText();
-
-                if (!id.empty()) {
-                    int namXB = 0;
-                    if (!nam.empty()) {
-                        try { namXB = std::stoi(nam); } catch(...) { namXB = 0; }
-                    }
-
-                    // 1) cap nhat cac truong co trong updateBook()
-                    //    (ban da khai bao: bool updateBook(const string& id, string tenMoi, string tacGiaMoi, int namMoi, int soLuongMoi))
-                    lib->updateBook(id, ten, tac, namXB, 1);
-
-                    // 2) bo sung the loai / nha XB neu ham updateBook khong support
-                    Sach* s = lib->findBookByID(id);
-                    if (s) {
-                        if (!loai.empty()) s->setTheLoai(loai);
-                        if (!nxb.empty())  s->setNhaXuatBan(nxb);
-                    }
-
-                    lib->GhiFileHeThong("DanhSachSach.txt");
-                }
-
-                state = SCREEN_LIB_MENU;
-            }
+            if(btnBack.hit(mx,my)) cur = SCREEN_LIB_MENU;
         }
     }
 
-    void update() override {}
+    void update() override {
+        sf::Vector2i m=sf::Mouse::getPosition();
+        btnOK.update(m.x,m.y);
+        btnBack.update(m.x,m.y);
+    }
 
     void draw(sf::RenderWindow &w) override {
-        w.draw(title);
-        w.draw(lID);   w.draw(lName); w.draw(lAuthor);
-        w.draw(lCate); w.draw(lYear); w.draw(lNXB);
+        w.clear(Theme::BG);
 
+        w.draw(title);
         boxID.draw(w);
-        boxName.draw(w);
+        boxTitle.draw(w);
         boxAuthor.draw(w);
-        boxCate.draw(w);
-        boxYear.draw(w);
-        boxNXB.draw(w);
 
         btnOK.draw(w);
         btnBack.draw(w);

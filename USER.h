@@ -1,6 +1,8 @@
-#pragma once
-#include <string>    
+#ifndef USER_H
+#define USER_H
+#include <string>
 using namespace std;
+
 class USER {
     protected:
         string maID;
@@ -25,3 +27,4 @@ class USER {
         void setPassword(string newPassword);
         string getPassword() const;
 };
+#endif

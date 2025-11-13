@@ -17,8 +17,6 @@ private:
     int lineCount;
 
 public:
-
-
     ListView(sf::Font &f, float width, float height)
         : font(f), w(width), h(height), lineHeight(26), scroll(0), lineCount(0)
     {

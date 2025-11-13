@@ -1,45 +1,50 @@
 #ifndef SCREEN_ROLE_H
 #define SCREEN_ROLE_H
+
 #include "ScreenBase.h"
 #include "Button.h"
 #include "Theme.h"
 
-class ScreenRole : public ScreenBase
-{
-    sf::Font font;
+class ScreenRole : public ScreenBase {
+private:
+    sf::Font &font;
     Button btnReader;
     Button btnLibrarian;
+    sf::Text title;
 
 public:
     ScreenRole(sf::Font &f)
-        : font(f)
+        : font(f),
+          btnReader("READER",f,{220,220},{220,70}),
+          btnLibrarian("LIBRARIAN",f,{560,220},{220,70})
     {
-        auto size = sf::VideoMode::getDesktopMode();
-        float W = size.width;
-        float H = size.height;
-
-        btnReader    = Button("READER",    font, {W*0.25f, H*0.50f}, {260,80});
-        btnLibrarian = Button("LIBRARIAN", font, {W*0.75f, H*0.50f}, {260,80});
+        title.setFont(font);
+        title.setString("Chon phan quyen");
+        title.setCharacterSize(32);
+        title.setFillColor(Theme::Title);
+        title.setPosition(340,120);
     }
 
-    void handleEvent(sf::Event &e, AppState &state) override
-    {
-        if(e.type == sf::Event::MouseButtonPressed)
-        {
-            sf::Vector2f mp(e.mouseButton.x, e.mouseButton.y);
+    void handleEvent(sf::Event &e, AppState &cur) override {
+        btnReader.handleEvent(e);
+        btnLibrarian.handleEvent(e);
 
-            if(btnReader.contains(mp))
-                state = SCREEN_READER_CHOICE;
-
-            if(btnLibrarian.contains(mp))
-                state = SCREEN_LIB_LOGIN;
+        if(e.type==sf::Event::MouseButtonReleased){
+            float mx=e.mouseButton.x, my=e.mouseButton.y;
+            if(btnReader.hit(mx,my))  cur = SCREEN_READER_CHOICE;
+            if(btnLibrarian.hit(mx,my)) cur = SCREEN_LIB_LOGIN;
         }
     }
 
-    void update() override {}
+    void update() override {
+        sf::Vector2i m = sf::Mouse::getPosition();
+        btnReader.update((float)m.x,(float)m.y);
+        btnLibrarian.update((float)m.x,(float)m.y);
+    }
 
-    void draw(sf::RenderWindow &w) override
-    {
+    void draw(sf::RenderWindow &w) override {
+        w.clear(Theme::BG);
+        w.draw(title);
         btnReader.draw(w);
         btnLibrarian.draw(w);
     }
