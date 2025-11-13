@@ -1,7 +1,9 @@
-#ifndef Reader_h
-#define Reader_h
+#pragma once
+#include <string>    
 #include "USER.h"
 #include "LichSuMuonTra.h"
+using namespace std;
+
 
 class Sach;
 
@@ -44,4 +46,3 @@ class Reader : public USER {
         static void setReaderCount(int n) { readerCount = n; }
         static int getReaderCount() { return readerCount; }
 };
-#endif

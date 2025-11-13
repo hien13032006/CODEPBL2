@@ -2,64 +2,68 @@
 #define SCREEN_LIB_DELETE_H
 
 #include "ScreenBase.h"
-#include "TextBox.h"
+#include "Textbox.h"
 #include "Button.h"
 #include "LibrarySystem.h"
+#include <SFML/Graphics.hpp>
 
 class ScreenLibDelete : public ScreenBase {
 private:
-    sf::Font &font;
-    LibrarySystem *L;
+    LibrarySystem* lib;
 
-    TextBox boxID;
-    Button btnOK, btnBack;
-    sf::Text title;
+    sf::Text lblID, lblTitle;
+    TextBox  boxID;
+    Button   btnOK, btnBack;
 
 public:
-    ScreenLibDelete(sf::Font &f, LibrarySystem *lib)
-        : font(f), L(lib),
-          boxID(f,260,40,false),
-          btnOK("Xoa",f,{0,0},{200,45}),
-          btnBack("Quay lai",f,{0,0},{200,45})
-    {
-        title.setFont(font);
-        title.setString("Xoa sach");
-        title.setFillColor(Theme::Title);
-        title.setCharacterSize(36);
-        title.setPosition(230,40);
+    ScreenLibDelete(sf::Font &font, LibrarySystem *L) {
+        lib = L;
 
-        boxID.setPosition(200,150);
-        boxID.setPlaceholder("Nhap ID...");
+        lblTitle.setFont(font);
+        lblTitle.setString("Xoa sach");
+        lblTitle.setCharacterSize(28);
+        lblTitle.setPosition(320, 70);
 
-        btnOK.setPosition(230,220);
-        btnBack.setPosition(230,280);
+        lblID.setFont(font);
+        lblID.setString("Ma sach");
+        lblID.setCharacterSize(22);
+        lblID.setPosition(220, 160);
+
+        boxID  = TextBox(font, {320,155}, {320,42});
+        btnOK  = Button("Xoa",      font, {320,230}, {180,50});
+        btnBack= Button("Quay lai", font, {320,300}, {180,50});
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
+    void handleEvent(sf::Event &e, AppState &state, sf::RenderWindow *w) override {
         boxID.handleEvent(e);
 
-        btnOK.handleEvent(e);
-        btnBack.handleEvent(e);
+        if (e.type == sf::Event::MouseButtonPressed) {
+            float mx = e.mouseButton.x, my = e.mouseButton.y;
 
-        if(e.type==sf::Event::MouseButtonReleased){
-            float mx=e.mouseButton.x,my=e.mouseButton.y;
-
-            if(btnOK.hit(mx,my)){
-                // L->DeleteBook(boxID.get());
+            if (btnBack.hit(mx,my)) {
+                state = SCREEN_LIB_MENU;   // quay ve menu thu thu
+                return;
             }
-            if(btnBack.hit(mx,my)) cur = SCREEN_LIB_MENU;
+
+            if (btnOK.hit(mx,my)) {
+                std::string id = boxID.getText();
+                if (!id.empty()) {
+                    // Ham XoaSach tra ve bool (true neu xoa thanh cong)
+                    bool ok = lib->XoaSach(id);
+                    // Cap nhat file he thong
+                    lib->GhiFileHeThong("DanhSachSach.txt");
+                    // co the hien popup neu ban da co Popup
+                }
+                state = SCREEN_LIB_MENU;
+            }
         }
     }
 
-    void update() override {
-        sf::Vector2i m=sf::Mouse::getPosition();
-        btnOK.update(m.x,m.y);
-        btnBack.update(m.x,m.y);
-    }
+    void update() override {}
 
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
-        w.draw(title);
+        w.draw(lblTitle);
+        w.draw(lblID);
         boxID.draw(w);
         btnOK.draw(w);
         btnBack.draw(w);

@@ -1,105 +1,69 @@
 #ifndef SCREEN_READER_REGISTER_H
 #define SCREEN_READER_REGISTER_H
 
-#include "ScreenBase.h"
+#include <SFML/Graphics.hpp>
 #include "TextBox.h"
 #include "Button.h"
 #include "LibrarySystem.h"
+#include "ScreenBase.h"
 
-class ScreenReaderRegister : public ScreenBase {
+class ScreenReaderRegister: public ScreenBase {
 private:
     sf::Font &font;
-    LibrarySystem *L;
-
-    TextBox boxName, boxPhone, boxEmail, boxUser, boxPass;
-    Button btnOK, btnShow, btnBack;
+    LibrarySystem *library;
 
 public:
-    ScreenReaderRegister(sf::Font &f, LibrarySystem *lib)
-        : font(f), L(lib),
-          boxName(f,260,40,false),
-          boxPhone(f,260,40,false),
-          boxEmail(f,260,40,false),
-          boxUser(f,260,40,false),
-          boxPass(f,260,40,true),
-          btnOK("Dang ky",f,{0,0},{200,45}),
-          btnShow("Show",f,{0,0},{80,40}),
-          btnBack("Quay lai",f,{0,0},{200,45})
+    TextBox boxName, boxPhone, boxEmail, boxUser, boxPass;
+    Button btnOK, btnBack;
+
+    
+    ScreenReaderRegister(sf::Font &f)
+    : font(f), library(nullptr)
     {
-        float px=190, py=100, dy=60;
-        boxName.setPosition(px,py);
-        boxPhone.setPosition(px,py+dy);
-        boxEmail.setPosition(px,py+2*dy);
-        boxUser.setPosition(px,py+3*dy);
-        boxPass.setPosition(px,py+4*dy);
+        float x = 260, y = 100, dy = 60;
+        boxName  = TextBox(f,{x,y},{320,40});
+        boxPhone = TextBox(f,{x,y+dy},{320,40});
+        boxEmail = TextBox(f,{x,y+dy*2},{320,40});
+        boxUser  = TextBox(f,{x,y+dy*3},{320,40});
+        boxPass  = TextBox(f,{x,y+dy*4},{320,40});
+        boxPass.setPassword(true);
 
-        boxName.setPlaceholder("ho ten...");
-        boxPhone.setPlaceholder("so dien thoai...");
-        boxEmail.setPlaceholder("email...");
-        boxUser.setPlaceholder("username...");
-        boxPass.setPlaceholder("mat khau...");
-
-        btnOK.setPosition(220,py+5*dy);
-        btnShow.setPosition(470,py+4*dy);
-        btnBack.setPosition(220,py+5*dy+60);
+        btnOK   = Button("Đăng ký", f, {260, y+dy*5+10}, {150,50});
+        btnBack = Button("Quay lại",f, {430, y+dy*5+10}, {150,50});
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
+    
+    ScreenReaderRegister(sf::Font &f, LibrarySystem *lib)
+    : font(f), library(lib)
+    {
+        float x = 260, y = 100, dy = 60;
+        boxName  = TextBox(f,{x,y},{320,40});
+        boxPhone = TextBox(f,{x,y+dy},{320,40});
+        boxEmail = TextBox(f,{x,y+dy*2},{320,40});
+        boxUser  = TextBox(f,{x,y+dy*3},{320,40});
+        boxPass  = TextBox(f,{x,y+dy*4},{320,40});
+        boxPass.setPassword(true);
+
+        btnOK   = Button("Đăng ký", f, {260, y+dy*5+10}, {150,50});
+        btnBack = Button("Quay lại",f, {430, y+dy*5+10}, {150,50});
+    }
+
+    
+    void handleEvent(sf::Event &e, AppState &current, sf::RenderWindow *w) override {
         boxName.handleEvent(e);
         boxPhone.handleEvent(e);
         boxEmail.handleEvent(e);
         boxUser.handleEvent(e);
         boxPass.handleEvent(e);
-
-        btnOK.handleEvent(e);
-        btnShow.handleEvent(e);
-        btnBack.handleEvent(e);
-
-        if(e.type==sf::Event::MouseButtonReleased){
-            float mx=e.mouseButton.x, my=e.mouseButton.y;
-
-            if(btnShow.hit(mx,my)){
-                boxPass.toggleShow();
-                btnShow.setText(boxPass.isShown() ? "Hide" : "Show");
-            }
-
-            if(btnOK.hit(mx,my)){
-                // Bạn có thể dùng hàm DangKyDocGia cũ, ở đây demo đơn giản:
-                Reader* r = new Reader();
-                r->SignUp(
-                    boxName.get(),
-                    boxPhone.get(),
-                    boxEmail.get(),
-                    boxUser.get(),
-                    boxPass.get()
-                );
-                L->addReader(r);
-                cur = SCREEN_READER_LOGIN;
-            }
-
-            if(btnBack.hit(mx,my)){
-                cur = SCREEN_READER_LOGIN;
-            }
-        }
     }
 
-    void update() override {
-        sf::Vector2i m = sf::Mouse::getPosition();
-        btnOK.update((float)m.x,(float)m.y);
-        btnShow.update((float)m.x,(float)m.y);
-        btnBack.update((float)m.x,(float)m.y);
-    }
-
-    void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
+    void draw(sf::RenderWindow &w) {
         boxName.draw(w);
         boxPhone.draw(w);
         boxEmail.draw(w);
         boxUser.draw(w);
         boxPass.draw(w);
-
         btnOK.draw(w);
-        btnShow.draw(w);
         btnBack.draw(w);
     }
 };

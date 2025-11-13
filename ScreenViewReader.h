@@ -2,45 +2,55 @@
 #define SCREEN_VIEW_READER_H
 
 #include "ScreenBase.h"
-#include "Button.h"
 #include "LibrarySystem.h"
+#include "ListView.h"
+#include "Button.h"
 
 class ScreenViewReader : public ScreenBase {
 private:
     sf::Font &font;
     LibrarySystem *L;
 
+    ListView list;
     Button btnBack;
-    sf::Text title;
 
 public:
     ScreenViewReader(sf::Font &f, LibrarySystem *lib)
         : font(f), L(lib),
-          btnBack("Quay lai",f,{240,400},{200,45})
+          list(f,500,380),
+          btnBack("Quay lai",f,22)
     {
-        title.setFont(font);
-        title.setString("Danh sach doc gia");
-        title.setFillColor(Theme::Title);
-        title.setCharacterSize(36);
-        title.setPosition(220,60);
+        list.setPosition(70,60);
+        btnBack.setSize(200,45);
+        btnBack.setPosition(220,460);
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
-        btnBack.handleEvent(e);
-        if(e.type==sf::Event::MouseButtonReleased){
-            if(btnBack.hit(e.mouseButton.x,e.mouseButton.y))
-                cur = SCREEN_LIB_MENU;
+    void load(){
+        list.clear();
+        NodeReader *p = L->getReaderHead();
+        while(p){
+            list.addLine(
+                p->data->getUsername() + " | " +
+                p->data->getHoTen() + " | " +
+                p->data->getSDT()
+            );
+            p = p->next;
         }
     }
 
-    void update() override {
-        sf::Vector2i m=sf::Mouse::getPosition();
-        btnBack.update(m.x,m.y);
+    void handleEvent(sf::Event &e, AppState &cur, sf::RenderWindow *w) override {
+        list.handleScroll(e);
+        if(e.type==sf::Event::MouseButtonPressed){
+            float mx=e.mouseButton.x,my=e.mouseButton.y;
+            if(btnBack.hit(mx,my)){
+                cur = SCREEN_LIB_MENU;
+            }
+        }
     }
 
+    void update() override {}
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
-        w.draw(title);
+        list.draw(w);
         btnBack.draw(w);
     }
 };

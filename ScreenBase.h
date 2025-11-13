@@ -1,15 +1,15 @@
-#ifndef SCREEN_BASE_H
-#define SCREEN_BASE_H
+#ifndef SCREENBASE_H
+#define SCREENBASE_H
 
 #include <SFML/Graphics.hpp>
 #include "AppState.h"
 
 class ScreenBase {
 public:
+    virtual void handleEvent(sf::Event&, AppState&, sf::RenderWindow*) = 0;
+    virtual void update() {}
+    virtual void draw(sf::RenderWindow&) = 0;
     virtual ~ScreenBase() {}
-    virtual void handleEvent(sf::Event &e, AppState &cur) = 0;
-    virtual void update() = 0;
-    virtual void draw(sf::RenderWindow &w) = 0;
 };
 
 #endif

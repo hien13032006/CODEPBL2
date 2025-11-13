@@ -1,84 +1,113 @@
 #ifndef SCREEN_READER_LOGIN_H
 #define SCREEN_READER_LOGIN_H
 
-#include "ScreenBase.h"
+#include <SFML/Graphics.hpp>
 #include "TextBox.h"
 #include "Button.h"
-#include "LibrarySystem.h"
 #include "Reader.h"
+#include "LibrarySystem.h"
+#include "ScreenBase.h"
 
 class ScreenReaderLogin : public ScreenBase {
 private:
     sf::Font &font;
-    LibrarySystem *L;
+    LibrarySystem *library;
     Reader **currentReader;
 
-    TextBox boxUser;
-    TextBox boxPass;
-    Button btnOK, btnShow, btnBack;
+    sf::Texture bgTexture;
+    sf::Sprite bgSprite;
+
+    sf::Text lbUser;
+    sf::Text lbPass;
 
 public:
-    ScreenReaderLogin(sf::Font &f, LibrarySystem *lib, Reader **cur)
-        : font(f), L(lib), currentReader(cur),
-          boxUser(f,260,40,false),
-          boxPass(f,260,40,true),
-          btnOK("Dang nhap",f,{0,0},{200,45}),
-          btnShow("Show",f,{0,0},{80,40}),
-          btnBack("Quay lai",f,{0,0},{200,45})
-    {
-        boxUser.setPosition(190,150);
-        boxPass.setPosition(190,220);
-        boxUser.setPlaceholder("ten dang nhap...");
-        boxPass.setPlaceholder("mat khau...");
+    TextBox boxUser;
+    TextBox boxPass;
+    Button btnOK;
+    Button btnBack;
 
-        btnOK.setPosition(220,290);
-        btnShow.setPosition(470,220);
-        btnBack.setPosition(220,360);
+    ScreenReaderLogin(sf::Font &f, LibrarySystem *lib = nullptr, Reader **curReader = nullptr)
+        : font(f), library(lib), currentReader(curReader)
+    {
+        // Texts
+        lbUser.setFont(font);
+        lbUser.setString("Username:");
+        lbUser.setCharacterSize(24);
+        lbUser.setFillColor(sf::Color::Black);
+
+        lbPass.setFont(font);
+        lbPass.setString("Password:");
+        lbPass.setCharacterSize(24);
+        lbPass.setFillColor(sf::Color::Black);
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
+    void init(sf::RenderWindow &window) {
+        // Hình nền full screen
+        if(!bgTexture.loadFromFile("picLogin.png")) {
+            // xử lý lỗi nếu file không tồn tại
+        }
+
+        bgSprite.setTexture(bgTexture);
+        sf::Vector2u winSize = window.getSize();
+        bgSprite.setScale(
+            float(winSize.x) / bgTexture.getSize().x,
+            float(winSize.y) / bgTexture.getSize().y
+        );
+
+        // --- Vị trí căn giữa các ô ---
+        float centerX = winSize.x * 0.5f;
+        float boxWidth = 320.f;
+        float boxHeight = 45.f;
+
+        // --- Nhãn + ô nhập ---
+        float startY = winSize.y * 0.35f;
+
+        lbUser.setPosition(centerX - boxWidth - 20, startY + 10);
+        boxUser = TextBox(font, {centerX - boxWidth * 0.3f, startY}, {boxWidth, boxHeight});
+
+        lbPass.setPosition(centerX - boxWidth - 20, startY + 90);
+        boxPass = TextBox(font, {centerX - boxWidth * 0.3f, startY + 80}, {boxWidth, boxHeight});
+        boxPass.setPassword(true);
+
+        // Khởi tạo TextBox theo tỷ lệ màn hình
+        boxUser = TextBox(font, {winSize.x * 0.6f, winSize.y * 0.40f}, {350, 55});
+        boxPass = TextBox(font, {winSize.x * 0.6f, winSize.y * 0.50f}, {350, 55});
+        boxPass.setPassword(true);
+
+        // Nút Login/Back bên phải
+        btnOK   = Button("Login", font, {winSize.x * 0.55f, winSize.y * 0.60f}, {200, 60});
+        btnBack = Button("Back",  font, {winSize.x * 0.70f, winSize.y * 0.60f}, {200, 60});
+    }
+
+    void handleEvent(sf::Event &e, AppState &current, sf::RenderWindow *window) override {
+        if(!window) return;
+
         boxUser.handleEvent(e);
         boxPass.handleEvent(e);
+        btnOK.handleEvent(e, *window);
+        btnBack.handleEvent(e, *window);
 
-        btnOK.handleEvent(e);
-        btnShow.handleEvent(e);
-        btnBack.handleEvent(e);
-
-        if(e.type==sf::Event::MouseButtonReleased){
-            float mx=e.mouseButton.x, my=e.mouseButton.y;
-
-            if(btnShow.hit(mx,my)){
-                boxPass.toggleShow();
-                btnShow.setText(boxPass.isShown() ? "Hide" : "Show");
-            }
-
-            if(btnOK.hit(mx,my)){
-                Reader *u = L->loginReader(boxUser.get(), boxPass.get());
-                if(u){
-                    *currentReader = u;
-                    cur = SCREEN_READER_MENU;   // FIX OK
-                }
-            }
-
-                        if(btnBack.hit(mx,my)){
-                            cur = SCREEN_ROLE;
-                        }
-        }
+        // Ví dụ callback để thay đổi state
+        btnOK.setCallback([&]() {
+            current = SCREEN_READER_LOGIN; // hoặc xử lý login
+        });
+        btnBack.setCallback([&]() {
+            current = SCREEN_WELCOME;
+        });
     }
 
     void update() override {
-        sf::Vector2i m = sf::Mouse::getPosition();
-        btnOK.update((float)m.x,(float)m.y);
-        btnShow.update((float)m.x,(float)m.y);
-        btnBack.update((float)m.x,(float)m.y);
+        btnOK.update();
+        btnBack.update();
     }
 
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
+        w.draw(bgSprite);
+        w.draw(lbUser);
+        w.draw(lbPass);
         boxUser.draw(w);
         boxPass.draw(w);
         btnOK.draw(w);
-        btnShow.draw(w);
         btnBack.draw(w);
     }
 };

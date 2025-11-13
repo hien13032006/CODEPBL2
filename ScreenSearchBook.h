@@ -2,9 +2,10 @@
 #define SCREEN_SEARCH_BOOK_H
 
 #include "ScreenBase.h"
-#include "TextBox.h"
-#include "Button.h"
+#include "Textbox.h"
 #include "LibrarySystem.h"
+#include "ListView.h"
+#include "Button.h"
 
 class ScreenSearchBook : public ScreenBase {
 private:
@@ -12,58 +13,69 @@ private:
     LibrarySystem *L;
 
     TextBox boxKey;
-    Button btnFind, btnBack;
-    sf::Text title;
+    Button btnFind;
+    Button btnBack;
+    ListView list;
 
 public:
     ScreenSearchBook(sf::Font &f, LibrarySystem *lib)
         : font(f), L(lib),
           boxKey(f,260,40,false),
-          btnFind("Tim",f,{0,0},{150,45}),
-          btnBack("Quay lai",f,{0,0},{200,45})
+          btnFind("Tim",f,22),
+          btnBack("Quay lai",f,22),
+          list(f,500,350)
     {
-        title.setFont(font);
-        title.setString("Tim sach");
-        title.setFillColor(Theme::Title);
-        title.setCharacterSize(36);
-        title.setPosition(200,60);
+        boxKey.setPosition(70,70);
+        boxKey.setPlaceholder("ten sach...");
 
-        boxKey.setPosition(200,150);
-        boxKey.setPlaceholder("Nhap tu khoa...");
+        btnFind.setSize(80,40);
+        btnFind.setPosition(350,70);
 
-        btnFind.setPosition(230,220);
-        btnBack.setPosition(230,290);
+        btnBack.setSize(200,45);
+        btnBack.setPosition(220,450);
+
+        list.setPosition(70,130);
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
-        boxKey.handleEvent(e);
+    void search(){
+        list.clear();
 
-        btnFind.handleEvent(e);
-        btnBack.handleEvent(e);
-
-        if(e.type==sf::Event::MouseButtonReleased){
-            float mx=e.mouseButton.x,my=e.mouseButton.y;
-
-            if(btnFind.hit(mx,my)){
-                // Placeholder logic
-                // Bạn có thể đặt kết quả vào một biến hiển thị
+        string key = boxKey.get();
+        NodeBook *p = L->getHeadBook();
+        while(p){
+            if(p->data->getTenSach() == key){
+                list.addLine(
+                    p->data->getMaSach() + " | " +
+                    p->data->getTenSach() + " | " +
+                    p->data->getTacGia()
+                );
             }
-
-            if(btnBack.hit(mx,my)) cur = SCREEN_READER_MENU;
+            p = p->next;
         }
     }
 
-    void update() override {
-        sf::Vector2i m = sf::Mouse::getPosition();
-        btnFind.update(m.x,m.y);
-        btnBack.update(m.x,m.y);
+    void handleEvent(sf::Event &e, AppState &cur, sf::RenderWindow *w) override {
+        boxKey.handleEvent(e);
+        list.handleScroll(e);
+
+        if(e.type==sf::Event::MouseButtonPressed){
+            float mx=e.mouseButton.x, my=e.mouseButton.y;
+
+            if(btnFind.hit(mx,my)){
+                search();
+            }
+            if(btnBack.hit(mx,my)){
+                cur = SCREEN_READER_MENU;
+            }
+        }
     }
 
+    void update() override {}
+
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
-        w.draw(title);
         boxKey.draw(w);
         btnFind.draw(w);
+        list.draw(w);
         btnBack.draw(w);
     }
 };

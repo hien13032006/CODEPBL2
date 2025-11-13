@@ -4,47 +4,58 @@
 #include "ScreenBase.h"
 #include "Button.h"
 #include "Theme.h"
+#include <iostream>
 
 class ScreenRole : public ScreenBase {
 private:
-    sf::Font &font;
+    sf::Texture bgTexture;
+    sf::Sprite bgSprite;
+public:
     Button btnReader;
     Button btnLibrarian;
-    sf::Text title;
 
-public:
-    ScreenRole(sf::Font &f)
-        : font(f),
-          btnReader("READER",f,{220,220},{220,70}),
-          btnLibrarian("LIBRARIAN",f,{560,220},{220,70})
+    std::function<void()> onReader;
+    std::function<void()> onLibrarian;
+
+    ScreenRole(sf::Font &font, sf::RenderWindow &window)
+        : btnReader("READER", font, {window.getSize().x*0.15f, window.getSize().y*0.7f}, {260,80}),
+          btnLibrarian("LIBRARIAN", font, {window.getSize().x*0.65f, window.getSize().y*0.7f}, {260,80})
     {
-        title.setFont(font);
-        title.setString("Chon phan quyen");
-        title.setCharacterSize(32);
-        title.setFillColor(Theme::Title);
-        title.setPosition(340,120);
+        btnReader.setCallback([this](){
+            std::cout << "Reader clicked!\n";
+            if(onReader) onReader();
+        });
+        btnLibrarian.setCallback([this](){
+            std::cout << "Librarian clicked!\n";
+            if(onLibrarian) onLibrarian();
+        });
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
-        btnReader.handleEvent(e);
-        btnLibrarian.handleEvent(e);
-
-        if(e.type==sf::Event::MouseButtonReleased){
-            float mx=e.mouseButton.x, my=e.mouseButton.y;
-            if(btnReader.hit(mx,my))  cur = SCREEN_READER_CHOICE;
-            if(btnLibrarian.hit(mx,my)) cur = SCREEN_LIB_LOGIN;
+    void init(sf::RenderWindow &window) {
+        if(!bgTexture.loadFromFile("pic2.png")) {
+            std::cout << "Cannot load pic2.png\n";
         }
+        bgSprite.setTexture(bgTexture);
+        sf::Vector2u windowSize = window.getSize();
+        bgSprite.setScale(
+            float(windowSize.x) / bgTexture.getSize().x,
+            float(windowSize.y) / bgTexture.getSize().y
+        );
+    }
+
+    void handleEvent(sf::Event &e, AppState &state, sf::RenderWindow *w) override {
+        if(!w) return;
+        btnReader.handleEvent(e, *w);
+        btnLibrarian.handleEvent(e, *w);
     }
 
     void update() override {
-        sf::Vector2i m = sf::Mouse::getPosition();
-        btnReader.update((float)m.x,(float)m.y);
-        btnLibrarian.update((float)m.x,(float)m.y);
+        btnReader.update();
+        btnLibrarian.update();
     }
 
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
-        w.draw(title);
+        w.draw(bgSprite);
         btnReader.draw(w);
         btnLibrarian.draw(w);
     }

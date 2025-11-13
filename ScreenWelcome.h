@@ -9,48 +9,46 @@ class ScreenWelcome : public ScreenBase {
 private:
     sf::Font &font;
     Button btnVisit;
-    sf::Text title;
-    sf::Text sub;
+    sf::Texture bgTexture;
+    sf::Sprite bgSprite;
 
 public:
     ScreenWelcome(sf::Font &f)
-        : font(f),
-          btnVisit("VISIT",f,{440,320},{200,50})
+        : font(f), btnVisit("VISIT", f, 26)
     {
-        title.setFont(font);
-        title.setString("welcome");
-        title.setCharacterSize(72);
-        title.setFillColor(Theme::Title);
-        title.setPosition(280,120);
-
-        sub.setFont(font);
-        sub.setString("Library System");
-        sub.setCharacterSize(32);
-        sub.setFillColor(Theme::Label);
-        sub.setPosition(360,210);
+        btnVisit.setSize(180, 55);
+        btnVisit.setPosition(800, 800);
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
-        btnVisit.handleEvent(e);
+    void init(sf::RenderWindow &window) {
+        if(!bgTexture.loadFromFile("pic1.png")) {
+            std::cout << "Cannot load pic1.png\n";
+        }
+        bgSprite.setTexture(bgTexture);
+        // Scale full window
+        sf::Vector2u windowSize = window.getSize();
+        bgSprite.setScale(
+            float(windowSize.x) / bgTexture.getSize().x,
+            float(windowSize.y) / bgTexture.getSize().y
+        );
+    }
 
-        if(e.type==sf::Event::MouseButtonReleased){
-            float mx=e.mouseButton.x, my=e.mouseButton.y;
-            if(btnVisit.hit(mx,my)){
+    void handleEvent(sf::Event &e, AppState &cur, sf::RenderWindow *w) override {
+        if(e.type == sf::Event::MouseButtonPressed && w){
+            sf::Vector2f mousePos = w->mapPixelToCoords({e.mouseButton.x, e.mouseButton.y});
+            if(btnVisit.hit(mousePos.x, mousePos.y)){
                 cur = SCREEN_ROLE;
             }
         }
     }
 
     void update() override {
-        sf::Vector2i m = sf::Mouse::getPosition();
-        btnVisit.update((float)m.x,(float)m.y);
+        btnVisit.update();
     }
 
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
-        w.draw(title);
-        w.draw(sub);
-        btnVisit.draw(w);
+        w.draw(bgSprite);    // Vẽ hình nền trước
+        btnVisit.draw(w);    // Vẽ nút sau
     }
 };
 

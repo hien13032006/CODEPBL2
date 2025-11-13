@@ -28,7 +28,7 @@ public:
         btnBack.init(f,20,20,100,40,"BACK");
     }
 
-    void handleEvent(sf::Event &e, AppState &current){
+    void handleEvent(sf::Event &e, AppState &current) {
         if(e.type==sf::Event::TextEntered||e.type==sf::Event::KeyPressed){
             inName.handleText(e);
             inPhone.handleText(e);

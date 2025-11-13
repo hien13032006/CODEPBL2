@@ -2,46 +2,55 @@
 #define SCREEN_VIEW_BOOK_H
 
 #include "ScreenBase.h"
-#include "Button.h"
 #include "LibrarySystem.h"
+#include "ListView.h"
+#include "Button.h"
 
 class ScreenViewBook : public ScreenBase {
 private:
     sf::Font &font;
     LibrarySystem *L;
+
+    ListView list;
     Button btnBack;
-    sf::Text title;
 
 public:
     ScreenViewBook(sf::Font &f, LibrarySystem *lib)
-        : font(f), L(lib),
-          btnBack("Quay lai",f,{240,400},{200,45})
+        : font(f), L(lib), list(f,500,380), btnBack("Quay lai",f,22)
     {
-        title.setFont(font);
-        title.setString("Danh sach sach");
-        title.setCharacterSize(36);
-        title.setFillColor(Theme::Title);
-        title.setPosition(250,60);
+        list.setPosition(70,60);
+        btnBack.setSize(200,45);
+        btnBack.setPosition(220,460);
     }
 
-    void handleEvent(sf::Event &e, AppState &cur) override {
-        btnBack.handleEvent(e);
+    void load(){
+        list.clear();
+        NodeBook *p = L->getHeadBook();
+        while(p){
+            list.addLine(
+                p->data->getMaSach() + " | " +
+                p->data->getTenSach() + " | " +
+                p->data->getTacGia()
+            );
+            p = p->next;
+        }
+    }
 
-        if(e.type==sf::Event::MouseButtonReleased){
-            if(btnBack.hit(e.mouseButton.x,e.mouseButton.y)){
+    void handleEvent(sf::Event &e, AppState &cur, sf::RenderWindow *w) override {
+        list.handleScroll(e);
+
+        if(e.type==sf::Event::MouseButtonPressed){
+            float mx=e.mouseButton.x,my=e.mouseButton.y;
+            if(btnBack.hit(mx,my)){
                 cur = SCREEN_READER_MENU;
             }
         }
     }
 
-    void update() override {
-        sf::Vector2i m=sf::Mouse::getPosition();
-        btnBack.update(m.x,m.y);
-    }
+    void update() override {}
 
     void draw(sf::RenderWindow &w) override {
-        w.clear(Theme::BG);
-        w.draw(title);
+        list.draw(w);
         btnBack.draw(w);
     }
 };

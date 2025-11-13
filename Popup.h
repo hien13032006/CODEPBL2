@@ -28,7 +28,7 @@ public:
         box.setOutlineColor(sf::Color::White);
     }
 
-    void show(const std::string &msg, sf::Color color = Theme::BG, float duration = 2.5f){
+    void show(const std::string &msg, sf::Color color = Theme::OK, float duration = 2.5f){
         text.setString(msg);
         text.setFillColor(sf::Color::White);
 
