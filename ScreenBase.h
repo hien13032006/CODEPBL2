@@ -10,6 +10,7 @@ public:
     virtual void update() {}
     virtual void draw(sf::RenderWindow&) = 0;
     virtual ~ScreenBase() {}
+    virtual void init(sf::RenderWindow &window) {}
 };
 
 #endif

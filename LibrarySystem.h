@@ -131,10 +131,11 @@ public:
 
     int exportReaderList(string arr[]); 
     bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
-    void DangKyDocGia();
-    bool DangNhapDocGia(USER* &currentUser);
-    bool DangNhapThuThu(const string &usernameInput, const string &passwordInput, USER* &currentUser);
+    bool DangKyDocGia(const string &hoTen, const string &sdt, const string &email, const string &user, const string &pass);
+    Reader* DangNhapDocGia(const string& username, const string& password);
+    Librarian* DangNhapThuThu(const string &usernameInput,const string &passwordInput);
     bool DangXuat(USER* &currentUser);
     void HienThiTatCaDocGia() const;
+
 
 };

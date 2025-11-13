@@ -9,6 +9,7 @@
 #include "ScreenReaderRegister.h"
 #include "ScreenReaderMenu.h"
 #include "ScreenLoginLibrarian.h"
+#include "ScreenLibMenu.h"
 #include "ScreenSearchBook.h"
 #include "ScreenBorrowBook.h"
 #include "ScreenReturnBook.h"
@@ -51,12 +52,18 @@ int main(){
     scrRole.onLibrarian = [&current]() { current = SCREEN_LIB_LOGIN; };
 
     ScreenReaderChoice  scrRChoice(font);
+    scrRChoice.init(window);
     ScreenReaderLogin   scrRLogin(font,&L,&currentReader);
     scrRLogin.init(window);
     ScreenReaderRegister scrRReg(font,&L);
-    ScreenReaderMenu    scrRMenu(font,&window);
+    scrRReg.init(window);
+
+    ScreenReaderMenu scrRMenu(font, &window, &current);
+
 
     ScreenLoginLibrarian scrLibLogin(font,&L);
+    scrLibLogin.init(window);
+    ScreenLibMenu       scrLibMenu(font,&window);
 
     ScreenSearchBook    scrSearch(font,&L);
     ScreenViewBook      scrViewBook(font,&L);
@@ -91,6 +98,7 @@ int main(){
             case SCREEN_READER_MENU:    screen = &scrRMenu; break;
 
             case SCREEN_LIB_LOGIN:      screen = &scrLibLogin; break;
+            case SCREEN_LIB_MENU:       screen = &scrLibMenu; break;
 
 
 

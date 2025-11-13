@@ -267,127 +267,106 @@ bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
     return false;
 }
 
-void LibrarySystem::DangKyDocGia() {
-    string hoTen, sdt, email, user, pass;
-
-    cout << "Nhap ho ten: ";
-    getline(cin, hoTen);
-
-    while(true){
-        cout << "Nhap SDT: ";
-        getline(cin, sdt);
-        if(kiemTraSDT(sdt)) break;
-        cout << "So dien thoai khong hop le. Nhap lai.\n";
+bool LibrarySystem::DangKyDocGia(const string &hoTen, const string &sdt, const string &email, const string &user, const string &pass) {
+    // Kiểm tra hợp lệ
+    if (!kiemTraSDT(sdt)) {
+        cout << "Số điện thoại không hợp lệ.\n";
+        return false;
+    }
+    if (!kiemTraEmail(email)) {
+        cout << "Email không hợp lệ.\n";
+        return false;
+    }
+    if (KiemTraDocGiaDaDangKy(user)) {
+        cout << "Username đã tồn tại.\n";
+        return false;
+    }
+    if (!kiemTraMatKhau(pass)) {
+        cout << "Mật khẩu không hợp lệ.\n";
+        return false;
     }
 
-    while(true){
-        cout << "Nhap Email: ";
-        getline(cin, email);
-        if(kiemTraEmail(email)) break;
-        cout << "Email khong hop le. Nhap lai.\n";
-    }
-
-    while(true){
-        cout << "Nhap username: ";
-        getline(cin, user);
-        if(!KiemTraDocGiaDaDangKy(user)) break;
-        cout << "Username ton tai. Nhap lai.\n";
-    }
-
-    while(true){
-        cout << "Nhap password (8 ky tu): ";
-        getline(cin, pass);
-        if(kiemTraMatKhau(pass)) break;
-        cout << "Password khong hop le.\n";
-    }
-
+    // Tạo đối tượng Reader
     Reader* dg = new Reader();
     dg->SignUp(hoTen, sdt, email, user, pass);
 
+    // Thêm vào danh sách liên kết
     NodeReader* newNode = new NodeReader(dg);
     newNode->next = HeadDsDocGia;
     HeadDsDocGia = newNode;
 
+    // Lưu vào file
     ofstream out("DocGia.txt", ios::app);
-    if(out.is_open()){
+    if (out.is_open()) {
         out << dg->toCSV() << endl;
         out.close();
-        cout << "Da luu doc gia moi.\n";
+        return true;
     } else {
-        cout << "Khong mo duoc file DocGia.txt.\n";
+        cout << "Không mở được file DocGia.txt.\n";
+        return false;
     }
+
 }
 
-
-bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {
-    string username, password;
-
-    while(true){
-        cout << "\n===== DANG NHAP DOC GIA =====\n";
-        cout << "Nhap username: ";
-        getline(cin, username);
-
-        cout << "Nhap password: ";
-        getline(cin, password);
-
-        NodeReader* p = HeadDsDocGia;
-        bool ok = false;
-        while(p){
-            if(p->data->Login(username, password)){
-                currentUser = p->data;
-                cout << "Dang nhap thanh cong!\n";
-                return true;
-            }
-            p = p->next;
+Reader* LibrarySystem::DangNhapDocGia(const string& username, const string& password) {
+    NodeReader* p = HeadDsDocGia;
+    while (p) {
+        if (p->data->Login(username, password)) {
+            return p->data; // Đăng nhập thành công
         }
-        cout << "Sai username / password. Nhap lai!\n";
+        p = p->next;
     }
+    return nullptr; // Sai username/password
 }
 
-bool LibrarySystem::DangNhapThuThu(const string &usernameInput,
-                                   const string &passwordInput,
-                                   USER* &currentUser){
+std::string trim(const std::string &s) {
+    size_t start = s.find_first_not_of(" \r\n\t");
+    size_t end = s.find_last_not_of(" \r\n\t");
+    return (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+}
+
+Librarian* LibrarySystem::DangNhapThuThu(const string &usernameInput, const string &passwordInput)
+{
     string username = usernameInput;
     string password = passwordInput;
 
-    while(true){
-        ifstream in("ThuThu.txt");
-        if(!in.is_open()){
-            cout << "Khong the mo file ThuThu.txt\n";
-            return false;
-        }
-
-        bool found = false;
-        string line;
-        while(getline(in, line)){
-            stringstream ss(line);
-            string maID, hoTen, sdt, email, user, pass;
-            getline(ss, maID, '|');
-            getline(ss, hoTen, '|');
-            getline(ss, sdt, '|');
-            getline(ss, email, '|');
-            getline(ss, user, '|');
-            getline(ss, pass, '|');
-
-            if(user == username && pass == password){
-                Librarian* tt = new Librarian();
-                tt->SetThongTin(maID, hoTen, sdt, email, user, pass);
-                currentUser = tt;
-                cout << "Dang nhap thanh cong!\n";
-                found = true;
-                break;
-            }
-        }
-        in.close();
-
-        if(found) return true;
-
-        cout << "Sai tai khoan / mat khau! Nhap lai!\n";
-        cout << "Ten dang nhap: ";
-        getline(cin, username);
-        cout << "Mat khau: ";
-        getline(cin, password);
+    std::ifstream in("ThuThu.txt");
+    if(!in.is_open()){
+        std::cout << "Khong the mo file ThuThu.txt\n";
+        return nullptr;
     }
+
+    string line;
+    while(std::getline(in, line)){
+        if(line.empty()) continue; // bỏ dòng trống
+
+        std::stringstream ss(line);
+        string maID, hoTen, sdt, email, user, pass;
+
+        getline(ss, maID, '|');
+        getline(ss, hoTen, '|');
+        getline(ss, sdt, '|');
+        getline(ss, email, '|');
+        getline(ss, user, '|');
+        getline(ss, pass, '|');
+
+        // Trim tất cả giá trị
+        maID = trim(maID);
+        hoTen = trim(hoTen);
+        sdt = trim(sdt);
+        email = trim(email);
+        user = trim(user);
+        pass = trim(pass);
+
+
+        if(user == username && pass == password){
+            Librarian* tt = new Librarian();
+            tt->SetThongTin(maID, hoTen, sdt, email, user, pass);
+            return tt; // login thành công
+        }
+    }
+
+    return nullptr; // không tìm thấy
 }
 
 bool LibrarySystem::DangXuat(USER* &currentUser){

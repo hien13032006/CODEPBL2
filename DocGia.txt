@@ -18,3 +18,4 @@ R0016|Le Thao Linh|0875387265|linh@gmail.com|linh123|linh1234
 R0017|Nguyen Van Danh|0398576284|danh@gmail.com|danh123|danh1234
 R0018|Phan My Huong|0983478972|huong@gmail.com|huong123|huong123
 R0019|Nguyen Minh Quang|0984726484|quang@gmail.com|quang123|quang123
+R0020|Nguyen Minh Hao|0374658986|hao@gmail.com|hao12345|********

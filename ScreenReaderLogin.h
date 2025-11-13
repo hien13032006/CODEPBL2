@@ -19,6 +19,7 @@ private:
 
     sf::Text lbUser;
     sf::Text lbPass;
+    sf::Text lbError;
 
 public:
     TextBox boxUser;
@@ -59,23 +60,25 @@ public:
         float boxWidth = 320.f;
         float boxHeight = 45.f;
 
-        // --- Nhãn + ô nhập ---
-        float startY = winSize.y * 0.35f;
+        
+        float boxX = winSize.x * 0.6f;
+        float boxYUser = winSize.y * 0.40f;
+        float boxYPass = winSize.y * 0.50f;
 
-        lbUser.setPosition(centerX - boxWidth - 20, startY + 10);
-        boxUser = TextBox(font, {centerX - boxWidth * 0.3f, startY}, {boxWidth, boxHeight});
+        float labelOffsetX = 50.f;  // khoảng cách giữa nhãn và textbox
+        float labelOffsetY = 5.f;   // nhãn nằm cao hơn textbox
 
-        lbPass.setPosition(centerX - boxWidth - 20, startY + 90);
-        boxPass = TextBox(font, {centerX - boxWidth * 0.3f, startY + 80}, {boxWidth, boxHeight});
-        boxPass.setPassword(true);
+        // Đặt nhãn sát bên trái textbox
+        lbUser.setPosition(boxX - labelOffsetX - 100.f, boxYUser + labelOffsetY);
+        lbPass.setPosition(boxX - labelOffsetX - 100.f, boxYPass + labelOffsetY);
 
-        // Khởi tạo TextBox theo tỷ lệ màn hình
-        boxUser = TextBox(font, {winSize.x * 0.6f, winSize.y * 0.40f}, {350, 55});
-        boxPass = TextBox(font, {winSize.x * 0.6f, winSize.y * 0.50f}, {350, 55});
+        // Khởi tạo textbox
+        boxUser = TextBox(font, {boxX, boxYUser}, {350, 55});
+        boxPass = TextBox(font, {boxX, boxYPass}, {350, 55});
         boxPass.setPassword(true);
 
         // Nút Login/Back bên phải
-        btnOK   = Button("Login", font, {winSize.x * 0.55f, winSize.y * 0.60f}, {200, 60});
+        btnOK   = Button("Login", font, {winSize.x * 0.57f, winSize.y * 0.60f}, {200, 60});
         btnBack = Button("Back",  font, {winSize.x * 0.70f, winSize.y * 0.60f}, {200, 60});
     }
 
@@ -87,10 +90,25 @@ public:
         btnOK.handleEvent(e, *window);
         btnBack.handleEvent(e, *window);
 
-        // Ví dụ callback để thay đổi state
-        btnOK.setCallback([&]() {
-            current = SCREEN_READER_LOGIN; // hoặc xử lý login
+        // Khi nhấn nút Login
+        btnOK.setCallback([this, &current]() {
+            std::string username = boxUser.get();
+            std::string password = boxPass.get();
+
+            if (library) {
+                Reader *r = library->DangNhapDocGia(username, password);
+                if (r) {
+                    if (currentReader) *currentReader = r;
+                    lbError.setString("");
+                    current = SCREEN_READER_MENU; // tạm dùng màn hình lựa chọn Reader
+                } else {
+                    lbError.setString("Sai username hoặc password!");
+                }
+            } else {
+                lbError.setString("Loi he thong thu vien!");
+            }
         });
+        // Khi nhấn nút Back
         btnBack.setCallback([&]() {
             current = SCREEN_WELCOME;
         });

@@ -29,7 +29,7 @@ sf::Color Theme::Title        = sf::Color::White;
 sf::Color Theme::InputFill    = sf::Color(200,200,200);
 sf::Color Theme::InputOutline = sf::Color::Black;
 
-sf::Color Theme::BG           = sf::Color(236,240,241);
+sf::Color Theme::BG           = sf::Color(250, 250, 240);
 sf::Color Theme::Text         = sf::Color(44,62,80);
 sf::Color Theme::Hint         = sf::Color(149,165,166);
 sf::Color Theme::Button       = sf::Color(52,152,219);

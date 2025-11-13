@@ -21,7 +21,7 @@ public:
     : head(h), onBack(backFunc) {}
 
     void init() {
-        font.loadFromFile("assets/DejaVuSans.ttf");
+        font.loadFromFile("DejaVuSans.ttf");
 
         title.setFont(font);
         title.setString("DANH SACH SACH");

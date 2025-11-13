@@ -14,7 +14,7 @@ private:
     bool isPressed = false;
     std::function<void()> callback;
 
-    sf::Color normalColor = sf::Color(200, 200, 200);
+    sf::Color normalColor = sf::Color(135, 206, 235);
     sf::Color hoverColor  = sf::Color(180, 180, 255);
     sf::Color pressColor  = sf::Color(150, 150, 255);
     sf::Color textColor   = sf::Color::Black;
@@ -93,6 +93,15 @@ public:
         if (e.type == sf::Event::MouseButtonReleased)
             isPressed = false;
     }
+
+    sf::Vector2f getSize() const {
+        return box.getSize();
+   }
+
+    // Lấy vị trí nút
+    sf::Vector2f getPosition() const {
+        return box.getPosition();
+  }
 
     void update() {
         if (isPressed)

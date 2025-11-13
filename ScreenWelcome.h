@@ -4,28 +4,40 @@
 #include "ScreenBase.h"
 #include "Button.h"
 #include "Theme.h"
+#include <iostream>
 
 class ScreenWelcome : public ScreenBase {
 private:
     sf::Font &font;
     Button btnVisit;
+    Button btnExit;
+
     sf::Texture bgTexture;
     sf::Sprite bgSprite;
 
 public:
     ScreenWelcome(sf::Font &f)
-        : font(f), btnVisit("VISIT", f, 26)
+        : font(f),
+          btnVisit("   VISIT", f, 40),
+          btnExit("   EXIT", f, 40)
     {
-        btnVisit.setSize(180, 55);
-        btnVisit.setPosition(800, 800);
+        // --- Kích thước và vị trí các nút ---
+        btnVisit.setSize(200, 60);
+        btnExit.setSize(200, 60);
+
+        btnVisit.setPosition(800, 800);      // Nút VISIT
+        btnExit.setPosition(800, 900);      // Nút EXIT (bên phải VISIT)
     }
 
-    void init(sf::RenderWindow &window) {
-        if(!bgTexture.loadFromFile("pic1.png")) {
-            std::cout << "Cannot load pic1.png\n";
+    void init(sf::RenderWindow &window) override {
+        // Load hình nền
+        if(!bgTexture.loadFromFile("pic3.png")) {
+            std::cout << "Cannot load pic3.png\n";
+            bgTexture.create(1024, 768);
         }
         bgSprite.setTexture(bgTexture);
-        // Scale full window
+
+        // Scale full màn hình
         sf::Vector2u windowSize = window.getSize();
         bgSprite.setScale(
             float(windowSize.x) / bgTexture.getSize().x,
@@ -34,21 +46,32 @@ public:
     }
 
     void handleEvent(sf::Event &e, AppState &cur, sf::RenderWindow *w) override {
-        if(e.type == sf::Event::MouseButtonPressed && w){
+        if(!w) return;
+
+        btnVisit.handleEvent(e, *w);
+        btnExit.handleEvent(e, *w);
+
+        if (e.type == sf::Event::MouseButtonPressed && e.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2f mousePos = w->mapPixelToCoords({e.mouseButton.x, e.mouseButton.y});
-            if(btnVisit.hit(mousePos.x, mousePos.y)){
-                cur = SCREEN_ROLE;
+
+            if (btnVisit.hit(mousePos.x, mousePos.y)) {
+                cur = SCREEN_ROLE; // chuyển sang màn hình Role
+            } 
+            else if (btnExit.hit(mousePos.x, mousePos.y)) {
+                w->close(); // đóng cửa sổ
             }
         }
     }
 
     void update() override {
         btnVisit.update();
+        btnExit.update();
     }
 
     void draw(sf::RenderWindow &w) override {
-        w.draw(bgSprite);    // Vẽ hình nền trước
-        btnVisit.draw(w);    // Vẽ nút sau
+        w.draw(bgSprite);
+        btnVisit.draw(w);
+        btnExit.draw(w);
     }
 };
 
