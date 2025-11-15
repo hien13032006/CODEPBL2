@@ -2,7 +2,19 @@
 #include "LibrarySystem.h"
 #include "Book.h"
 #include <iostream>
+#include <iomanip>
 using namespace std;
+
+Librarian::Librarian() : USER() {
+    vaiTro = UserRole::Librarian;
+    chucVu = "Thu Thu";
+}
+
+Librarian::Librarian(string maID, string hoTen, string SDT, string Email, string username, string password, string chucVu)
+    : USER(maID, hoTen, SDT, Email, username, password) {
+    this->vaiTro = UserRole::Librarian;
+    this->chucVu = chucVu;
+}
 
 void Librarian::SetThongTin(string maID,string hoTen, string SDT, string Email, string username, string password) {
     this->maID = maID;
@@ -11,11 +23,16 @@ void Librarian::SetThongTin(string maID,string hoTen, string SDT, string Email, 
     this->Email = Email;
     this->username = username;
     this->password = password;
+    this->vaiTro = UserRole::Librarian;
 }
 
 void Librarian::HienThiThongTin() const {
-    cout << "\n--- THONG TIN THU THU ---\n";
     USER::HienThiThongTin();
+    cout << setw(15) << chucVu << endl;
+}
+void Librarian::ThemSach(LibrarySystem &L) {
+    L.DocFileSach("ThemSach.txt");
+    L.GhiFileSach("DanhSachSach.txt");
 }
 
 void Librarian::XoaSach(LibrarySystem &L) {
@@ -23,6 +40,10 @@ void Librarian::XoaSach(LibrarySystem &L) {
     cout << "Nhap ma sach can xoa: ";
     getline(cin,maSach);
     L.XoaSach(maSach);
+}
+
+void Librarian::CapNhatThongTinSach(LibrarySystem &L) {
+    L.CapNhatThongTinSach();
 }
 
 

@@ -8,6 +8,8 @@ void MenuThuThu(LibrarySystem& system, USER*& currentUser);
 
 int main() {
     LibrarySystem system;
+    Librarian *tt;
+    Reader *docGia;
     USER* currentUser = nullptr;
 
     cout << "==============================\n";
@@ -16,7 +18,7 @@ int main() {
 
     system.DocFileHeThong("DanhSachSach.txt");
     system.DocFileDocGia();
-    system.XayDungTatCaCay();
+    system.BuildHashTable();
 
     int luaChonChinh;
     do {
@@ -112,7 +114,13 @@ void MenuDocGia(LibrarySystem& system, USER*& currentUser) {
         cin.ignore();
 
         switch (chonDG) {
-            case 1: system.TimSach(); break;
+            case 1: {
+                string keyword;
+                cout << "Nhap tu khoa tim kiem: ";
+                getline(cin, keyword);
+                system.TimSach(keyword); 
+                break;
+            }
             case 2: {
                 string ma;
                 cout << "Nhap ma sach muon: ";
@@ -127,7 +135,7 @@ void MenuDocGia(LibrarySystem& system, USER*& currentUser) {
                 system.TraSach(docGia, ma);
                 break;
             }
-            case 4: docGia->HienThiSachDaMuon(); break;
+            case 4: docGia->HienThiSachDangMuon(); break;
             case 5: system.HienThiDanhSachSach(); break;
             case 6: docGia->HienThiLichSuMuonTra(); break;
             case 7: system.XepHangSach(); break;
@@ -159,19 +167,21 @@ void MenuThuThu(LibrarySystem& system, USER*& currentUser) {
 
         switch (chonTT) {
             case 1:
-                system.DocFileSach("ThemSach.txt");
-                system.GhiFileSach("DanhSachSach.txt");
+                tt->ThemSach(system);
                 break;
             case 2: {
-                string ma;
-                cout << "Nhap ma sach can xoa: ";
-                getline(cin, ma);
-                system.XoaSach(ma);
+                tt->XoaSach(system);
                 break;
             }
             case 3: system.HienThiDanhSachSach(); break;
-            case 4: system.TimSach(); break;
-            case 5: system.CapNhatThongTinSach(); break;
+            case 4: {
+                string keyword;
+                cout << "Nhap tu khoa tim kiem: ";
+                getline(cin, keyword);
+                system.TimSach(keyword); 
+                break;
+            }
+            case 5: tt->CapNhatThongTinSach(system); break;
             case 6: system.HienThiTatCaDocGia(); break;
             case 7: system.XepHangSach(); break;
             case 8: system.DangXuat(currentUser); break;

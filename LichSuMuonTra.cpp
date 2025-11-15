@@ -19,11 +19,11 @@ bool StackLichSu::isEmpty() const {
 
 void StackLichSu::hienThiLichSu() const {
     if (isEmpty()) {
-        cout << "📭 Bạn chưa có lịch sử mượn/trả nào.\n";
+        cout << "Bạn chưa có lịch sử mượn/trả nào.\n";
         return;
     }
 
-    cout << "\n📚 Lịch sử mượn/trả:\n";
+    cout << "\nLich su muon - tra:\n";
     NodeLichSu* current = top;
     while (current != nullptr) {
         cout << current->data.hanhDong << " - " << current->data.tenSach

@@ -14,14 +14,15 @@ protected:
     string theLoai;
     int namXuatBan;
     string nhaXuatBan;
-    string tinhTrang; // "Dang con" hoặc "Da muon"
+    int soLuong;
+    string imagePath; // Đường dẫn đến ảnh bìa sách
     double tongDiemDanhGia = 0;
     int soLuotDanhGia = 0;
 
 public:
-    Sach() : namXuatBan(0), tinhTrang("Dang con") {}
-    Sach(string ten, string tg, string tl, int nam, string nxb)
-        : tenSach(ten), tacGia(tg), theLoai(tl), namXuatBan(nam), nhaXuatBan(nxb), tinhTrang("Dang con") {}
+    Sach() : namXuatBan(0), soLuong(0) {}
+    Sach(string ten, string tg, string tl, int nam, string nxb, int sl = 0)
+        : tenSach(ten), tacGia(tg), theLoai(tl), namXuatBan(nam), nhaXuatBan(nxb), soLuong(sl) {}
 
     virtual ~Sach() = default;
 
@@ -31,8 +32,17 @@ public:
     virtual string toCSV() const;          // Xuất ra file
     virtual void hienThiThongTin() const;
 
-    void muonSach() { tinhTrang = "Da muon"; }
-    void traSach() { tinhTrang = "Dang con"; }
+    bool muonSach() {
+        if (soLuong > 0) {
+            soLuong--;
+            return true;
+        }
+        return false; // hết sách
+    }
+    void traSach() {
+        soLuong++;
+    }
+
     void themDanhGia(int diem) {
         tongDiemDanhGia += diem;
         soLuotDanhGia++;
@@ -45,7 +55,7 @@ public:
     string getTheLoai() const { return theLoai; }
     int getNamXuatBan() const { return namXuatBan; }
     string getNhaXuatBan() const { return nhaXuatBan; }
-    string getTinhTrang() const { return tinhTrang; }
+    int getSoLuong() const { return soLuong; }
     double getTongDiem() const { return tongDiemDanhGia; }
     int getSoDanhGia() const { return soLuotDanhGia; }
     double getDiemTrungBinh() const {
@@ -58,7 +68,7 @@ public:
     void setTheLoai(string tl) { theLoai = tl; }
     void setNamXuatBan(int nxb) { namXuatBan = nxb; }
     void setNhaXuatBan(string nhxb) { nhaXuatBan = nhxb; }
-    void setTinhTrang(string t) { tinhTrang = t; }
+    void setSoLuong(int sl) { soLuong = sl; }
 
 
     void setDanhGia(double tong, int so) {

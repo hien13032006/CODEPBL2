@@ -8,97 +8,72 @@
 #include <cctype>
 using namespace std;
 
+int LibrarySystem::hashFunction(const string& s) {
+    int hash = 0;
+    for (char c : s) hash = (hash * 31 + c) % TABLE_SIZE;
+    return hash;
+}
 
-namespace {
-    string normalizeString(const string& s) {
-        // collapse whitespace and trim
-        istringstream iss(s);
+void LibrarySystem::BuildHashTable() {
+    // Khởi tạo bảng băm
+    for (int i = 0; i < TABLE_SIZE; i++)
+        hashTable[i] = nullptr;
+
+    NodeBook* cur = HeadDsSach;
+
+    while (cur != nullptr) {
+        Sach* s = cur->data;
+
+        // Ghép tất cả thông tin thành 1 chuỗi
+        string info = s->getMaSach() + " " +
+                      s->getTenSach() + " " +
+                      s->getTacGia() + " " +
+                      s->getTheLoai() + " " +
+                      s->getNhaXuatBan() + " " +
+                      to_string(s->getNamXuatBan());
+
+        // Chuyển về lowercase
+        for (char &c : info) c = tolower(c);
+
+        // Tách thành các từ
+        stringstream ss(info);
         string word;
-        string out;
-        bool first = true;
-        while (iss >> word) {
-            if (!first) out += ' ';
-            out += word;
-            first = false;
+
+        while (ss >> word) {
+            int index = hashFunction(word);
+            HashNode* node = hashTable[index];
+
+            bool existed = false;
+
+            // Kiểm tra xem key đã tồn tại chưa
+            while (node != nullptr) {
+                if (node->key == word) {
+                    // Thêm sách vào danh sách
+                    NodeBook* nb = new NodeBook(s);
+                    nb->next = node->list;
+                    node->list = nb;
+
+                    existed = true;
+                    break;
+                }
+                node = node->next;
+            }
+
+            if (existed) continue;  // đi tới từ tiếp theo
+
+             // Nếu không tồn tại → tạo mới
+            HashNode* newNode = new HashNode();
+            newNode->key = word;
+
+            newNode->list = new NodeBook(s);
+            newNode->list->next = nullptr;
+
+            newNode->next = hashTable[index];
+            hashTable[index] = newNode;
         }
-        // to lower
-        transform(out.begin(), out.end(), out.begin(), [](unsigned char c){ return std::tolower(c); });
-        return out;
+        cur = cur->next;
     }
 }
-
-TreeNode* LibrarySystem::insertByKey(TreeNode* root, Sach* s, const string& key) {
-    if (root == nullptr) return new TreeNode(s);
-    if (key < root->data->getTenSach())
-        root->left = insertByKey(root->left, s, key);
-    else
-        root->right = insertByKey(root->right, s, key);
-    return root;
-}
-
-TreeNode* LibrarySystem::insertByIntKey(TreeNode* root, Sach* s, int key) {
-    if (root == nullptr) return new TreeNode(s);
-    if (key < root->data->getNamXuatBan())
-        root->left = insertByIntKey(root->left, s, key);
-    else
-        root->right = insertByIntKey(root->right, s, key);
-    return root;
-}
-
-void LibrarySystem::XayDungTatCaCay() {
-    rootMaSach = rootTenSach = rootTacGia = rootTheLoai = rootNamXB = nullptr;
-
-    NodeBook* current = HeadDsSach;
-    while (current != nullptr) {
-        Sach* s = current->data;
-        rootMaSach   = insertByKey(rootMaSach, s, s->getMaSach());
-        rootTenSach  = insertByKey(rootTenSach, s, s->getTenSach());
-        rootTacGia   = insertByKey(rootTacGia, s, s->getTacGia());
-        rootTheLoai  = insertByKey(rootTheLoai, s, s->getTheLoai());
-        rootNamXB    = insertByIntKey(rootNamXB, s, s->getNamXuatBan());
-        current = current->next;
-    }
-}
-
-//Duyệt toàn bộ cây
-void LibrarySystem::inOrderSearchKey(TreeNode* root, const string& key, int tieuChi, bool &found) const {
-    if (!root) return;
-    inOrderSearchKey(root->left, key, tieuChi, found);
-
-    string value;
-    switch (tieuChi) {
-        case 1: value = root->data->getMaSach(); break;
-        case 2: value = root->data->getTenSach(); break;
-        case 3: value = root->data->getTacGia(); break;
-        case 5: value = root->data->getTheLoai(); break;
-        default: value = ""; break;
-    }
-
-    string normValue = normalizeString(value);
-    string normKey = normalizeString(key);
-
-    // Nếu key rỗng thì bỏ qua
-    if (!normKey.empty() && normValue.find(normKey) != string::npos) {
-        root->data->hienThiThongTin();
-        found = true;
-    }
-
-
-    inOrderSearchKey(root->right, key, tieuChi, found);
-}
-
-void LibrarySystem::inOrderSearchInt(TreeNode* root, int key, bool &found) const {
-    if (!root) return;
-    inOrderSearchInt(root->left, key, found);
-
-    if (root->data->getNamXuatBan() == key) {
-        root->data->hienThiThongTin();
-        found = true;
-    }
-
-    inOrderSearchInt(root->right, key, found);
-}
-
 
 LibrarySystem::LibrarySystem() {
     HeadDsSach = nullptr;
@@ -146,8 +121,8 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         if (line.empty()) continue;
 
         stringstream ss(line);
-        string ma, ten, tacGia, theLoai, nhaXB, tinhTrangStr, diemTBStr, soDanhGiaStr;
-        int namXB;
+        string ma, ten, tacGia, theLoai, nhaXB, diemTBStr, soDanhGiaStr;
+        int namXB, soLuong;
 
         getline(ss, ma, '|');
         getline(ss, ten, '|');
@@ -156,11 +131,11 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         ss >> namXB;
         ss.ignore();
         getline(ss, nhaXB, '|');
-        getline(ss, tinhTrangStr,'|');
+        ss >> soLuong;
+        ss.ignore();
         getline(ss, diemTBStr, '|');
-        getline(ss, soDanhGiaStr);
+        getline(ss, soDanhGiaStr);  
 
-        bool tinhTrang = (tinhTrangStr == "Dang con");
 
         double tong = 0;
         int soDG = 0;
@@ -170,7 +145,7 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         // Tạo đối tượng phù hợp với thể loại
         Sach* sachMoi = Sach::createFromData(ten, tacGia, theLoai, namXB, nhaXB);
         sachMoi->setMaSach(ma);
-        sachMoi->setTinhTrang(tinhTrang ? "Dang con" : "Da muon");
+        sachMoi->setSoLuong(soLuong);
         sachMoi->setDanhGia(tong, soDG);
 
         // Thêm vào cuối danh sách liên kết
@@ -208,7 +183,7 @@ void LibrarySystem::GhiFileHeThong(const string& fileName) const {
             << current->data->getTheLoai() << "|"
             << current->data->getNamXuatBan() << "|"
             << current->data->getNhaXuatBan() << "|"
-            << (current->data->getTinhTrang()) << "|"
+            << current->data->getSoLuong() << "|"
             << current->data->getTongDiem() << "|"
             << current->data->getSoDanhGia()
             << "\n";
@@ -235,13 +210,15 @@ void LibrarySystem::DocFileDocGia() {
         if (line.empty() || line == "\r" || line == "\n") continue;
 
         stringstream ss(line);
-        string ma, hoten, sdt, email, user, pass;
+        string ma, hoten, sdt, email, user, pass, ngayDKStr;
         getline(ss, ma, '|');
         getline(ss, hoten, '|');
         getline(ss, sdt, '|');
         getline(ss, email, '|');
         getline(ss, user, '|');
         getline(ss, pass, '|');
+        getline(ss, ngayDKStr);
+
 
         // Tạo đối tượng Reader bằng new (trên heap)
         Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass);
@@ -276,6 +253,34 @@ void LibrarySystem::DocFileDocGia() {
 
 
     cin.clear();
+}
+
+void LibrarySystem::TimSach(const string& keyword) {
+    string key = keyword;
+    for (char &c : key) c = tolower(c);
+
+    int index = hashFunction(key);
+
+    bool found = false;
+
+    // Tìm kiếm nhanh bằng bảng băm
+    HashNode* node = hashTable[index];
+    while (node != nullptr) {
+        if (node->key == key) {
+            cout << "=== Ket qua tu bang bam ===\n";
+            NodeBook* p = node->list;
+            while (p != nullptr) {
+                p->data->hienThiThongTin();
+                p = p->next;
+            }
+            found = true;
+            break;
+        }
+        node = node->next;
+    }
+
+    if (!found)
+        cout << "Khong tim thay sach.\n";
 }
 
 
@@ -321,7 +326,7 @@ void LibrarySystem::CapNhatThongTinSach() {
     }
 
     Sach* sach = current->data;
-    cout << "\n📘 Thong tin sach hien tai:\n";
+    cout << "Thong tin sach hien tai:\n";
     sach->hienThiThongTin();
 
     bool tiepTuc = true;
@@ -402,64 +407,12 @@ void LibrarySystem::CapNhatThongTinSach() {
     cout << "\nDa cap nhat va luu thay doi vao file he thong.\n";
 }
 
-void LibrarySystem::TimSach() {
-    if (!rootTenSach) XayDungTatCaCay();
-
-    cout << "\n========= TIM KIEM SACH (BST) =========\n";
-    cout << "1. Ma sach\n";
-    cout << "2. Ten sach\n";
-    cout << "3. Tac gia\n";
-    cout << "4. Nam xuat ban\n";
-    cout << "5. The loai\n";
-    cout << "Chon tieu chi: ";
-
-    int chon;
-    cin >> chon;
-    cin.ignore();
-
-    bool found = false;
-    switch (chon) {
-        case 1: {
-            string ma; cout << "Nhap ma sach: "; getline(cin, ma);
-            inOrderSearchKey(rootMaSach, ma, 1, found);
-            break;
-        }
-        case 2: {
-            string ten; cout << "Nhap ten sach: "; getline(cin, ten);
-            inOrderSearchKey(rootTenSach, ten, 2, found);
-            break;
-        }
-        case 3: {
-            string tg; cout << "Nhap ten tac gia: "; getline(cin, tg);
-            inOrderSearchKey(rootTacGia, tg, 3, found);
-            break;
-        }
-        case 4: {
-            int nam; cout << "Nhap nam xuat ban: "; cin >> nam;
-            inOrderSearchInt(rootNamXB, nam, found);
-            break;
-        }
-        case 5: {
-            string tl; cout << "Nhap the loai: "; getline(cin, tl);
-            inOrderSearchKey(rootTheLoai, tl, 5, found);
-            break;
-        }
-        default:
-            cout << "Lua chon khong hop le!\n";
-            return;
-    }
-
-    if (!found)
-        cout << "Khong tim thay ket qua phu hop.\n";
-    else
-        cout << "-----------------------------------------\n";
-}
 
 void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
     NodeBook* current = HeadDsSach;
     while (current != nullptr) {
         if (current->data->getMaSach() == maSach) {
-            if (current->data->getTinhTrang() == "Da muon") {
+            if (current->data->getSoLuong() == 0) {
                 cout << "Sach da het khong the muon\n";
                 return;
             }
@@ -832,6 +785,8 @@ void LibrarySystem::HienThiTatCaDocGia() const {
                  << setw(17) << "So DT"      
                  << setw(20) << "Email"      
                  << setw(15) << "Username"
+                 << setw(15) << "Ngay DK"
+                 << setw(10) << "Da muon"
                  << "\n";  
 
     while (current != nullptr) {
