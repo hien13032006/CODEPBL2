@@ -2,16 +2,11 @@
 #define Reader_h
 #include "USER.h"
 #include "LichSuMuonTra.h"
+#include "Node.h"
 #include <string>
 #include <ctime>
 
 class Sach;
-
-struct NodeMuonSach {
-    Sach* data; //thong tin sach da muon
-    string ngayMuon;
-    NodeMuonSach *next; //con tro den sach tiep theo
-};
 
 class Reader : public USER {
     private:
@@ -21,22 +16,28 @@ class Reader : public USER {
         NodeMuonSach *HeadDsMuonSach; //con tro den dau danh sach sach da muon
         StackLichSu LichSu;
         string fileLichSu;
+
     public:
         Reader();
         Reader(string ma, string hoTen, string sdt, string email, string username, string password);
         ~Reader();
 
         void HienThiThongTin() const override;
-        UserRole getVaiTro() const override { return UserRole::READER; }
+        UserRole getVaiTro() const override { return UserRole::Reader; }
 
         void SignUp(string hoTen, string SDT, string Email, string username, string password);
 
         bool coTheMuonSach() const;
         bool DaMuonSach(const string maSach) const;
         int DemSachDaMuon() const;
-        void themSachDaMuon(const Sach* s);// them sach da muon vao NodeMuonSach
-        void xoaSachDaMuon(const string& maSach);// xoa sach vua tra ra khoi NodeMuonSach
-        void HienThiSachDangMuon();
+        int getSoSachConCoTheMuon() const;
+        
+        void themPhieuMuonSach(const Sach* s);  //Tạo phiếu mượn
+        void themPhieuMuonSachTuFile(const Sach* s, time_t ngayMuon, time_t ngayHetHan);
+        void xoaPhieuMuonSach(const string& maSach); //Xóa phiếu mượn khi trả sách
+
+        void HienThiSachDangMuon() const;
+        int DemSachQuaHan() const; 
 
         void docFileSachDangMuonTuFile();
         void ghiLichSu(const string& hanhDong, const Sach* s);
@@ -45,9 +46,12 @@ class Reader : public USER {
         string toCSV() const;
         
         time_t getNgayDangKy() const { return ngayDangKy; }
-        int getGioiHanSachMuon() const { return gioiHanSachMuon; }
+        int getGioiHanMuon() const { return gioiHanSachMuon; }
         string getFileLichSu() const { return fileLichSu; }
+        NodeMuonSach* getDanhSachPhieuMuon() const { return HeadDsMuonSach; } 
 
+        void setDanhSachPhieuMuon(NodeMuonSach* head) {  HeadDsMuonSach = head;}
+        void setGioiHanMuon(int limit) { gioiHanSachMuon = limit; }
         static void setReaderCount(int n) { readerCount = n; }
         static int getReaderCount() { return readerCount; }
 };

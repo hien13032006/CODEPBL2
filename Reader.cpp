@@ -24,49 +24,20 @@ string layNgayDangKy(time_t ngayDK) {
     return string(buffer);
 }
 
-tm parseDateTime(const string& dateStr) {
-    tm t = {};
-    sscanf(dateStr.c_str(), "%d/%d/%d %d:%d:%d",
-           &t.tm_mday, &t.tm_mon, &t.tm_year,
-           &t.tm_hour, &t.tm_min, &t.tm_sec);
-
-    t.tm_mon -= 1;
-    t.tm_year -= 1900;
-
-    return t;
+// Hàm chuyển đổi time_t sang chuỗi ngày
+string timeString(time_t t) {
+    tm* ltm = localtime(&t);
+    char buffer[20];
+    sprintf(buffer, "%02d/%02d/%04d",
+            ltm->tm_mday, ltm->tm_mon + 1, ltm->tm_year + 1900);
+    return string(buffer);
 }
 
-string cong3Thang(const string& ngayMuon) {
-    tm t = parseDateTime(ngayMuon);
-
-    t.tm_mon += 3;
-    mktime(&t);
-
-    char buf[30];
-    sprintf(buf, "%02d/%02d/%04d", t.tm_mday, t.tm_mon + 1, t.tm_year + 1900);
-    return string(buf);
-}
-
-int tinhSoNgayConLai(const string& ngayMuon) {
-    tm tmMuon = parseDateTime(ngayMuon);
-
-    // hạn trả
-    tm tmHan = tmMuon;
-    tmHan.tm_mon += 3;
-    time_t tHan = mktime(&tmHan);
-
-    time_t now = time(nullptr);
-
-    double diff = difftime(tHan, now);
-    int days = diff / (60 * 60 * 24);
-
-    return days;
-}
 
 int Reader::readerCount = 1;
 
 Reader::Reader() : USER() {
-    vaiTro = UserRole::READER;
+    vaiTro = UserRole::Reader;
     gioiHanSachMuon = 5; // Mặc định giới hạn 5 cuốn sách
     stringstream ss;
     ss << "R" << setw(4) << setfill('0') << readerCount++;
@@ -78,7 +49,7 @@ Reader::Reader() : USER() {
 
 Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password) 
     : USER(ma, hoTen, sdt, email, username, password) {
-    vaiTro = UserRole::READER;
+    vaiTro = UserRole::Reader;
     gioiHanSachMuon = 5;
     ngayDangKy = time(nullptr);
     HeadDsMuonSach = nullptr;
@@ -91,7 +62,7 @@ Reader::~Reader() {
     while (current != nullptr) {
         NodeMuonSach *temp = current;
         current = current->next;
-        delete temp->data; // Giai phong thong tin sach
+        delete temp->phieu; // Giai phong thong tin sach
         delete temp;
     }
 }
@@ -109,7 +80,7 @@ void Reader::SignUp(string hoTen, string SDT, string Email, string username, str
 bool Reader::DaMuonSach(const string maSach) const {
     NodeMuonSach* current = HeadDsMuonSach;
         while (current != nullptr) {
-            if (current->data->getMaSach() == maSach)
+            if (current->phieu->sach->getMaSach() == maSach)
                 return true;
             current = current->next;
         }
@@ -128,26 +99,50 @@ int Reader::DemSachDaMuon() const {
 }
 
 bool Reader::coTheMuonSach() const {
-    return trangThaiHoatDong && (DemSachDaMuon() < gioiHanSachMuon);
+    return DemSachDaMuon() < gioiHanSachMuon;
 }
 
-void Reader::themSachDaMuon(const Sach* s) {
-    NodeMuonSach* newNode = new NodeMuonSach;
-    newNode->data = s->clone();
-    newNode->ngayMuon = layThoiGianHeThong();
+int Reader::getSoSachConCoTheMuon() const {
+    return gioiHanSachMuon - DemSachDaMuon();
+}
+
+void Reader::themPhieuMuonSach(const Sach* s) {
+    PhieuMuonSach* phieu = new PhieuMuonSach(s->clone());
+    NodeMuonSach* newNode = new NodeMuonSach(phieu);
     newNode->next = HeadDsMuonSach;
     HeadDsMuonSach = newNode;
+    
 }
 
-void Reader::xoaSachDaMuon(const string& maSach) {
+void Reader::themPhieuMuonSachTuFile(const Sach* s, time_t ngayMuon, time_t ngayHetHan) {
+    PhieuMuonSach* phieu = new PhieuMuonSach(s->clone(), ngayMuon, ngayHetHan);
+    NodeMuonSach* newNode = new NodeMuonSach(phieu);
+    
+    // Thêm vào cuối danh sách để giữ đúng thứ tự
+    if (HeadDsMuonSach == nullptr) {
+        HeadDsMuonSach = newNode;
+    } else {
+        NodeMuonSach* temp = HeadDsMuonSach;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+}
+
+void Reader::xoaPhieuMuonSach(const string& maSach) {
     NodeMuonSach* current = HeadDsMuonSach;
     NodeMuonSach* prev = nullptr;
+    
     while (current != nullptr) {
-        if (current->data->getMaSach() == maSach) {
+        if (current->phieu->sach->getMaSach() == maSach) {
             if (prev == nullptr)
                 HeadDsMuonSach = current->next;
             else
                 prev->next = current->next;
+            
+            delete current->phieu->sach;
+            delete current->phieu;
             delete current;
             return;
         }
@@ -156,52 +151,72 @@ void Reader::xoaSachDaMuon(const string& maSach) {
     }
 }
 
-void Reader::HienThiSachDangMuon() {
-    docFileSachDangMuonTuFile(); // Đảm bảo đã đọc lịch sử để có dữ liệu mới nhất
-    NodeMuonSach *current = HeadDsMuonSach;
-    if (current == nullptr) {
-        cout << "Chua muon sach nao." << endl;
-        return;
-    }
-
-    cout << left
-         << setw(5)  << "STT"
-         << setw(15) << "Ma Sach"
-         << setw(30) << "Ten Sach"
-         << setw(20) << "Ngay Muon"
-         << setw(20) << "Han Tra"
-         << setw(20) << "Con Lai"
-         << endl;
-
-    cout << string(110, '-') << endl;
-
-    int stt = 1;
-
+int Reader::DemSachQuaHan() const {
+    int count = 0;
+    NodeMuonSach* current = HeadDsMuonSach;
     while (current != nullptr) {
-
-        string ngayMuon = current->ngayMuon;
-        string hanTra = cong3Thang(ngayMuon);
-        int daysLeft = tinhSoNgayConLai(ngayMuon);
-
-        string trangThai;
-        if (daysLeft < 0)
-            trangThai = "QUA HAN";
-        else {
-            trangThai = to_string(daysLeft) + " ngay";
+        if (current->phieu->daQuaHan()) {
+            count++;
         }
-
-        cout << setw(5)  << stt++
-             << setw(15) << current->data->getMaSach()
-             << setw(30) << current->data->getTenSach()
-             << setw(20) << ngayMuon
-             << setw(20) << hanTra
-             << setw(20) << trangThai
-             << endl;
-
         current = current->next;
     }
+    return count;
 }
 
+void Reader::HienThiSachDangMuon() const {
+    NodeMuonSach* current = HeadDsMuonSach;
+    if (current == nullptr) {
+        cout << "  Chua muon sach nao." << endl;
+        return;
+    }
+    
+    cout << "\n===== SACH DANG MUON =====\n";
+    cout << left
+         << setw(5)  << "STT"
+         << setw(12) << "Ma sach"
+         << setw(30) << "Ten sach"
+         << setw(20) << "Tac gia"
+         << setw(15) << "Ngay muon"
+         << setw(15) << "Ngay tra"
+         << setw(15) << "Con lai"
+         << endl;
+    cout << string(112, '-') << endl;
+    
+    int stt = 1;
+    while (current != nullptr) {
+        PhieuMuonSach* phieu = current->phieu;
+        // Màu sắc cho trạng thái
+        string trangThai = phieu->trangThaiHan();
+        
+        cout << left
+             << setw(5)  << stt++
+             << setw(12) << phieu->sach->getMaSach()
+             << setw(30) << phieu->sach->getTenSach()
+             << setw(20) << phieu->sach->getTacGia()
+             << setw(15) << timeString(phieu->ngayMuon)
+             << setw(15) << timeString(phieu->ngayHetHan);
+        
+        // Hiển thị trạng thái (quá hạn sẽ nổi bật)
+        if (phieu->daQuaHan()) {
+            cout << "\033[1;31m" << setw(15) << "*** " + trangThai + " ***" << "\033[0m";  // Đỏ
+        } else if (phieu->soNgayConLai() <= 7) {
+            cout << "\033[1;33m" << setw(15) << trangThai << "\033[0m";  // Vàng (sắp hết hạn)
+        } else {
+            cout << setw(15) << trangThai;  // Bình thường
+        }
+        
+        cout << endl;
+        current = current->next;
+    }
+    
+    cout << string(112, '-') << endl;
+    
+    // Thống kê
+    int soQuaHan = DemSachQuaHan();
+    if (soQuaHan > 0) {
+        cout << "\033[1;31m Canh bao: Ban co " << soQuaHan << " sach qua han!\033[0m\n";
+    }
+}
 
 void Reader::ghiLichSu(const string& hanhDong, const Sach* s) { 
     ofstream out(fileLichSu, ios::app); // Ghi vào file riêng
@@ -215,63 +230,15 @@ void Reader::ghiLichSu(const string& hanhDong, const Sach* s) {
     }
 }
 
-void Reader::docFileSachDangMuonTuFile() {
-    ifstream in(fileLichSu);
-    if(!in.is_open()) return;
-
-    HeadDsMuonSach = nullptr; // reset danh sach hien tai
-    string line;
-    while(getline(in, line)) {
-        if(line.empty()) continue;
-
-        stringstream ss(line);
-        string hanhDong, maDG, maSach, tenSach, thoiGian;
-        getline(ss, hanhDong, '|');
-        getline(ss, maDG, '|');
-        getline(ss, maSach, '|');
-        getline(ss, tenSach, '|');
-        getline(ss, thoiGian, '|');
-
-        if(maDG != maID) continue;
-
-        if(hanhDong == "muon") {
-            string maSach, tenSach, tacGia, theLoai, nhaXB;
-            int namXB;
-            Sach* s = Sach::createFromData(tenSach, tacGia, theLoai, namXB, nhaXB);
-            if (!s) continue;
-
-            s->setMaSach(maSach);
-
-            NodeMuonSach* newNode = new NodeMuonSach;
-            newNode->data = s;
-            newNode->ngayMuon = thoiGian;
-            newNode->next = HeadDsMuonSach;
-            HeadDsMuonSach = newNode;
-        }
-        else if(hanhDong == "tra") {
-            // xóa sách khỏi HeadDsMuonSach
-            NodeMuonSach* current = HeadDsMuonSach;
-            NodeMuonSach* prev = nullptr;
-            while(current != nullptr) {
-                if(current->data->getMaSach() == maSach) {
-                    if(prev == nullptr) HeadDsMuonSach = current->next;
-                    else prev->next = current->next;
-                    delete current->data;
-                    delete current;
-                    break;
-                }
-                prev = current;
-                current = current->next;
-            }
-        }
-    }
-}
-
-
 void Reader::HienThiThongTin() const {
     USER::HienThiThongTin();
     cout << setw(15) << layNgayDangKy(ngayDangKy);
-    cout << DemSachDaMuon() << "/" << gioiHanSachMuon << " cuon" << endl;
+    cout << DemSachDaMuon() << "/" << gioiHanSachMuon << " cuon";
+    int soQuaHan = DemSachQuaHan();
+    if (soQuaHan > 0) {
+        cout << setw(15) << "\033[1;31m" << soQuaHan << " cuon\033[0m";
+    }
+    cout << "\n";
 }
 
 string Reader::toCSV() const {

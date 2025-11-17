@@ -34,6 +34,8 @@ class LibrarySystem {
         void GhiFileHeThong(const string& fileName) const;
         void DocFileHeThong(const string& fileName);
         void DocFileDocGia();
+        void DocDanhSachMuonCuaDocGia(Reader* docGia);
+        void GhiDanhSachMuonCuaDocGia(Reader* docGia);
 
         void XoaSach(const string &maSach);
         void CapNhatThongTinSach();
@@ -45,6 +47,8 @@ class LibrarySystem {
         void DanhGiaSach(Reader* docGia, Sach* sach);
         double TinhDiemTrungBinhTuFile(const string& tenSach,const string& tacGia,int namXB,const string& nhaXB);
         void HienThiDanhSachSach() ;
+        void HienThiDocGiaQuaHan();
+        void ThongKeSachQuaHan();
 
         bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
         void DangKyDocGia();
@@ -53,6 +57,12 @@ class LibrarySystem {
         bool DangXuat(USER* &currentUser);
         void HienThiTatCaDocGia() const;
         void XepHangSach();
+
+        NodeBook* getDanhSachSach() { return HeadDsSach; }
+        NodeReader* getDanhSachDocGia() { return HeadDsDocGia; }
+
+        void DocTatCaDanhSachMuon();
+        void XemThongKe();
 
 };
         

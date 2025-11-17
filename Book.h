@@ -80,6 +80,7 @@ public:
     static Sach* createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb);
     static void docFileInput(const string& fileName, NodeBook*& head);
     static void ghiFile(const string& fileName, NodeBook* head);
+
 };
 
 class GiaoTrinh : public Sach {
