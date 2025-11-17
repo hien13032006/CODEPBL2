@@ -27,7 +27,7 @@ class Reader : public USER {
         ~Reader();
 
         void HienThiThongTin() const override;
-        UserRole getVaiTro() const override { return UserRole::Reader; }
+        UserRole getVaiTro() const override { return UserRole::READER; }
 
         void SignUp(string hoTen, string SDT, string Email, string username, string password);
 

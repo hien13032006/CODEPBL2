@@ -4,8 +4,9 @@
 using namespace std;
 
 enum class UserRole {
-    Librarian,
-    Reader
+    NONE,
+    READER,
+    LIBRARIAN
 };
 
 class USER {
@@ -27,8 +28,8 @@ class USER {
         virtual void CapNhatThongTin();
         virtual UserRole getVaiTro() const { return vaiTro; }
 
-        bool isLibrarian() const { return vaiTro == UserRole::Librarian; }
-        bool isReader() const { return vaiTro == UserRole::Reader; }
+        bool isLibrarian() const { return vaiTro == UserRole::LIBRARIAN; }
+        bool isReader() const { return vaiTro == UserRole::READER; }
         bool isActive() const { return trangThaiHoatDong; }
 
         bool Login(string username, string password);
@@ -41,7 +42,7 @@ class USER {
         string getSDT() const { return SDT; }
         string getPassword() const { return password; }
         string getTenVaiTro() const {
-            return (vaiTro == UserRole::Librarian) ? "Librarian" : "Reader";
+            return (vaiTro == UserRole::LIBRARIAN) ? "LIBRARIAN" : "READER";
     }
 
         void setMaID(string newMaID) { maID = newMaID; }

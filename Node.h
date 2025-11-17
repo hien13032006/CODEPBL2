@@ -13,7 +13,6 @@ struct NodeBook {
         data = s;
         next = nullptr;
     }
-
 };
 
 struct NodeReader {

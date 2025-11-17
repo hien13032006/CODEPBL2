@@ -3,7 +3,6 @@
 #include <iostream>
 using namespace std;
 
-
 USER::USER() {
     maID = "";
     hoTen = "";
@@ -12,7 +11,7 @@ USER::USER() {
     username = "";
     password = "";
     trangThaiHoatDong = true;
-    vaiTro = UserRole::Reader;
+    vaiTro = UserRole::READER;
 }
 
 USER::USER(string maID, string hoTen, string SDT, string Email, string username, string password) {
@@ -23,7 +22,7 @@ USER::USER(string maID, string hoTen, string SDT, string Email, string username,
     this->username = username;
     this->password = password;
     this->trangThaiHoatDong = true;
-    this->vaiTro = UserRole::Reader;
+    this->vaiTro = UserRole::READER;
 }
 
 USER::~USER() {}
