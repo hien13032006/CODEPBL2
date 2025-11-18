@@ -6,13 +6,13 @@
 using namespace std;
 
 Librarian::Librarian() : USER() {
-    vaiTro = UserRole::Librarian;
+    vaiTro = UserRole::LIBRARIAN;
     chucVu = "Thu Thu";
 }
 
 Librarian::Librarian(string maID, string hoTen, string SDT, string Email, string username, string password, string chucVu)
     : USER(maID, hoTen, SDT, Email, username, password) {
-    this->vaiTro = UserRole::Librarian;
+    this->vaiTro = UserRole::LIBRARIAN;
     this->chucVu = chucVu;
 }
 
@@ -23,7 +23,7 @@ void Librarian::SetThongTin(string maID,string hoTen, string SDT, string Email, 
     this->Email = Email;
     this->username = username;
     this->password = password;
-    this->vaiTro = UserRole::Librarian;
+    this->vaiTro = UserRole::LIBRARIAN;
 }
 
 void Librarian::HienThiThongTin() const {

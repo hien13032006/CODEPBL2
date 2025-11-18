@@ -37,7 +37,7 @@ string timeString(time_t t) {
 int Reader::readerCount = 1;
 
 Reader::Reader() : USER() {
-    vaiTro = UserRole::Reader;
+    vaiTro = UserRole::READER;
     gioiHanSachMuon = 5; // Mặc định giới hạn 5 cuốn sách
     stringstream ss;
     ss << "R" << setw(4) << setfill('0') << readerCount++;
@@ -49,7 +49,7 @@ Reader::Reader() : USER() {
 
 Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password) 
     : USER(ma, hoTen, sdt, email, username, password) {
-    vaiTro = UserRole::Reader;
+    vaiTro = UserRole::READER;
     gioiHanSachMuon = 5;
     ngayDangKy = time(nullptr);
     HeadDsMuonSach = nullptr;
