@@ -59,13 +59,13 @@ public:
     }
 
     void loadBooks(sf::Font& font) {
-        // Xóa cards cũ
         for (auto card : top10Cards) delete card;
         for (auto card : allBookCards) delete card;
         top10Cards.clear();
         allBookCards.clear();
 
-        // Lấy danh sách top 10 (giả lập - bạn có thể dùng XepHangSach())
+        if (!libSystem) return;
+
         std::vector<sf::Color> colors = {
             sf::Color(200, 80, 60), sf::Color(60, 140, 200),
             sf::Color(100, 180, 100), sf::Color(200, 150, 60),
@@ -74,47 +74,48 @@ public:
             sf::Color(100, 120, 180), sf::Color(200, 100, 100)
         };
 
+        // TODO: Lấy Top 10 từ libSystem->XepHangSach()
+        // Tạm thời lấy 10 sách đầu
+        NodeBook* current = libSystem->getDanhSachSach();
         float cardX = 280;
         int count = 0;
 
-        // TODO: Lấy thực tế từ LibrarySystem
-        // Tạm thời dùng dữ liệu mẫu
-        for (int i = 0; i < 10 && i < 10; i++) {
+        while (current != nullptr && count < 10) {
             Card* card = new Card(
                 sf::Vector2f(cardX, 130),
                 sf::Vector2f(180, 250),
-                "GT0000" + std::to_string(i+1),
-                "Co So Du Lieu " + std::to_string(i+1),
-                "Tac Gia " + std::to_string(i+1),
-                "2020",
-                8.5f,
-                colors[i],
+                current->data->getMaSach(),
+                current->data->getTenSach(),
+                current->data->getTacGia(),
+                std::to_string(current->data->getNamXuatBan()),
+                current->data->getDiemTrungBinh(),
+                colors[count % 10],
                 font
             );
             top10Cards.push_back(card);
+            
             cardX += 200;
+            if (count == 4) cardX = 280;
             count++;
-            if (count == 5) {
-                cardX = 280;
-            }
+            current = current->next;
         }
 
         // Tất cả sách
+        current = libSystem->getDanhSachSach();
         cardX = 280;
         float cardY = 420;
         int col = 0;
-        count = 0;
 
-        for (int i = 0; i < 20; i++) { // TODO: Lấy từ HeadDsSach
+        while (current != nullptr) {
             Card* card = new Card(
                 sf::Vector2f(cardX, cardY),
                 sf::Vector2f(180, 250),
-                "BOOK" + std::to_string(i),
-                "Ten Sach " + std::to_string(i),
-                "Tac Gia",
-                "2021",
-                7.5f,
-                colors[i % 10],
+                current->data->getMaSach(),
+                current->data->getTenSach(),
+                current->data->getTacGia(),
+                std::to_string(current->data->getNamXuatBan()),
+                current->data->getDiemTrungBinh(),
+                colors[col % 10],
                 font
             );
             allBookCards.push_back(card);
@@ -127,6 +128,7 @@ public:
             } else {
                 cardX += 200;
             }
+            current = current->next;
         }
 
         scrollView->setMaxScroll(std::max(0.0f, cardY - 600.0f));

@@ -42,44 +42,43 @@ public:
     }
 
     void buildMenu(sf::Font& font) {
-        menuItems.clear();
-        std::vector<std::string> labels;
+    menuItems.clear();
+    std::vector<std::string> labels;
 
-        // Menu theo phân quyền
-        if (currentRole == UserRole::NONE) {
-            labels = {"Home", "Top 10 sach", "Tat ca sach", "The loai", 
-                     "Tim kiem", "Thanh vien"};
-        } else if (currentRole == UserRole::READER) {
-            labels = {"Home", "Top 10 sach", "Tat ca sach", "The loai",
-                     "Tim kiem", "Sach dang muon", "Lich su", "Dang xuat"};
-        } else if (currentRole == UserRole::LIBRARIAN) {
-            labels = {"Home", "Top 10 sach", "Tat ca sach", "The loai",
-                     "Tim kiem", "Quan ly sach", "Quan ly doc gia", 
-                     "Thong ke", "Dang xuat"};
-        }
-
-        float yPos = 120;
-        for (size_t i = 0; i < labels.size(); i++) {
-            MenuItem item;
-            item.label = labels[i];
-            item.id = i;
-            item.isActive = (i == 0);
-            
-            item.shape.setSize(sf::Vector2f(220, 45));
-            item.shape.setPosition(15, yPos);
-            item.shape.setFillColor(item.isActive ? 
-                sf::Color(40, 43, 55) : sf::Color(20, 23, 35));
-
-            item.text.setFont(font);
-            item.text.setString(labels[i]);
-            item.text.setCharacterSize(15);
-            item.text.setFillColor(sf::Color(200, 200, 200));
-            item.text.setPosition(30, yPos + 12);
-
-            menuItems.push_back(item);
-            yPos += 55;
-        }
+    if (currentRole == UserRole::NONE) {
+        labels = {"Home", "Top 10 sach", "Tat ca sach", "The loai", 
+                 "Tim kiem", "Thanh vien"};
+    } else if (currentRole == UserRole::READER) {
+        labels = {"Home", "Top 10 sach", "Tat ca sach", "The loai",
+                 "Tim kiem", "Sach dang muon", "Lich su", "Dang xuat"};
+    } else if (currentRole == UserRole::LIBRARIAN) {
+        labels = {"Home", "Top 10 sach", "Tat ca sach", "The loai",
+                 "Tim kiem", "Quan ly sach", "Quan ly doc gia", 
+                 "Doc gia qua han", "Thong ke", "Dang xuat"};
     }
+
+    float yPos = 120;
+    for (size_t i = 0; i < labels.size(); i++) {
+        MenuItem item;
+        item.label = labels[i];
+        item.id = i;
+        item.isActive = (i == 0);
+        
+        item.shape.setSize(sf::Vector2f(220, 45));
+        item.shape.setPosition(15, yPos);
+        item.shape.setFillColor(item.isActive ? 
+            sf::Color(40, 43, 55) : sf::Color(20, 23, 35));
+
+        item.text.setFont(font);
+        item.text.setString(labels[i]);
+        item.text.setCharacterSize(14);
+        item.text.setFillColor(sf::Color(200, 200, 200));
+        item.text.setPosition(30, yPos + 14);
+
+        menuItems.push_back(item);
+        yPos += 52;
+    }
+}
 
     void setUserRole(UserRole role, sf::Font& font) {
         currentRole = role;

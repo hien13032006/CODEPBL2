@@ -47,84 +47,83 @@ public:
     }
 
     void loadCategories(sf::Font& font) {
-        // Xóa buttons cũ
-        for (auto btn : categoryButtons) delete btn;
-        categoryButtons.clear();
+    for (auto btn : categoryButtons) delete btn;
+    categoryButtons.clear();
 
-        // Lấy tất cả thể loại từ LibrarySystem
-        std::set<std::string> categories;
-        
-        // TODO: Quét HeadDsSach để lấy theLoai
-        // Tạm thời dùng dữ liệu mẫu
-        categories.insert("Giao trinh");
-        categories.insert("Tham khao");
-        categories.insert("Tieu thuyet");
-        categories.insert("Truyen ngan");
-        categories.insert("Tap chi");
-        categories.insert("Truyen tranh");
-        categories.insert("Sach ki nang");
+    if (!libSystem) return;
 
-        float btnX = 280;
-        float btnY = 100;
-        int col = 0;
-
-        for (const auto& cat : categories) {
-            Button* btn = new Button(
-                sf::Vector2f(btnX, btnY),
-                sf::Vector2f(200, 50),
-                cat,
-                font,
-                0,
-                sf::Color(60, 100, 180)
-            );
-            
-            btn->setOnClick([this, cat, &font]() {
-                this->loadBooksOfCategory(cat, font);
-            });
-
-            categoryButtons.push_back(btn);
-
-            col++;
-            if (col == 5) {
-                col = 0;
-                btnX = 280;
-                btnY += 70;
-            } else {
-                btnX += 220;
-            }
-        }
+    // Lấy tất cả thể loại từ danh sách sách
+    std::set<std::string> categories;
+    NodeBook* current = libSystem->getDanhSachSach();
+    
+    while (current != nullptr) {
+        categories.insert(current->data->getTheLoai());
+        current = current->next;
     }
 
-    void loadBooksOfCategory(const std::string& category, sf::Font& font) {
-        selectedCategory = category;
-        titleText.setString("The Loai: " + category);
+    float btnX = 280;
+    float btnY = 100;
+    int col = 0;
 
-        // Xóa cards cũ
-        for (auto card : categoryBookCards) delete card;
-        categoryBookCards.clear();
+    for (const auto& cat : categories) {
+        Button* btn = new Button(
+            sf::Vector2f(btnX, btnY),
+            sf::Vector2f(200, 50),
+            cat,
+            font,
+            0,
+            sf::Color(60, 100, 180)
+        );
+        
+        btn->setOnClick([this, cat, &font]() {
+            this->loadBooksOfCategory(cat, font);
+        });
 
-        // TODO: Lọc sách theo thể loại từ HeadDsSach
-        // Tạm thời dùng dữ liệu mẫu
-        std::vector<sf::Color> colors = {
-            sf::Color(200, 80, 60), sf::Color(60, 140, 200),
-            sf::Color(100, 180, 100), sf::Color(200, 150, 60),
-            sf::Color(140, 80, 180)
-        };
+        categoryButtons.push_back(btn);
 
-        float cardX = 280;
-        float cardY = 350;
-        int col = 0;
+        col++;
+        if (col == 5) {
+            col = 0;
+            btnX = 280;
+            btnY += 70;
+        } else {
+            btnX += 220;
+        }
+    }
+}
 
-        for (int i = 0; i < 10; i++) {
+void loadBooksOfCategory(const std::string& category, sf::Font& font) {
+    selectedCategory = category;
+    titleText.setString("The Loai: " + category);
+
+    for (auto card : categoryBookCards) delete card;
+    categoryBookCards.clear();
+
+    if (!libSystem) return;
+
+    std::vector<sf::Color> colors = {
+        sf::Color(200, 80, 60), sf::Color(60, 140, 200),
+        sf::Color(100, 180, 100), sf::Color(200, 150, 60),
+        sf::Color(140, 80, 180)
+    };
+
+    NodeBook* current = libSystem->getDanhSachSach();
+    float cardX = 280;
+    float cardY = 350;
+    int col = 0;
+    int count = 0;
+
+    while (current != nullptr) {
+        if (current->data->getTheLoai() == category) {
             Card* card = new Card(
                 sf::Vector2f(cardX, cardY),
                 sf::Vector2f(180, 250),
-                "BOOK" + std::to_string(i),
-                category + " " + std::to_string(i+1),
-                "Tac Gia",
-                "2020",
-                8.0f,
-                colors[i % 5],
+                current->data->getMaSach(),
+                current->data->getTenSach(),
+                current->data->getTacGia(),
+                std::to_string(current->data->getNamXuatBan()),
+                current->data->getDiemTrungBinh(),
+                colors[count % 5],
                 font
             );
             categoryBookCards.push_back(card);
@@ -137,9 +136,11 @@ public:
             } else {
                 cardX += 200;
             }
+            count++;
         }
+        current = current->next;
     }
-
+}
     void update(sf::Vector2f mousePos) {
         sidebar->update(mousePos);
         for (auto btn : categoryButtons) btn->update(mousePos);
