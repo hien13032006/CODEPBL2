@@ -1,3 +1,6 @@
+// ============================================
+// screens/LoginChoiceScreen.hpp - Chọn loại đăng nhập
+// ============================================
 #ifndef LOGIN_CHOICE_SCREEN_HPP
 #define LOGIN_CHOICE_SCREEN_HPP
 

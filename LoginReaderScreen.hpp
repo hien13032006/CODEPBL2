@@ -1,3 +1,6 @@
+// ============================================
+// screens/LoginReaderScreen.hpp - Đăng nhập độc giả
+// ============================================
 #ifndef LOGIN_READER_SCREEN_HPP
 #define LOGIN_READER_SCREEN_HPP
 

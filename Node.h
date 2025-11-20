@@ -1,9 +1,18 @@
 #ifndef Node_h
 #define Node_h
 #include "Librarian.h"
+#include <ctime>
+#include <string>
 
 class Sach;
 class Reader;
+inline std::string timeString(time_t t) {
+    tm* ltm = localtime(&t);
+    char buffer[20];
+    sprintf(buffer, "%02d/%02d/%04d",
+            ltm->tm_mday, ltm->tm_mon + 1, ltm->tm_year + 1900);
+    return std::string(buffer);
+}
 
 struct NodeBook {
     Sach* data;
@@ -35,6 +44,15 @@ struct NodeLibrarian {
         data = l;
         next = nullptr;
     }
+};
+
+struct BorrowerInfo {
+    std::string maDocGia;
+    std::string tenDocGia;
+    time_t ngayMuon;
+    time_t ngayHetHan;
+    std::string trangThai; // Ví dụ: "QUA HAN 5 NGAY"
+    bool daQuaHan;
 };
 
 struct PhieuMuonSach {

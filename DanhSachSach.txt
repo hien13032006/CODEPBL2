@@ -1,4 +1,24 @@
-TN00004|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|9|0|0
-TT00003|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|4|0|0
-GT00002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|3|0|0
-GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|7|18|2
+TN00024|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|10|0|0|images/pic1.png
+TT00023|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|7|0|0|images/pic1.png
+GT00022|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|5|0|0|images/pic1.png
+GT00021|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|10|0|0|images/pic1.png
+GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|8|18|2|images/pic1.png
+GT00002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|5|0|0|images/pic1.png
+GT00003|Lap trinh C co ban|Pham Van At|Giao trinh|2018|NXB Giao Duc|12|5|1|images/pic1.png
+GT00004|Cau truc du lieu|Le Minh Hoang|Giao trinh|2020|NXB BKHN|10|4|2|images/pic1.png
+TT00005|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|5|0|0|images/pic1.png
+TT00006|Nha gia kim|Paulo Coelho|Tieu thuyet|1988|NXB VH Tong Hop|7|3|1|images/pic1.png
+TT00007|Mat biec|Nguyen Nhat Anh|Tieu thuyet|1995|NXB Tre|10|4|2|images/pic1.png
+TT00008|Harry Potter 1|J.K. Rowling|Tieu thuyet|1997|NXB Tre|20|12|3|images/pic1.png
+TN00009|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|10|0|0|images/pic1.png
+TN00010|Chi Pheo|Nam Cao|Truyen ngan|1941|NXB Van Hoc|12|2|1|images/pic1.png
+TN00011|Vo chong A Phu|To Hoai|Truyen ngan|1952|NXB Van Hoc|8|1|0|images/pic1.png
+TN00012|Lao Hac|Nam Cao|Truyen ngan|1943|NXB Van Hoc|10|3|1|images/pic1.png
+TTR00013|Doraemon Tap 1|Fujiko F Fujio|Truyen tranh|1970|NXB Kim Dong|30|20|4|images/pic1.png
+TTR00014|One Piece Tap 1|Oda Eiichiro|Truyen tranh|1997|NXB Kim Dong|40|25|7|images/pic1.png
+TTR00015|Conan Tap 1|Aoyama Gosho|Truyen tranh|1994|NXB Kim Dong|25|8|2|images/pic1.png
+TC00016|Khoa hoc & Doi song So 1|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|50|40|0|images/pic1.png
+TC00017|The thao 247 So 15|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|28|0|images/pic1.png
+KN00018|Dac nhan tam|Dale Carnegie|Sach ki nang|1936|NXB Tre|15|5|3|images/pic1.png
+KN00019|7 thoi quen cua nguoi thanh dat|Stephen Covey|Sach ki nang|1989|NXB Tre|20|10|2|images/pic1.png
+KN00020|Tu duy tich cuc|Norman Vincent Peale|Sach ki nang|1952|NXB Tre|10|6|1|images/pic1.png

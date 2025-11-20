@@ -49,7 +49,6 @@ class Reader : public USER {
         int getGioiHanMuon() const { return gioiHanSachMuon; }
         string getFileLichSu() const { return fileLichSu; }
         NodeMuonSach* getDanhSachPhieuMuon() const { return HeadDsMuonSach; } 
-
         void setDanhSachPhieuMuon(NodeMuonSach* head) {  HeadDsMuonSach = head;}
         void setGioiHanMuon(int limit) { gioiHanSachMuon = limit; }
         static void setReaderCount(int n) { readerCount = n; }

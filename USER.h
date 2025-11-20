@@ -4,9 +4,9 @@
 using namespace std;
 
 enum class UserRole {
-    LIBRARIAN,
+    NONE,
     READER,
-    NONE
+    LIBRARIAN   
 };
 
 class USER {
@@ -41,7 +41,7 @@ class USER {
         string getSDT() const { return SDT; }
         string getPassword() const { return password; }
         string getTenVaiTro() const {
-            return (vaiTro == UserRole::LIBRARIAN) ? "Librarian" : "Reader";
+            return (vaiTro == UserRole::LIBRARIAN) ? "LIBRARIAN" : "READER";
     }
 
         void setMaID(string newMaID) { maID = newMaID; }

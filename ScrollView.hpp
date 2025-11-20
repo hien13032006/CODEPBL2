@@ -5,37 +5,45 @@
 
 class ScrollView {
 private:
-    sf::View view;
     float scrollOffset;
     float maxScroll;
     sf::FloatRect bounds;
+    float scrollSpeed;
 
 public:
     ScrollView(sf::FloatRect viewBounds) : bounds(viewBounds) {
-        view.reset(viewBounds);
-        view.setViewport(sf::FloatRect(
-            viewBounds.left / 1400.0f,
-            viewBounds.top / 900.0f,
-            viewBounds.width / 1400.0f,
-            viewBounds.height / 900.0f
-        ));
         scrollOffset = 0;
         maxScroll = 0;
+        scrollSpeed = 30.0f;
     }
 
-    void handleScroll(sf::Event& event) {
+    void handleScroll(sf::Event& event, sf::Vector2f mousePos) {
+        // Kiểm tra chuột có trong vùng scroll không
+        if (!bounds.contains(mousePos)) return;
+        
         if (event.type == sf::Event::MouseWheelScrolled) {
-            scrollOffset -= event.mouseWheelScroll.delta * 30;
+            
+            // FIX: Đảo dấu của event.mouseWheelScroll.delta để cuộn đúng chiều
+            // (Thử lại với dấu trừ để đảo chiều cuộn)
+            scrollOffset -= event.mouseWheelScroll.delta * scrollSpeed; 
+            
+            // Đảm bảo không cuộn quá giới hạn
             if (scrollOffset < 0) scrollOffset = 0;
             if (scrollOffset > maxScroll) scrollOffset = maxScroll;
-            view.setCenter(bounds.left + bounds.width / 2, 
-                          bounds.top + bounds.height / 2 + scrollOffset);
         }
     }
 
-    void setMaxScroll(float max) { maxScroll = max; }
-    sf::View& getView() { return view; }
+    void setMaxScroll(float max) { 
+        maxScroll = std::max(0.0f, max);
+    }
+    
+    float getScrollOffset() const { return scrollOffset; }
     void reset() { scrollOffset = 0; }
+    
+    // Áp dụng offset cho position của object
+    sf::Vector2f applyScroll(sf::Vector2f pos) const {
+        return sf::Vector2f(pos.x, pos.y - scrollOffset);
+    }
 };
 
 #endif

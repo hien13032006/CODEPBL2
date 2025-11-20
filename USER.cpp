@@ -54,4 +54,3 @@ bool USER::Login(string username, string password) {
 void USER::Logout() {
     cout << username << " da dang xuat khoi he thong." << endl;
 }
-

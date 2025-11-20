@@ -9,7 +9,7 @@ string Sach::toCSV() const {
     ostringstream oss;
     oss << maSach << "|" << tenSach << "|" << tacGia << "|"
         << theLoai << "|" << namXuatBan << "|" << nhaXuatBan << "|"
-        << soLuong;
+        << soLuong << "|" << imagePath; // <-- ĐÃ THÊM imagePath
     return oss.str();
 }
 
@@ -68,13 +68,14 @@ void Sach::docFileInput(const string& fileName, NodeBook*& head) {
         getline(ss, namStr, '|');
         getline(ss, nxb, '|');
         getline(ss, soLuongStr, '|');
-        getline(ss, imagePath, '|');
+        getline(ss, imagePath, '|'); // <-- ĐÃ THÊM đọc imagePath
 
         int nam = stoi(namStr);
         int sl = stoi(soLuongStr);
         Sach* s = Sach::createFromData(ten, tg, tl, nam, nxb);
         s->setSoLuong(sl);
         s->setMaSach(s->getMaSach()); // đảm bảo mã sách đúng
+        s->setImagePath(imagePath); // <-- SET imagePath
 
         NodeBook* newNode = new NodeBook(s);
         newNode->next = head;
@@ -100,6 +101,3 @@ void Sach::ghiFile(const string& fileName, NodeBook* head) {
     out.close();
     cout << " Da ghi danh sach sach vao: " << fileName << endl;
 }
-
-
-

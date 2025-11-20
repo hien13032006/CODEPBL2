@@ -49,9 +49,3 @@ void Librarian::CapNhatThongTinSach(LibrarySystem &L) {
 void Librarian::XemThongKe(LibrarySystem &L) {
     L.XemThongKe();
 }
-
-
-
-
-
-

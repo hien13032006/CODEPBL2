@@ -61,6 +61,7 @@ public:
     double getDiemTrungBinh() const {
         return soLuotDanhGia == 0 ? 0 : tongDiemDanhGia / soLuotDanhGia;
     }
+    string getImagePath() const { return imagePath; }
 
     void setMaSach(string ma) { maSach = ma; }
     void setTenSach(string ten) { tenSach = ten; }
@@ -69,6 +70,7 @@ public:
     void setNamXuatBan(int nxb) { namXuatBan = nxb; }
     void setNhaXuatBan(string nhxb) { nhaXuatBan = nhxb; }
     void setSoLuong(int sl) { soLuong = sl; }
+    void setImagePath(string path) { imagePath = path; }
 
 
     void setDanhGia(double tong, int so) {

@@ -1,3 +1,6 @@
+// ============================================
+// screens/RegisterReaderScreen.hpp - Đăng ký độc giả
+// ============================================
 #ifndef REGISTER_READER_SCREEN_HPP
 #define REGISTER_READER_SCREEN_HPP
 

@@ -1,3 +1,6 @@
+// ============================================
+// screens/LoginLibrarianScreen.hpp - Đăng nhập thủ thư
+// ============================================
 #ifndef LOGIN_LIBRARIAN_SCREEN_HPP
 #define LOGIN_LIBRARIAN_SCREEN_HPP
 

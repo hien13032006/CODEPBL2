@@ -1,13 +1,17 @@
+// ============================================
+// ui/Modal.hpp - Popup overlay với bo góc
+// ============================================
 #ifndef MODAL_HPP
 #define MODAL_HPP
 
 #include <SFML/Graphics.hpp>
+#include "RoundedRectangle.hpp"
 
 class Modal {
 private:
     sf::RectangleShape overlay;
-    sf::RectangleShape modalBox;
-    sf::RectangleShape closeButton;
+    RoundedRectangleShape modalBox;
+    RoundedRectangleShape closeButton;
     sf::Text closeText;
     bool isVisible;
 
@@ -18,10 +22,12 @@ public:
         overlay.setPosition(0, 0);
 
         modalBox.setSize(sf::Vector2f(900, 600));
+        modalBox.setCornerRadius(16.0f); // Bo góc 16px
         modalBox.setPosition(250, 150);
         modalBox.setFillColor(sf::Color(30, 35, 50));
 
         closeButton.setSize(sf::Vector2f(35, 35));
+        closeButton.setCornerRadius(17.5f); // Bo góc tròn
         closeButton.setPosition(1115, 155);
         closeButton.setFillColor(sf::Color(60, 63, 75));
 
@@ -55,7 +61,7 @@ public:
         }
     }
 
-    sf::RectangleShape& getModalBox() { return modalBox; }
+    RoundedRectangleShape& getModalBox() { return modalBox; }
 };
 
 #endif

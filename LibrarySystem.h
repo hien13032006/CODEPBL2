@@ -63,7 +63,7 @@ class LibrarySystem {
 
         void DocTatCaDanhSachMuon();
         void XemThongKe();
-
+        std::vector<BorrowerInfo> TimNguoiMuonSach(const std::string& maSach) const;
 };
         
 #endif

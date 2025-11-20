@@ -1,3 +1,6 @@
+// ============================================
+// screens/SplashScreen.hpp - Màn hình khởi động
+// ============================================
 #ifndef SPLASH_SCREEN_HPP
 #define SPLASH_SCREEN_HPP
 

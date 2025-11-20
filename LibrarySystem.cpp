@@ -6,6 +6,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <vector>
 using namespace std;
 
 int LibrarySystem::hashFunction(const string& s) {
@@ -129,7 +130,7 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         if (line.empty()) continue;
 
         stringstream ss(line);
-        string ma, ten, tacGia, theLoai, nhaXB, diemTBStr, soDanhGiaStr;
+        string ma, ten, tacGia, theLoai, nhaXB, diemTBStr, soDanhGiaStr, imagePath;
         int namXB, soLuong;
 
         getline(ss, ma, '|');
@@ -142,7 +143,8 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         ss >> soLuong;
         ss.ignore();
         getline(ss, diemTBStr, '|');
-        getline(ss, soDanhGiaStr);  
+        getline(ss, soDanhGiaStr, '|');
+        getline(ss, imagePath);  
 
 
         double tong = 0;
@@ -155,6 +157,7 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         sachMoi->setMaSach(ma);
         sachMoi->setSoLuong(soLuong);
         sachMoi->setDanhGia(tong, soDG);
+        sachMoi->setImagePath(imagePath);
 
         // Thêm vào cuối danh sách liên kết
         NodeBook* newNode = new NodeBook(sachMoi);
@@ -193,7 +196,8 @@ void LibrarySystem::GhiFileHeThong(const string& fileName) const {
             << current->data->getNhaXuatBan() << "|"
             << current->data->getSoLuong() << "|"
             << current->data->getTongDiem() << "|"
-            << current->data->getSoDanhGia()
+            << current->data->getSoDanhGia()<<"|"
+            << current->data->getImagePath()
             << "\n";
         current = current->next;
     }
@@ -261,6 +265,33 @@ void LibrarySystem::DocFileDocGia() {
 
 
     cin.clear();
+}
+
+vector<BorrowerInfo> LibrarySystem::TimNguoiMuonSach(const std::string& maSach) const {
+    vector<BorrowerInfo> results;
+    NodeReader* currentReader = HeadDsDocGia;
+
+    while (currentReader != nullptr) {
+        Reader* docGia = currentReader->data;
+        NodeMuonSach* currentPhieu = docGia->getDanhSachPhieuMuon();
+
+        while (currentPhieu != nullptr) {
+            PhieuMuonSach* phieu = currentPhieu->phieu;
+            if (phieu->sach->getMaSach() == maSach) {
+                BorrowerInfo info;
+                info.maDocGia = docGia->getMaID();
+                info.tenDocGia = docGia->getHoTen();
+                info.ngayMuon = phieu->ngayMuon;
+                info.ngayHetHan = phieu->ngayHetHan;
+                info.trangThai = phieu->trangThaiHan();
+                info.daQuaHan = phieu->daQuaHan();
+                results.push_back(info);
+            }
+            currentPhieu = currentPhieu->next;
+        }
+        currentReader = currentReader->next;
+    }
+    return results;
 }
 
 void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
@@ -1134,8 +1165,3 @@ void LibrarySystem::XemThongKe() {
         cout << "  - So doc gia: " << soDocGia << endl;
         cout << "========================================\n";
 }
-
- 
-
-
-

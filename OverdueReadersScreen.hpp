@@ -128,8 +128,8 @@ public:
         return sidebar->handleClick(mousePos);
     }
 
-    void handleScrollEvent(sf::Event& event) {
-        scrollView->handleScroll(event);
+    void handleScrollEvent(sf::Event& event, sf::Vector2f mousePos) {
+        scrollView->handleScroll(event, mousePos);
     }
 
     void setUserRole(UserRole role, sf::Font& font) {

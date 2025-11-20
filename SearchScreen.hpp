@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <algorithm>
+#include <locale>
 #include "Sidebar.hpp"
 #include "InputField.hpp"
 #include "Button.hpp"
@@ -54,54 +56,87 @@ public:
     }
 
     void performSearch(sf::Font& font) {
-        // Xóa kết quả cũ
         for (auto card : resultCards) delete card;
         resultCards.clear();
 
         std::string keyword = searchField->getText();
         if (keyword.empty()) {
             resultText.setString("Vui long nhap tu khoa!");
+            resultText.setFillColor(sf::Color(255, 100, 100));
             return;
         }
 
-        // TODO: Gọi libSystem->TimSach(keyword);
-        // BuildHashTable trước nếu chưa có
+        if (!libSystem) return;
 
-        // Tạm thời dùng dữ liệu mẫu
+        std::string keywordLower = keyword;
+        // Chuyển từ khóa sang chữ thường
+        std::transform(keywordLower.begin(), keywordLower.end(), keywordLower.begin(), ::tolower);
+
         std::vector<sf::Color> colors = {
             sf::Color(200, 80, 60), sf::Color(60, 140, 200),
-            sf::Color(100, 180, 100), sf::Color(200, 150, 60)
+            sf::Color(100, 180, 100), sf::Color(200, 150, 60),
+            sf::Color(140, 80, 180)
         };
 
+        NodeBook* current = libSystem->getDanhSachSach();
         float cardX = 280;
         float cardY = 250;
         int col = 0;
+        int count = 0;
 
-        for (int i = 0; i < 8; i++) {
-            Card* card = new Card(
-                sf::Vector2f(cardX, cardY),
-                sf::Vector2f(180, 250),
-                "SEARCH" + std::to_string(i),
-                "Ket qua " + std::to_string(i+1),
-                "Tac Gia",
-                "2020",
-                7.5f,
-                colors[i % 4],
-                font
-            );
-            resultCards.push_back(card);
+        while (current != nullptr) {
+            Sach* book = current->data;
+            
+            std::string tenSach = book->getTenSach();
+            std::string tacGia = book->getTacGia();
+            std::string theLoai = book->getTheLoai();
+            std::string maSach = book->getMaSach();
+            
+            // Chuyển tất cả thông tin sách sang chữ thường để so sánh
+            std::transform(tenSach.begin(), tenSach.end(), tenSach.begin(), ::tolower);
+            std::transform(tacGia.begin(), tacGia.end(), tacGia.begin(), ::tolower);
+            std::transform(theLoai.begin(), theLoai.end(), theLoai.begin(), ::tolower);
+            std::transform(maSach.begin(), maSach.end(), maSach.begin(), ::tolower);
+            
+            if (tenSach.find(keywordLower) != std::string::npos ||
+                tacGia.find(keywordLower) != std::string::npos ||
+                theLoai.find(keywordLower) != std::string::npos ||
+                maSach.find(keywordLower) != std::string::npos) {
+                
+                Card* card = new Card(
+                    sf::Vector2f(cardX, cardY),
+                    sf::Vector2f(180, 250),
+                    book->getMaSach(),
+                    book->getTenSach(),
+                    book->getTacGia(),
+                    std::to_string(book->getNamXuatBan()),
+                    book->getDiemTrungBinh(),
+                    colors[count % 5],
+                    font
+                );
+                resultCards.push_back(card);
 
-            col++;
-            if (col == 5) {
-                col = 0;
-                cardX = 280;
-                cardY += 270;
-            } else {
-                cardX += 200;
+                col++;
+                if (col == 5) {
+                    col = 0;
+                    cardX = 280;
+                    cardY += 270;
+                } else {
+                    cardX += 200;
+                }
+                count++;
             }
+            
+            current = current->next;
         }
 
-        resultText.setString("Tim thay " + std::to_string(resultCards.size()) + " ket qua");
+        if (count == 0) {
+            resultText.setString("Khong tim thay ket qua nao cho: \"" + keyword + "\"");
+            resultText.setFillColor(sf::Color(255, 193, 94));
+        } else {
+            resultText.setString("Tim thay " + std::to_string(count) + " ket qua");
+            resultText.setFillColor(sf::Color(100, 180, 100));
+        }
     }
 
     void update(sf::Vector2f mousePos) {

@@ -1,12 +1,16 @@
+// ============================================
+// ui/Card.hpp - Thẻ sách với bo góc
+// ============================================
 #ifndef CARD_HPP
 #define CARD_HPP
 
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "RoundedRectangle.hpp"
 
 class Card {
 private:
-    sf::RectangleShape cardShape;
+    RoundedRectangleShape cardShape;
     sf::RectangleShape coverImage;
     sf::Text titleText;
     sf::Text authorText;
@@ -22,7 +26,9 @@ public:
          const std::string& year, float rating, sf::Color coverColor, sf::Font& font) {
         
         bookId = id;
+        
         cardShape.setSize(size);
+        cardShape.setCornerRadius(12.0f); // Bo góc 12px
         cardShape.setPosition(position);
         cardShape.setFillColor(sf::Color(25, 28, 40));
         
@@ -34,7 +40,6 @@ public:
         coverImage.setFillColor(coverColor);
 
         titleText.setFont(font);
-        // Cắt tên sách nếu quá dài
         std::string displayTitle = title.length() > 20 ? title.substr(0, 20) + "..." : title;
         titleText.setString(displayTitle);
         titleText.setCharacterSize(14);

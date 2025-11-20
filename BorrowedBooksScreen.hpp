@@ -6,6 +6,7 @@
 #include "Sidebar.hpp"
 #include "Button.hpp"
 #include "Reader.h"
+#include "Book.h"
 
 struct BorrowedBookItem {
     sf::RectangleShape box;

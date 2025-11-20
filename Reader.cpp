@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 #include "Node.h"
+#include<cstdio>
+#include<ctime>
 using namespace std;
 
 string layThoiGianHeThong() {
@@ -23,16 +25,6 @@ string layNgayDangKy(time_t ngayDK) {
     strftime(buffer, sizeof(buffer), "%d/%m/%Y", timeinfo);
     return string(buffer);
 }
-
-// Hàm chuyển đổi time_t sang chuỗi ngày
-string timeString(time_t t) {
-    tm* ltm = localtime(&t);
-    char buffer[20];
-    sprintf(buffer, "%02d/%02d/%04d",
-            ltm->tm_mday, ltm->tm_mon + 1, ltm->tm_year + 1900);
-    return string(buffer);
-}
-
 
 int Reader::readerCount = 1;
 
@@ -300,5 +292,3 @@ void Reader::HienThiLichSuMuonTra() const {
 
     in.close();
 }
-
-

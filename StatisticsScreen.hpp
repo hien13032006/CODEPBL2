@@ -12,10 +12,10 @@ private:
     Sidebar* sidebar;
     
     // Các thống kê
-    sf::RectangleShape statBox1;
-    sf::RectangleShape statBox2;
-    sf::RectangleShape statBox3;
-    sf::RectangleShape statBox4;
+    sf::RectangleShape statBox1; // 1. Tổng số sách
+    sf::RectangleShape statBox2; // 2. Tổng độc giả
+    sf::RectangleShape statBox3; // 3. Sách đang mượn
+    sf::RectangleShape statBox4; // 4. Sách quá hạn
     
     sf::Text stat1Title;
     sf::Text stat1Value;
@@ -119,7 +119,6 @@ public:
 
     void loadStatistics() {
     if (!libSystem) return;
-
     int tongSoSach = 0;
     int tongSoLuong = 0;
     int tongDocGia = 0;
@@ -156,6 +155,15 @@ public:
 
     int handleSidebarClick(sf::Vector2f mousePos) {
         return sidebar->handleClick(mousePos);
+    }
+    
+    // FIX: Thêm hàm xử lý click trên các ô thống kê
+    int handleClick(sf::Vector2f mousePos) {
+        if (statBox1.getGlobalBounds().contains(mousePos)) return 1; // Tổng số sách -> HOME
+        if (statBox2.getGlobalBounds().contains(mousePos)) return 2; // Tổng độc giả -> MANAGE_READERS
+        if (statBox3.getGlobalBounds().contains(mousePos)) return 3; // Sách đang mượn
+        if (statBox4.getGlobalBounds().contains(mousePos)) return 4; // Sách quá hạn -> OVERDUE_READERS
+        return 0;
     }
 
     void setUserRole(UserRole role, sf::Font& font) {
