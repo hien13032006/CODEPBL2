@@ -54,3 +54,7 @@ void USER::Logout() {
     cout << username << " da dang xuat khoi he thong." << endl;
 }
 
+string USER::toCSV() const {
+        return hoTen + "|" + SDT + "|" + Email + "|" + username + "|" + password;
+    }
+

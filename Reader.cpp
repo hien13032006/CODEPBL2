@@ -21,11 +21,10 @@ Reader::Reader() : USER() {
     fileLichSu = "LichSu_" + maID + ".txt";
 }
 
-Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password) 
-    : USER(ma, hoTen, sdt, email, username, password) {
+Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password, time_t ngayDK) 
+    : USER(ma, hoTen, sdt, email, username, password), ngayDangKy(ngayDK) {
     vaiTro = UserRole::READER;
     gioiHanSachMuon = 5;
-    ngayDangKy = time(nullptr);
     HeadDsMuonSach = nullptr;
     fileLichSu = "LichSu_" + maID + ".txt";
 }

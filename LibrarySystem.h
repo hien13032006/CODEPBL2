@@ -52,7 +52,7 @@ class LibrarySystem {
         void DocDanhSachMuonCuaDocGia(Reader* docGia);
         void GhiDanhSachMuonCuaDocGia(Reader* docGia);
 
-        void XoaSach(const string &maSach);
+        string XoaSach(const string &maSach, int soLuongXoa);
         void CapNhatThongTinSach();
         void TimSach(const string& keyword);
         void BuildHashTable();
@@ -75,6 +75,7 @@ class LibrarySystem {
 
         NodeBook* getDanhSachSach() { return HeadDsSach; }
         NodeReader* getDanhSachDocGia() { return HeadDsDocGia; }
+        NodeLibrarian* getDanhSachThuThu() { return HeadDsTThu; }
 
         void DocTatCaDanhSachMuon();
         void XemThongKe();

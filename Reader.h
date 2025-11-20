@@ -20,7 +20,7 @@ class Reader : public USER {
 
     public:
         Reader();
-        Reader(string ma, string hoTen, string sdt, string email, string username, string password);
+        Reader(string ma, string hoTen, string sdt, string email, string username, string password, time_t ngayDK);
         ~Reader();
 
         void HienThiThongTin() const override;
@@ -44,7 +44,7 @@ class Reader : public USER {
         void ghiLichSu(const string& hanhDong, const Sach* s);
         void HienThiLichSuMuonTra() const;
 
-        string toCSV() const;
+        string toCSV() const override;
         
         time_t getNgayDangKy() const { return ngayDangKy; }
         int getGioiHanMuon() const { return gioiHanSachMuon; }

@@ -5,6 +5,9 @@
 #include <iostream>
 #include "Reader.h"
 #include "Button.hpp"
+#include <ctime>
+#include <string>
+
 
 class ScreenReaderCard {
 private:
@@ -12,14 +15,12 @@ private:
     Reader *reader;
 
     sf::Text title;
-
     sf::Text lbMaID, lbHoTen, lbEmail, lbSDT, lbNgayDK;
 
     bool closed;
 
     sf::Texture bgTexture;
     sf::Sprite bgSprite;
-
 
 public:
     Button btnClose;   // nút dấu X
@@ -52,6 +53,7 @@ ScreenReaderCard::ScreenReaderCard(sf::Font &f, Reader *r)
             350.f / texSize.y
         );
     }
+
     // ---- Tiêu đề ----
     title.setFont(font);
     title.setString("THE BAN DOC");
@@ -67,6 +69,7 @@ ScreenReaderCard::ScreenReaderCard(sf::Font &f, Reader *r)
         t->setFillColor(sf::Color::Black);
     }
 
+    // Lấy thông tin từ Reader đã nạp từ file
     lbMaID.setString("Ma ID: " + reader->getMaID());
     lbHoTen.setString("Ho ten: " + reader->getHoTen());
     lbEmail.setString("Email: " + reader->getEmail());

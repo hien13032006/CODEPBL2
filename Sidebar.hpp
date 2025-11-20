@@ -50,10 +50,10 @@ public:
             labels = {"Home", "Top 10 sach", "Danh muc sach", "The loai", 
                      "Tim kiem", "Thanh vien"};
         } else if (currentRole == UserRole::READER) {
-            labels = {"Home", "The doc gia", "Top 10 sach", "Danh muc sach", "The loai",
+            labels = {"Home", "The doc gia", "Cap nhat thong tin ca nhan", "Top 10 sach", "Danh muc sach", "The loai",
                      "Tim kiem", "Muon sach", "Tra sach", "Sach dang muon", "Lich su muon tra", "Dang xuat"};
         } else if (currentRole == UserRole::LIBRARIAN) {
-            labels = {"Home", "The thu thu", "Top 10 sach", "Danh muc sach", "The loai",
+            labels = {"Home", "The thu thu","Cap nhat thong tin ca nhan", "Top 10 sach", "Danh muc sach", "The loai",
                      "Tim kiem","Them sach", "Xoa sach", "Cap nhat sach", "Thong ke", "Quan ly doc gia", 
                      "Dang xuat"};
         }

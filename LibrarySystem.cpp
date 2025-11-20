@@ -227,9 +227,13 @@ void LibrarySystem::DocFileDocGia() {
         getline(ss, pass, '|');
         getline(ss, ngayDKStr);
 
+        std::tm tm = {};
+        std::istringstream ssNgay(ngayDKStr);
+        ssNgay >> std::get_time(&tm, "%d/%m/%Y"); // định dạng file
+        time_t ngayDK = mktime(&tm);
 
         // Tạo đối tượng Reader bằng new (trên heap)
-        Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass);
+        Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass, ngayDK);
 
 
         NodeReader* newNode = new NodeReader(newReader);
@@ -367,25 +371,44 @@ void LibrarySystem::TimSach(const string& keyword) {
 }
 
 
-void LibrarySystem::XoaSach(const string &maSach) {
+string LibrarySystem::XoaSach(const string &maSach, int soLuongXoa) {
     NodeBook *current = HeadDsSach;
     NodeBook *prev = nullptr;
+
     while (current != nullptr) {
         if (current->data->getMaSach() == maSach) {
-            if (prev == nullptr) {
-                HeadDsSach = current->next;
-            } else {
-                prev->next = current->next;
+
+            int slHienCo = current->data->getSoLuong();
+
+            if (soLuongXoa > slHienCo) {
+                return "So luong xoa lon hon so luong hien co!";
             }
-            delete current;
-            cout << "Da xoa sach voi ma: " << maSach << endl;
-            return;
+
+            // TH1: cập nhật số lượng
+            if (soLuongXoa < slHienCo) {
+                current->data->setSoLuong(slHienCo - soLuongXoa);
+                return "Da cap nhat so luong. Con lai: " + std::to_string(slHienCo - soLuongXoa);
+            }
+
+            // TH2: xóa node khi sl=0
+            if (soLuongXoa == slHienCo) {
+                if (prev == nullptr) {
+                    HeadDsSach = current->next;
+                } else {
+                    prev->next = current->next;
+                }
+                delete current;
+                return "Da xoa sach khoi he thong";
+            }
         }
+
         prev = current;
         current = current->next;
     }
-    cout << "Khong tim thay sach voi ma: " << maSach << endl;
+
+    return "Khong tim thay sach voi ma: " + maSach;
 }
+
 
 void LibrarySystem::CapNhatThongTinSach() {
     if (!HeadDsSach) {

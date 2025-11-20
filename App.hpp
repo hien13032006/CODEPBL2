@@ -16,11 +16,15 @@
 #include "ScreenReaderCard.hpp"
 #include "BorrowBookScreen.hpp"
 #include "ReturnBookScreen.hpp"
+#include "UpdateReaderScreen.hpp"
 #include "RatingBookScreen.hpp"
 #include "ScreenReaderBorrowedBooks.hpp"
 #include "ReaderHistoryScreen.hpp"
 #include "ScreenLibrarianCard.hpp"
 #include "AddBookScreen.hpp"
+#include "DeleteBookScreen.hpp"
+#include "UpdateBookScreen.hpp"
+#include "UpdateLibrarianScreen.hpp"
 #include "LibrarySystem.h"
 #include "Reader.h"
 #include "Librarian.h"
@@ -49,13 +53,17 @@ private:
     RegisterReaderScreen* registerReaderScreen;
     BorrowBookScreen* borrowBookScreen;
     ReturnBookScreen* returnBookScreen;
+    UpdateReaderScreen* updateReaderScreen = nullptr;
     RatingBookScreen* ratingBookScreen;
     ScreenReaderCard *screenReaderCard = nullptr;
     ScreenReaderBorrowedBooks* screenBorrowedBooks = nullptr;
     ReaderHistoryScreen* readerHistoryScreen = nullptr;
 
     ScreenLibrarianCard* screenLibrarianCard = nullptr;
+    UpdateLibrarianScreen* updateLibrarianScreen = nullptr;
     AddBookScreen* addBookScreen = nullptr;
+    DeleteBookScreen* deleteBookScreen = nullptr;
+    UpdateBookScreen* updateBookScreen = nullptr;
     
     // UI Components
     Modal* modal;
@@ -96,12 +104,16 @@ public:
         delete screenReaderCard;
         delete borrowBookScreen;
         delete returnBookScreen;
+        if (updateReaderScreen) delete updateReaderScreen;
         if (screenReaderCard) delete screenReaderCard;
         if (readerHistoryScreen) delete readerHistoryScreen;
 
         delete loginLibrarianScreen;
         if (screenLibrarianCard) delete screenLibrarianCard;
         if (addBookScreen) delete addBookScreen;
+        if (deleteBookScreen) delete deleteBookScreen;
+        if (updateBookScreen) delete updateBookScreen;
+        if (updateLibrarianScreen) delete updateLibrarianScreen;
 
         delete modal;
         delete detailModal;
@@ -194,6 +206,10 @@ public:
                             modal->show();
                             changeState(AppState::READER_CARD);
                         }
+                        else if (menuLabel == "Cap nhat thong tin ca nhan" && currentUserRole == UserRole::READER) {
+                            modal->show();
+                            changeState(AppState::UPDATE_READER);
+                        }
                         else if (menuLabel == "Sach dang muon" && currentUserRole == UserRole::READER) {
                             modal->show();
                             changeState(AppState::READER_BORROWED_BOOKS);
@@ -210,7 +226,18 @@ public:
                             modal->show();
                             changeState(AppState::ADD_BOOKS);
                         }
-                        
+                        else if (menuLabel == "Xoa sach" && currentUserRole == UserRole::LIBRARIAN) {
+                            modal->show();
+                            changeState(AppState::DELETE_BOOK);
+                        }
+                        else if (menuLabel == "Cap nhat sach" && currentUserRole == UserRole::LIBRARIAN) {
+                            modal->show();
+                            changeState(AppState::UPDATE_BOOK);
+                        }
+                        else if (menuLabel == "Cap nhat thong tin ca nhan" && currentUserRole == UserRole::LIBRARIAN) {
+                            modal->show();
+                            changeState(AppState::UPDATE_LIBRARIAN);
+                        }
                         // Xử lý click card
                         std::string bookId = homeScreen->handleCardClick(mousePos);
                         if (!bookId.empty()) {
@@ -255,16 +282,7 @@ public:
                             if (action == 0) {
                                 detailModal->hide();
                                 changeState(AppState::HOME);
-                            } else if (action == 1) {
-                                // Mượn sách
-                                handleBorrowBook();
-                            } else if (action == 2) {
-                                // Xóa sách
-                                handleDeleteBook();
-                            } else if (action == 3) {
-                                // Cập nhật sách
-                                handleUpdateBook();
-                            }
+                            } 
                         }
                     }
                     break;
@@ -426,7 +444,19 @@ public:
                             modal->hide();
                             returnBookScreen->clear();
                             changeState(AppState::HOME);
-        }
+                        }
+                    }
+                    break;
+
+                case AppState::UPDATE_READER:
+                    if (!updateReaderScreen) {
+                        updateReaderScreen = new UpdateReaderScreen(mainFont, currentReader,libSystem->getDanhSachDocGia());
+                    }
+                    updateReaderScreen->handleEvent(event, mousePos);
+                    if (updateReaderScreen->isClosed()) {
+                        delete updateReaderScreen;
+                        updateReaderScreen = nullptr;
+                        changeState(AppState::HOME);
                     }
                     break;
 
@@ -502,6 +532,18 @@ public:
                     }
                     break;
 
+                case AppState::UPDATE_LIBRARIAN:
+                    if (!updateLibrarianScreen) {
+                        updateLibrarianScreen = new UpdateLibrarianScreen(mainFont, currentLibrarian,libSystem->getDanhSachThuThu());
+                    }
+                    updateLibrarianScreen->handleEvent(event, mousePos);
+                    if (updateLibrarianScreen->isClosed()) {
+                        delete updateLibrarianScreen;
+                        updateLibrarianScreen = nullptr;
+                        changeState(AppState::HOME);
+                    }
+                    break;
+
                  case AppState::ADD_BOOKS:
                     if (!addBookScreen) {
                         addBookScreen = new AddBookScreen(mainFont, libSystem);
@@ -517,6 +559,65 @@ public:
 
                         // ẩn modal và quay về Home
                         if (modal) modal->hide();
+                        changeState(AppState::HOME);
+                    }
+                    break;
+
+                case AppState::DELETE_BOOK:
+                    // tạo màn hình khi cần
+                    if (!deleteBookScreen) {
+                        deleteBookScreen = new DeleteBookScreen(mainFont, modal);
+                    }
+
+                    // forward các event cơ bản (ví dụ text input)
+                    deleteBookScreen->handleEvent(event, mousePos);
+
+                    // Xử lý click chuột (chỉ xử lý khi có MouseButtonPressed)
+                    if (event.type == sf::Event::MouseButtonPressed) {
+                        // Nếu click ngoài modal -> đóng modal
+                        if (modal->handleClose(mousePos)) {
+                            modal->hide();
+                            if (deleteBookScreen) deleteBookScreen->clear();
+                            changeState(AppState::HOME);
+                        } else {
+                            int action = deleteBookScreen->handleClick(mousePos);
+                            if (action == 1) { // nhấn Xóa
+                                if (deleteBookScreen->validate()) {
+                                    std::string ma = deleteBookScreen->getMaSach();
+                                    int sl = deleteBookScreen->getSoLuong();
+
+                                    std::string result = libSystem->XoaSach(ma, sl);
+
+                                    // Ghi lại file sau khi cập nhật
+                                    libSystem->GhiFileSach("DanhSachSach.txt");
+
+                                    // Hiển thị kết quả lên màn hình xóa
+                                    deleteBookScreen->setResult(result);
+
+                                    // Nếu muốn tự động đóng khi thành công hoàn toàn (xóa node or update),
+                                    // bạn có thể kiểm tra result và decide:
+                                    // if (result.find("Khong tim thay") == std::string::npos &&
+                                    //     result.find("lon hon") == std::string::npos) { ... }
+                                }
+                            } else if (action == 2) { // nhấn Hủy
+                                if (deleteBookScreen) deleteBookScreen->clear();
+                                modal->hide();
+                                changeState(AppState::HOME);
+                            }
+                        }
+                    }
+                    break;
+
+                case AppState::UPDATE_BOOK:
+                    if (!updateBookScreen) {
+                        updateBookScreen = new UpdateBookScreen(mainFont, libSystem);
+                    }
+
+                    updateBookScreen->handleEvent(event, mousePos);
+
+                    if (updateBookScreen->isClosed()) {
+                        delete updateBookScreen;
+                        updateBookScreen = nullptr;
                         changeState(AppState::HOME);
                     }
                     break;
@@ -718,16 +819,6 @@ public:
     };
 
 
-    void handleDeleteBook() {
-        if (currentLibrarian && bookDetailScreen->getCurrentBook()) {
-            Sach* book = bookDetailScreen->getCurrentBook();
-            libSystem->XoaSach(book->getMaSach());
-            
-            detailModal->hide();
-            changeState(AppState::HOME);
-        }
-    }
-
     void handleUpdateBook() {
         if (currentLibrarian) {
             libSystem->CapNhatThongTinSach();
@@ -773,6 +864,9 @@ public:
                 break;
             case AppState::RATING_BOOK:
                 ratingBookScreen->update(mousePos);
+                break;
+             case AppState::DELETE_BOOK:
+                if (deleteBookScreen) deleteBookScreen->update(mousePos);
                 break;
             default:
                 break;
@@ -858,6 +952,23 @@ public:
             case AppState::ADD_BOOKS:
                 homeScreen->render(window);   // giữ nền Home phía sau (như các modal khác)
                 if (addBookScreen) addBookScreen->render(window);
+                break;
+            case AppState::DELETE_BOOK:
+                homeScreen->render(window);   // giữ nền Home phía sau (consistent)
+                if (modal) modal->draw(window);
+                if (deleteBookScreen) deleteBookScreen->render(window);
+                break;
+            case AppState::UPDATE_BOOK:
+                homeScreen->render(window); 
+                if (updateBookScreen) updateBookScreen->render(window);
+                break;
+            case AppState::UPDATE_READER:
+                homeScreen->render(window); 
+                if (updateReaderScreen) updateReaderScreen->render(window);
+                break;
+            case AppState::UPDATE_LIBRARIAN:
+                homeScreen->render(window); 
+                if (updateLibrarianScreen) updateLibrarianScreen->render(window);
                 break;
                 
             default:

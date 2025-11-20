@@ -43,6 +43,8 @@ class USER {
             return (vaiTro == UserRole::LIBRARIAN) ? "Librarian" : "Reader";
         }
 
+        virtual string toCSV() const;
+
 
         void setMaID(string newMaID) { maID = newMaID; }
         void setHoTen(string newHoTen) { hoTen = newHoTen; }

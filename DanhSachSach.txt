@@ -1,4 +1,4 @@
-TN00004|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|46
+TN00004|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|36
 TT00003|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|28
 GT00002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|23
-GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|47
+GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2002|Dai hoc Da Nang|47
