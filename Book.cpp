@@ -9,11 +9,9 @@ string Sach::toCSV() const {
     ostringstream oss;
     oss << maSach << "|" << tenSach << "|" << tacGia << "|"
         << theLoai << "|" << namXuatBan << "|" << nhaXuatBan << "|"
-        << tinhTrang;
+        << soLuong;
     return oss.str();
 }
-
-#include <iomanip> // để dùng setw, left, right
 
 void Sach::hienThiThongTin() const {
     cout << left << setw(15) << maSach
@@ -22,14 +20,11 @@ void Sach::hienThiThongTin() const {
          <<  setw(15) << theLoai
          <<  setw(8)  << namXuatBan
          <<  setw(25) << nhaXuatBan
-         <<  setw(13) << tinhTrang
+         <<  setw(13) << soLuong
          << fixed << setprecision(1) << getDiemTrungBinh()
          << "\n";
     
 }
-
-
-
 
 //Tạo đúng lớp con dựa trên thể loại
 Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb) {
@@ -45,12 +40,13 @@ Sach* Sach::createFromData(const string& ten, const string& tg, const string& tl
     // Tự tạo mã ID (dựa prefix)
     static int stt = 1;
     ostringstream oss;
-    oss << setw(8) << setfill('0') << stt;
+    oss << setw(5) << setfill('0') << stt;
     string id = s->prefix() + oss.str();
     s->setMaSach(id);
     stt++;
 
     return s;
+    
 }
 
 void Sach::docFileInput(const string& fileName, NodeBook*& head) {
@@ -61,27 +57,60 @@ void Sach::docFileInput(const string& fileName, NodeBook*& head) {
     }
 
     string line;
-    NodeBook* tail = nullptr;
     while (getline(in, line)) {
         if (line.empty()) continue;
-        string ten, tg, tl, nxb, namStr;
+
+        string ten, tg, tl, nxb, namStr, soLuongStr, imagePath;
         stringstream ss(line);
         getline(ss, ten, '|');
         getline(ss, tg, '|');
         getline(ss, tl, '|');
         getline(ss, namStr, '|');
         getline(ss, nxb, '|');
+        getline(ss, soLuongStr, '|');
+        getline(ss, imagePath, '|');
 
         int nam = stoi(namStr);
-        Sach* s = Sach::createFromData(ten, tg, tl, nam, nxb);
+        int sl = stoi(soLuongStr);
 
-        NodeBook* newNode = new NodeBook(s);
-        newNode->next = head;
-        head = newNode;
+        // Kiểm tra xem sách đã tồn tại chưa
+        NodeBook* p = head;
+        bool found = false;
+        while (p) {
+            Sach* s = p->data;
+            if (s->getTenSach() == ten &&
+                s->getTacGia() == tg &&
+                s->getNamXuatBan() == nam &&
+                s->getNhaXuatBan() == nxb)
+            {
+                // Trùng sách -> chỉ tăng số lượng
+                s->setSoLuong(s->getSoLuong() + sl);
+                found = true;
+                break;
+            }
+            p = p->next;
+        }
+
+        // Nếu chưa tồn tại -> tạo node mới
+        if (!found) {
+            Sach* s = Sach::createFromData(ten, tg, tl, nam, nxb);
+            s->setSoLuong(sl);
+
+            NodeBook* newNode = new NodeBook(s);
+            if (!head) {
+                head = newNode;
+            } else {
+                NodeBook* tail = head;
+                while (tail->next) tail = tail->next;
+                tail->next = newNode;
+            }
+        }
     }
+
     in.close();
-    cout << "Doc file thanh cong: " << fileName << endl;
+    cout << "Doc file va cap nhat danh sach sach thanh cong: " << fileName << endl;
 }
+
 
 void Sach::ghiFile(const string& fileName, NodeBook* head) {
     ofstream out(fileName);
@@ -99,5 +128,6 @@ void Sach::ghiFile(const string& fileName, NodeBook* head) {
     out.close();
     cout << " Da ghi danh sach sach vao: " << fileName << endl;
 }
+
 
 

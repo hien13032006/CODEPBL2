@@ -13,3 +13,5 @@ GT00000001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0001|hien2006|Rat ha
 TN00000008|Tat den|Ngo Tat To|1950|NXB Viet Nam|R0001|hien2006|Hay|8
 GT00000005|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0002|an123|Binh thuong|5
 TN00000008|Tat den|Ngo Tat To|1950|NXB Viet Nam|R0002|an123|Rat hay|10
+GT00001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0001|hien2006|Rat hay|10
+GT00001|Co so du lieu|Vo Duc Hoang|2000|Dai hoc Da Nang|R0001|hien2006|Hay|8

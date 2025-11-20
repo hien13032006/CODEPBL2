@@ -318,7 +318,7 @@ void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
 //Ghi danh sách sách đang mượn của độc giả
 void LibrarySystem::GhiDanhSachMuonCuaDocGia(Reader* docGia) {
     string fileName = "MuonSach_" + docGia->getMaID() + ".txt";
-    ofstream file(fileName, ios::app);
+    ofstream file(fileName, ios::trunc); // ghi đè toàn bộ, nhưng chỉ các sách đang mượn còn trong bộ nhớ
     
     if (!file.is_open()) {
         cout << "Khong the ghi file muon sach!\n";
@@ -328,12 +328,10 @@ void LibrarySystem::GhiDanhSachMuonCuaDocGia(Reader* docGia) {
     NodeMuonSach* current = docGia->getDanhSachPhieuMuon();
     while (current != nullptr) {
         PhieuMuonSach* phieu = current->phieu;
-        
-        // Format: maSach|ngayMuon|ngayHetHan
+        // chỉ ghi sách đang mượn
         file << phieu->sach->getMaSach() << "|"
              << phieu->ngayMuon << "|"
              << phieu->ngayHetHan << "\n";
-        
         current = current->next;
     }
 
@@ -493,81 +491,78 @@ void LibrarySystem::CapNhatThongTinSach() {
 }
 
 
-void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
+BorrowResult LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
+    BorrowResult result;
+    result.status = BorrowStatus::NOT_FOUND;
+    result.book = nullptr;
+
     NodeBook* current = HeadDsSach;
     while (current != nullptr) {
         if (current->data->getMaSach() == maSach) {
-            // Kiểm tra tình trạng sách
+            result.book = current->data;
+
             if (current->data->getSoLuong() == 0) {
-                cout << "Sach da het, khong the muon!\n";
-                return;
+                result.status = BorrowStatus::OUT_OF_STOCK;
+                return result;
             }
-
-            // Kiểm tra đã mượn chưa
             if (docGia->DaMuonSach(maSach)) {
-                cout << "Ban da muon sach nay roi.\n";
-                return;
+                result.status = BorrowStatus::ALREADY_BORROWED;
+                return result;
             }
-
-            // Kiểm tra giới hạn
             if (docGia->DemSachDaMuon() >= docGia->getGioiHanMuon()) {
-                cout << "Ban da muon toi da " << docGia->getGioiHanMuon() << " cuon.\n";
-                return;
+                result.status = BorrowStatus::LIMIT_REACHED;
+                return result;
             }
-
-            // Kiểm tra có sách quá hạn không
-            int soQuaHan = docGia->DemSachQuaHan();
-            if (soQuaHan > 0) {
-                cout << "\033[1;31m✗ Ban co " << soQuaHan << " sach qua han!\033[0m\n";
-                cout << "Vui long tra sach qua han truoc khi muon sach moi.\n";
-                return;
+            if (docGia->DemSachQuaHan() > 0) {
+                result.status = BorrowStatus::OVERDUE;
+                return result;
             }
 
             // Cho phép mượn
             current->data->muonSach(); 
-
-            // Tạo phiếu mượn với ngày mượn và hạn trả
             docGia->themPhieuMuonSach(current->data);
             docGia->ghiLichSu("Muon", current->data);
-
-            // Lưu vào file
             GhiDanhSachMuonCuaDocGia(docGia);
             GhiFileHeThong("DanhSachSach.txt");
 
-            cout << "\nMuon sach thanh cong: " << current->data->getTenSach() << endl;
-            
-            // Hiển thị thông tin phiếu mượn
+            // Lấy ngày mượn và ngày trả từ phiếu mới
             NodeMuonSach* phieuMoi = docGia->getDanhSachPhieuMuon();
             if (phieuMoi != nullptr) {
                 PhieuMuonSach* p = phieuMoi->phieu;
-                cout << "  Ma sach: " << p->sach->getMaSach() << endl;
-                cout << "  Ngay muon: " << timeToString(p->ngayMuon) << endl;
-                cout << "  Ngay tra: " << timeToString(p->ngayHetHan) << endl;
-                cout << "  Han tra: 90 ngay (3 thang)" << endl;
+                result.borrowDate = timeToString(p->ngayMuon);
+                result.returnDate = timeToString(p->ngayHetHan);
             }
-            
-            return;
+
+            result.status = BorrowStatus::SUCCESS;
+            return result;
         }
         current = current->next;
     }
 
-    cout << " Khong tim thay sach voi ma: " << maSach << endl;
+    result.status = BorrowStatus::NOT_FOUND;
+    return result;
 }
 
-void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
+Sach* LibrarySystem::TraSach(Reader* docGia, const string& maSach, bool &quaHan, int &soNgayQuaHan) {
+    quaHan = false;
+    soNgayQuaHan = 0;
+
+    NodeReader* tmp = HeadDsDocGia;
+       while (tmp != nullptr) {
+       DocDanhSachMuonCuaDocGia(tmp->data);
+       tmp = tmp->next;
+    }
+
     if (!docGia->DaMuonSach(maSach)) {
-        cout << " Ban chua muon sach co ma: " << maSach << endl;
-        return;
+        return nullptr;
     }
 
     NodeBook* current = HeadDsSach;
     while (current != nullptr) {
         if (current->data->getMaSach() == maSach) {
-            // Kiểm tra xem sách có quá hạn không
+
+            // kiểm tra quá hạn
             NodeMuonSach* phieuNode = docGia->getDanhSachPhieuMuon();
-            bool quaHan = false;
-            int soNgayQuaHan = 0;
-            
             while (phieuNode != nullptr) {
                 if (phieuNode->phieu->sach->getMaSach() == maSach) {
                     if (phieuNode->phieu->daQuaHan()) {
@@ -579,93 +574,45 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
                 phieuNode = phieuNode->next;
             }
 
-            // Tăng số lượng sách trong kho
+            // cập nhật kho
             current->data->traSach();
 
-            // Xóa phiếu mượn
+            // xóa phiếu
             docGia->xoaPhieuMuonSach(maSach);
             docGia->ghiLichSu("Tra", current->data);
 
-            cout << "\n Tra sach thanh cong: " << current->data->getTenSach() << endl;
-            
-            // Cảnh báo nếu quá hạn
-            if (quaHan) {
-                cout << "\033[1;31m⚠ CANH BAO: Sach tra qua han " << soNgayQuaHan << " ngay!\033[0m\n";
-                cout << "Luu y: Ban nen tra sach dung han de tranh anh huong den viec muon sach sau nay.\n";
-            }
-            
-            // Hỏi đánh giá
-            int luaChon;
-            cout << "\nBan co muon danh gia cuon sach vua tra khong? (1: Co, 0: Khong): ";
-            cin >> luaChon;
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-            if (luaChon == 1) {
-                DanhGiaSach(docGia, current->data);
-            }
-
-            // Lưu file
+            // ghi file
             GhiDanhSachMuonCuaDocGia(docGia);
             GhiFileHeThong("DanhSachSach.txt");
 
-            return;
+            return current->data;   // ✔ trả về sách
         }
         current = current->next;
     }
 
-    cout << "Khong tim thay sach trong he thong.\n";
+    return nullptr;
 }
 
-void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach) {
-    cout << "\n===== DANH GIA SACH =====\n";
-    cout << "Ban cam thay cuon \"" << sach->getTenSach() << "nhu the nao:\n";
-    cout << "1. Rat hay!\n";
-    cout << "2. Hay!\n";
-    cout << "3. Binh thuong!\n";
-    cout << "4. Khong hay!\n";
-    cout << "5. Rat te!\n";
-    cout << "==========================\n";
-    cout << "Lua chon cua ban: ";
 
-    int choice;
-    cin >> choice;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    int diem = 0;
-    string danhGiaText;
-
-    switch (choice) {
-        case 1: diem = 10; danhGiaText = "Rat hay"; break;
-        case 2: diem = 8; danhGiaText = "Hay"; break;
-        case 3: diem = 5; danhGiaText = "Binh thuong"; break;
-        case 4: diem = 4; danhGiaText = "Khong hay"; break;
-        case 5: diem = 2; danhGiaText = "Rat te"; break;
-        default:
-            cout << "Lua chon khong hop le! Bo qua danh gia.\n";
-            return;
-    }
-
-    // Cập nhật điểm trung bình của sách
+void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach, int diem, const string& text) {
     sach->themDanhGia(diem);
     GhiFileHeThong("DanhSachSach.txt");
 
-    // Ghi vào file đánh giá
     ofstream out("DanhGia.txt", ios::app);
     if (out.is_open()) {
         out << sach->getMaSach() << "|"
-           << sach->getTenSach() << "|"
-           << sach->getTacGia() << "|"
-           << sach->getNamXuatBan() << "|"
-           << sach->getNhaXuatBan() << "|"
-           << docGia->getMaID() << "|"
-           << docGia->getUsername() << "|"
-           << danhGiaText << "|"
-           << diem << endl;
+            << sach->getTenSach() << "|"
+            << sach->getTacGia() << "|"
+            << sach->getNamXuatBan() << "|"
+            << sach->getNhaXuatBan() << "|"
+            << docGia->getMaID() << "|"
+            << docGia->getUsername() << "|"
+            << text << "|"
+            << diem << endl;
         out.close();
     }
-
-    cout << " Cam on ban da danh gia cuon sach nay!\n";
 }
+
 
 double LibrarySystem::TinhDiemTrungBinhTuFile(const string& tenSach,
                                               const string& tacGia,
@@ -1089,7 +1036,14 @@ void LibrarySystem::XemThongKe() {
         cout << "========================================\n";
 }
 
- 
+Sach* LibrarySystem::TimSachTheoMa(const std::string& maSach) {
+    NodeBook* current = HeadDsSach;
+    while (current) {
+        if (current->data->getMaSach() == maSach) return current->data;
+        current = current->next;
+    }
+    return nullptr;
+}
 
 
 

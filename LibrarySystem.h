@@ -15,6 +15,21 @@ struct HashNode {
     HashNode* next;
 };
 
+enum class BorrowStatus {
+    SUCCESS,
+    OUT_OF_STOCK,
+    ALREADY_BORROWED,
+    LIMIT_REACHED,
+    OVERDUE,
+    NOT_FOUND
+};
+
+struct BorrowResult {
+    BorrowStatus status;
+    Sach* book;
+    std::string borrowDate;
+    std::string returnDate;
+};
 
 class LibrarySystem {
     private:
@@ -41,10 +56,10 @@ class LibrarySystem {
         void CapNhatThongTinSach();
         void TimSach(const string& keyword);
         void BuildHashTable();
-        void MuonSach(Reader* docGia, const string& maSach);
-        void TraSach(Reader* docGia, const string& maSach);
+        BorrowResult MuonSach(Reader* docGia, const string& maSach);
+        Sach* TraSach(Reader* docGia, const string& maSach, bool &quaHan, int &soNgayQuaHan);
 
-        void DanhGiaSach(Reader* docGia, Sach* sach);
+        void DanhGiaSach(Reader* docGia, Sach* sach, int diem, const string& text);
         double TinhDiemTrungBinhTuFile(const string& tenSach,const string& tacGia,int namXB,const string& nhaXB);
         void HienThiDanhSachSach() ;
         void HienThiDocGiaQuaHan();
@@ -63,6 +78,8 @@ class LibrarySystem {
 
         void DocTatCaDanhSachMuon();
         void XemThongKe();
+
+        Sach* TimSachTheoMa(const std::string& maSach);
 
 };
         

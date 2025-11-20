@@ -8,6 +8,8 @@ void MenuThuThu(LibrarySystem& system, USER*& currentUser);
 
 int main() {
     LibrarySystem system;
+    Librarian *tt;
+    Reader *docGia;
     USER* currentUser = nullptr;
 
     cout << "==============================\n";
@@ -16,8 +18,8 @@ int main() {
 
     system.DocFileHeThong("DanhSachSach.txt");
     system.DocFileDocGia();
-    system.XayDungTatCaCay();
-
+    system.BuildHashTable();
+    
     int luaChonChinh;
     do {
         cout << "\n========= MENU CHINH =========\n";
@@ -47,7 +49,9 @@ int main() {
                 system.DangKyDocGia();
                 break;
             case 2:
-                if (system.DangNhapDocGia(currentUser)) {
+                if (system.DangNhapDocGia(currentUser)) {   
+                    Reader* docGia = dynamic_cast<Reader*>(currentUser);
+                    system.DocDanhSachMuonCuaDocGia(docGia);  // ← Đọc file riêng của họ
                     MenuDocGia(system, currentUser);
                 } else {
                     cout << "Sai tai khoan hoac mat khau!\n";
@@ -105,14 +109,22 @@ void MenuDocGia(LibrarySystem& system, USER*& currentUser) {
         cout << "5. Hien thi danh sach sach\n";
         cout << "6. Hien thi lich su muon tra\n";
         cout << "7. Xem top 10 sach duoc danh gia cao nhat\n";
-        cout << "8. Dang xuat\n";
+        cout << "8. Hien thi thong tin ca nha.\n";
+        cout << "9. Cap nhat thong tin.\n";
+        cout << "10. Dang xuat\n";
         cout << "================================\n";
         cout << "Lua chon: ";
         cin >> chonDG;
         cin.ignore();
 
         switch (chonDG) {
-            case 1: system.TimSach(); break;
+            case 1: {
+                string keyword;
+                cout << "Nhap tu khoa tim kiem: ";
+                getline(cin, keyword);
+                system.TimSach(keyword); 
+                break;
+            }
             case 2: {
                 string ma;
                 cout << "Nhap ma sach muon: ";
@@ -127,11 +139,13 @@ void MenuDocGia(LibrarySystem& system, USER*& currentUser) {
                 system.TraSach(docGia, ma);
                 break;
             }
-            case 4: docGia->HienThiSachDaMuon(); break;
+            case 4: docGia->HienThiSachDangMuon(); break;
             case 5: system.HienThiDanhSachSach(); break;
             case 6: docGia->HienThiLichSuMuonTra(); break;
             case 7: system.XepHangSach(); break;
-            case 8: system.DangXuat(currentUser); break;
+            case 8: docGia->HienThiThongTin(); break;
+            case 9: docGia->CapNhatThongTin(); break;
+            case 10: system.DangXuat(currentUser); break;
             default: cout << "Lua chon khong hop le!\n";
         }
     } while (currentUser != nullptr);
@@ -150,8 +164,13 @@ void MenuThuThu(LibrarySystem& system, USER*& currentUser) {
         cout << "4. Tim sach\n";
         cout << "5. Cap nhat thong tin sach\n";
         cout << "6. Hien thi danh sach doc gia\n";
-        cout << "7. Xem top 10 sach duoc danh gia cao nhat\n";
-        cout << "8. Dang xuat\n";
+        cout << "7. Hien thi doc gia qua han.\n";
+        cout << "8. Thong ke sach qua han.\n ";
+        cout <<" 9. Xem thong ke.\n";
+        cout << "10. Xem top 10 sach duoc danh gia cao nhat\n";
+        cout << "11. Hien thi thong tin ca nha.\n";
+        cout << "12. Cap nhat thong tin ca nhan.\n";
+        cout << "13. Dang xuat\n";
         cout << "=================================\n";
         cout << "Lua chon: ";
         cin >> chonTT;
@@ -159,22 +178,33 @@ void MenuThuThu(LibrarySystem& system, USER*& currentUser) {
 
         switch (chonTT) {
             case 1:
-                system.DocFileSach("ThemSach.txt");
-                system.GhiFileSach("DanhSachSach.txt");
+                tt->ThemSach(system);
                 break;
             case 2: {
-                string ma;
-                cout << "Nhap ma sach can xoa: ";
-                getline(cin, ma);
-                system.XoaSach(ma);
+                tt->XoaSach(system);
                 break;
             }
             case 3: system.HienThiDanhSachSach(); break;
-            case 4: system.TimSach(); break;
-            case 5: system.CapNhatThongTinSach(); break;
+            case 4: {
+                string keyword;
+                cout << "Nhap tu khoa tim kiem: ";
+                getline(cin, keyword);
+                system.TimSach(keyword); 
+                break;
+            }
+            case 5: tt->CapNhatThongTinSach(system); break;
             case 6: system.HienThiTatCaDocGia(); break;
-            case 7: system.XepHangSach(); break;
-            case 8: system.DangXuat(currentUser); break;
+            case 7: system.HienThiDocGiaQuaHan(); break;
+            case 8: system.ThongKeSachQuaHan(); break;
+            case 9: {
+                system.DocTatCaDanhSachMuon(); 
+                tt->XemThongKe(system); 
+                break;
+            }
+            case 10: system.XepHangSach(); break;
+            case 11: tt->HienThiThongTin(); break;
+            case 12: tt->CapNhatThongTin(); break;
+            case 13: system.DangXuat(currentUser); break;
             default: cout << "Lua chon khong hop le!\n";
         }
     } while (currentUser != nullptr);

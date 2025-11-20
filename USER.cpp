@@ -11,6 +11,7 @@ USER::USER() {
     Email = "";
     username = "";
     password = "";
+    vaiTro = UserRole::READER;
 }
 
 USER::USER(string maID, string hoTen, string SDT, string Email, string username, string password) {
@@ -20,22 +21,18 @@ USER::USER(string maID, string hoTen, string SDT, string Email, string username,
     this->Email = Email;
     this->username = username;
     this->password = password;
+    this->vaiTro = UserRole::READER;
 }
 
 USER::~USER() {}
-
-#include <iomanip> 
 
 void USER::HienThiThongTin() const {
 
     cout << left << setw(10) << maID 
                  << setw(25) << hoTen  
                  <<setw(20)  << SDT      
-                 << setw(30) << Email    
-                 << setw(15) << username 
-                 << "\n";
-
-    cout << "-------------------------------------------------------------------------------------\n";
+                 << setw(25) << Email    
+                 << setw(15) << username;
 }
 
 void USER::CapNhatThongTin() {
@@ -57,19 +54,3 @@ void USER::Logout() {
     cout << username << " da dang xuat khoi he thong." << endl;
 }
 
-string USER::getHoTen() const {
-    return hoTen;
-}
-
-string USER::getMaID() const {
-    return maID;
-}
-
-string USER::getUsername() const {
-    return username;
-}
-
-void USER::setPassword(string newPassword) {
-    password = newPassword;
-    cout << "Mat khau da duoc cap nhat." << endl;
-}

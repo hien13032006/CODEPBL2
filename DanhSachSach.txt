@@ -1,8 +1,4 @@
-GT00000001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|Dang con|10|1
-GT00000002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|Dang con|0|0
-TT00000003|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|Da muon|0|0
-TN00000004|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|Dang con|0|0
-GT00000005|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|Dang con|5|1
-GT00000006|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|Dang con|0|0
-TT00000007|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|Dang con|0|0
-TN00000008|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|Dang con|18|2
+TN00004|Tat den|Ngo Tat To|Truyen ngan|1950|NXB Viet Nam|46
+TT00003|De men phieu luu ki|To Hoai|Tieu thuyet|1941|NXB Kim Dong|28
+GT00002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|23
+GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|47
