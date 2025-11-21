@@ -1,6 +1,4 @@
-// ============================================
-// ui/RoundedRectangle.hpp - Bo góc không dùng setRadius
-// ============================================
+
 #ifndef ROUNDED_RECTANGLE_HPP
 #define ROUNDED_RECTANGLE_HPP
 

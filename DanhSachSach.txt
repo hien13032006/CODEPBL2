@@ -18,7 +18,7 @@ TTR00013|Doraemon Tap 1|Fujiko F Fujio|Truyen tranh|1970|NXB Kim Dong|30|20|4|im
 TTR00014|One Piece Tap 1|Oda Eiichiro|Truyen tranh|1997|NXB Kim Dong|40|25|7|images/pic1.png
 TTR00015|Conan Tap 1|Aoyama Gosho|Truyen tranh|1994|NXB Kim Dong|25|8|2|images/pic1.png
 TC00016|Khoa hoc & Doi song So 1|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|50|40|0|images/pic1.png
-TC00017|The thao 247 So 15|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|28|0|images/pic1.png
-KN00018|Dac nhan tam|Dale Carnegie|Sach ki nang|1936|NXB Tre|15|5|3|images/pic1.png
-KN00019|7 thoi quen cua nguoi thanh dat|Stephen Covey|Sach ki nang|1989|NXB Tre|20|10|2|images/pic1.png
-KN00020|Tu duy tich cuc|Norman Vincent Peale|Sach ki nang|1952|NXB Tre|10|6|1|images/pic1.png
+TC00017|The thao 247 So 15|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|28|0|pic1.png
+KN00018|Dac nhan tam|Dale Carnegie|Sach ki nang|1936|NXB Tre|15|5|3|pic1.png
+KN00019|7 thoi quen cua nguoi thanh dat|Stephen Covey|Sach ki nang|1989|NXB Tre|20|10|2|pic1.png
+KN00020|Tu duy tich cuc|Norman Vincent Peale|Sach ki nang|1952|NXB Tre|10|6|1|pic1.png

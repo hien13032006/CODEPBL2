@@ -3,71 +3,51 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <functional>
 #include "RoundedRectangle.hpp"
 
 class Button {
 private:
-    RoundedRectangleShape shape;
+    RoundedRectangleShape shape; 
     sf::Text text;
-    sf::Color normalColor;
-    sf::Color hoverColor;
+    sf::Color normalColor, hoverColor;
     bool isHovered;
-    std::function<void()> onClick;
     int id;
 
 public:
     Button(sf::Vector2f position, sf::Vector2f size, const std::string& label,
-           sf::Font& font, int buttonId = 0, sf::Color normal = sf::Color(33, 150, 243)) {
+           sf::Font& font, int btnId = 0, sf::Color color = sf::Color(70, 130, 180)) {
         
         shape.setSize(size);
-        shape.setCornerRadius(8.0f);
+        shape.setCornerRadius(10.0f);
         shape.setPosition(position);
         
-        normalColor = normal;
-        // Hover: làm sáng hơn
-        hoverColor = sf::Color(
-            std::min(255, (int)normal.r + 30),
-            std::min(255, (int)normal.g + 30),
-            std::min(255, (int)normal.b + 30)
-        );
+        normalColor = color;
+        hoverColor = sf::Color(std::min(255, color.r + 30), std::min(255, color.g + 30), std::min(255, color.b + 30));
+        
         shape.setFillColor(normalColor);
+        id = btnId;
         isHovered = false;
-        id = buttonId;
 
         text.setFont(font);
         text.setString(label);
-        text.setCharacterSize(16);
+        text.setCharacterSize(18);
         text.setFillColor(sf::Color::White);
         
-        sf::FloatRect textBounds = text.getLocalBounds();
-        text.setOrigin(textBounds.width / 2, textBounds.height / 2);
-        text.setPosition(position.x + size.x / 2, position.y + size.y / 2 - 3);
+        sf::FloatRect b = text.getLocalBounds();
+        text.setOrigin(b.left + b.width/2.0f, b.top + b.height/2.0f);
+        text.setPosition(position.x + size.x/2.0f, position.y + size.y/2.0f);
     }
-
-    void setOnClick(std::function<void()> callback) { onClick = callback; }
-    int getId() const { return id; }
 
     void update(sf::Vector2f mousePos) {
         if (shape.getGlobalBounds().contains(mousePos)) {
-            if (!isHovered) {
-                isHovered = true;
-                shape.setFillColor(hoverColor);
-            }
+            if (!isHovered) { isHovered = true; shape.setFillColor(hoverColor); }
         } else {
-            if (isHovered) {
-                isHovered = false;
-                shape.setFillColor(normalColor);
-            }
+            if (isHovered) { isHovered = false; shape.setFillColor(normalColor); }
         }
     }
 
     bool handleClick(sf::Vector2f mousePos) {
-        if (shape.getGlobalBounds().contains(mousePos)) {
-            if (onClick) onClick();
-            return true;
-        }
-        return false;
+        return shape.getGlobalBounds().contains(mousePos);
     }
 
     void draw(sf::RenderWindow& window) {
@@ -75,19 +55,34 @@ public:
         window.draw(text);
     }
 
+    // Getter/Setter
+    int getId() const { return id; }
+    sf::Text& getText() { return text; }
+    
+    // --- CÁC HÀM ĐƯỢC THÊM ĐỂ SỬA LỖI ---
+    
+    // Lấy nội dung chuỗi của nút (cho CategoryScreen)
+    std::string getTextString() const { 
+        return text.getString(); 
+    }
+
+    // Lấy font chữ của nút (cho BookDetailScreen)
+    const sf::Font& getFont() const {
+        return *text.getFont();
+    }
+
+    void setColor(sf::Color color) { 
+        normalColor = color; 
+        hoverColor = sf::Color(std::min(255, color.r + 30), std::min(255, color.g + 30), std::min(255, color.b + 30));
+        if(!isHovered) shape.setFillColor(normalColor); 
+    }
+    
     void setPosition(sf::Vector2f pos) {
         shape.setPosition(pos);
-        sf::FloatRect textBounds = text.getLocalBounds();
-        text.setOrigin(textBounds.width / 2, textBounds.height / 2);
-        text.setPosition(pos.x + shape.getSize().x / 2, pos.y + shape.getSize().y / 2 - 3);
+        sf::FloatRect b = text.getLocalBounds();
+        text.setOrigin(b.left + b.width/2.0f, b.top + b.height/2.0f);
+        text.setPosition(pos.x + shape.getSize().x/2.0f, pos.y + shape.getSize().y/2.0f);
     }
-    const sf::Font& getFont() const { 
-    return *text.getFont(); 
-}
-sf::Text& getText() { 
-    return text; 
-}
 };
-
 
 #endif

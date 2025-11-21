@@ -17,8 +17,10 @@ class Librarian : public USER {
         void ThemSach(LibrarySystem &L);
         void XoaSach(LibrarySystem &L);
         void CapNhatThongTinSach(LibrarySystem &L);
+        string toCSV(ostream &out) const;
 
         void XemThongKe(LibrarySystem &L);
         void QuanLyDocGia(LibrarySystem &L);
+        string getChucVu() const { return chucVu; }
 };
 #endif

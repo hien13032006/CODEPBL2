@@ -2,48 +2,45 @@
 #define SCROLL_VIEW_HPP
 
 #include <SFML/Graphics.hpp>
+#include <algorithm>
+
+enum class ScrollDirection { VERTICAL, HORIZONTAL };
 
 class ScrollView {
 private:
     float scrollOffset;
     float maxScroll;
-    sf::FloatRect bounds;
+    sf::FloatRect bounds; 
     float scrollSpeed;
+    ScrollDirection direction;
 
 public:
-    ScrollView(sf::FloatRect viewBounds) : bounds(viewBounds) {
+    ScrollView(sf::FloatRect viewBounds, ScrollDirection dir = ScrollDirection::VERTICAL) 
+        : bounds(viewBounds), direction(dir) {
         scrollOffset = 0;
         maxScroll = 0;
-        scrollSpeed = 30.0f;
+        scrollSpeed = 40.0f; // Tốc độ cuộn
     }
 
     void handleScroll(sf::Event& event, sf::Vector2f mousePos) {
-        // Kiểm tra chuột có trong vùng scroll không
+        // Chỉ cuộn khi chuột nằm trong vùng cho phép
         if (!bounds.contains(mousePos)) return;
         
         if (event.type == sf::Event::MouseWheelScrolled) {
-            
-            // FIX: Đảo dấu của event.mouseWheelScroll.delta để cuộn đúng chiều
-            // (Thử lại với dấu trừ để đảo chiều cuộn)
-            scrollOffset -= event.mouseWheelScroll.delta * scrollSpeed; 
-            
-            // Đảm bảo không cuộn quá giới hạn
-            if (scrollOffset < 0) scrollOffset = 0;
-            if (scrollOffset > maxScroll) scrollOffset = maxScroll;
+            scrollOffset -= event.mouseWheelScroll.delta * scrollSpeed;
+            // Giới hạn cuộn không âm và không quá max
+            scrollOffset = std::max(0.0f, std::min(maxScroll, scrollOffset));
         }
     }
 
-    void setMaxScroll(float max) { 
-        maxScroll = std::max(0.0f, max);
+    void setMaxScroll(float contentSize) {
+        float viewportSize = (direction == ScrollDirection::VERTICAL) ? bounds.height : bounds.width;
+        // Thêm padding 50px để cuộn thoải mái hơn
+        maxScroll = std::max(0.0f, contentSize - viewportSize + 50.0f); 
     }
     
     float getScrollOffset() const { return scrollOffset; }
     void reset() { scrollOffset = 0; }
-    
-    // Áp dụng offset cho position của object
-    sf::Vector2f applyScroll(sf::Vector2f pos) const {
-        return sf::Vector2f(pos.x, pos.y - scrollOffset);
-    }
 };
 
 #endif

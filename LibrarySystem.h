@@ -6,6 +6,8 @@
 #include "Librarian.h"
 #include "Reader.h"
 #include "Node.h"
+#include <string>
+#include <vector>
 
 const int TABLE_SIZE = 1000;
 
@@ -13,6 +15,7 @@ struct HashNode {
     string key;        // từ khóa
     NodeBook* list;    // danh sách các sách có chứa từ khóa
     HashNode* next;
+    
 };
 
 
@@ -22,7 +25,7 @@ class LibrarySystem {
         NodeReader *HeadDsDocGia; //con tro den dau danh sach doc gia
         NodeLibrarian *HeadDsTThu; //con tro den dau danh sach thu thu
         HashNode* hashTable[TABLE_SIZE];
-
+        std::vector<std::string> top10BookIDs;
     public:
         LibrarySystem();
         ~LibrarySystem();
@@ -64,6 +67,24 @@ class LibrarySystem {
         void DocTatCaDanhSachMuon();
         void XemThongKe();
         std::vector<BorrowerInfo> TimNguoiMuonSach(const std::string& maSach) const;
+        const std::vector<std::string>& getTop10IDs() const { return top10BookIDs; }
+};
+struct NodeThongKe {
+    std::string tenSach;
+    std::string tacGia;
+    int namXB;
+    std::string nhaXB;
+    double tongDiem;
+    int soDanhGia;
+    NodeThongKe* next;
+    
+    // Thêm constructor để dễ dàng khởi tạo
+    NodeThongKe(std::string ten, std::string tg, int nxb, std::string nxbx, double tong, int so)
+        : tenSach(ten), tacGia(tg), namXB(nxb), nhaXB(nxbx), tongDiem(tong), soDanhGia(so), next(nullptr) {}
+    
+    double diemTB() const {
+        return soDanhGia == 0 ? 0 : tongDiem / soDanhGia;
+    }
 };
         
 #endif

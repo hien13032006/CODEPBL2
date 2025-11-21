@@ -4,6 +4,13 @@
 #include <SFML/Graphics.hpp>
 #include "Sidebar.hpp"
 #include "LibrarySystem.h"
+#include "RoundedRectangle.hpp"
+
+struct StatBox {
+    RoundedRectangleShape box;
+    sf::Text title;
+    sf::Text value;
+};
 
 class StatisticsScreen {
 private:
@@ -11,21 +18,7 @@ private:
     sf::Text titleText;
     Sidebar* sidebar;
     
-    // Các thống kê
-    sf::RectangleShape statBox1; // 1. Tổng số sách
-    sf::RectangleShape statBox2; // 2. Tổng độc giả
-    sf::RectangleShape statBox3; // 3. Sách đang mượn
-    sf::RectangleShape statBox4; // 4. Sách quá hạn
-    
-    sf::Text stat1Title;
-    sf::Text stat1Value;
-    sf::Text stat2Title;
-    sf::Text stat2Value;
-    sf::Text stat3Title;
-    sf::Text stat3Value;
-    sf::Text stat4Title;
-    sf::Text stat4Value;
-    
+    StatBox stats[4]; // 0: Sách, 1: Độc giả, 2: Đang mượn, 3: Quá hạn
     LibrarySystem* libSystem;
 
 public:
@@ -35,164 +28,99 @@ public:
         background.setFillColor(sf::Color(13, 15, 23));
 
         titleText.setFont(font);
-        titleText.setString("Thong Ke Thu Vien");
-        titleText.setCharacterSize(28);
+        titleText.setString("THONG KE HE THONG");
+        titleText.setCharacterSize(32);
         titleText.setFillColor(sf::Color::White);
         titleText.setPosition(280, 30);
 
         sidebar = new Sidebar(font);
 
-        // Box 1: Tổng số sách
-        statBox1.setSize(sf::Vector2f(450, 150));
-        statBox1.setPosition(300, 120);
-        statBox1.setFillColor(sf::Color(60, 100, 180));
+        // Config Stats
+        std::string titles[] = {"TONG SO SACH", "TONG DOC GIA", "SACH DANG MUON", "SACH QUA HAN"};
+        sf::Color colors[] = {sf::Color(60, 100, 180), sf::Color(100, 180, 100), sf::Color(200, 150, 60), sf::Color(200, 80, 80)};
+        float xPos[] = {300, 750, 300, 750};
+        float yPos[] = {150, 150, 450, 450};
 
-        stat1Title.setFont(font);
-        stat1Title.setString("Tong So Sach");
-        stat1Title.setCharacterSize(18);
-        stat1Title.setFillColor(sf::Color(200, 200, 200));
-        stat1Title.setPosition(320, 140);
+        for(int i=0; i<4; i++) {
+            stats[i].box.setSize({400, 250});
+            stats[i].box.setCornerRadius(20.0f);
+            stats[i].box.setPosition(xPos[i], yPos[i]);
+            stats[i].box.setFillColor(colors[i]);
 
-        stat1Value.setFont(font);
-        stat1Value.setString("1,250");
-        stat1Value.setCharacterSize(48);
-        stat1Value.setFillColor(sf::Color::White);
-        stat1Value.setPosition(320, 180);
+            stats[i].title.setFont(font);
+            stats[i].title.setString(titles[i]);
+            stats[i].title.setCharacterSize(20);
+            stats[i].title.setFillColor(sf::Color(255, 255, 255, 200));
+            stats[i].title.setPosition(xPos[i] + 30, yPos[i] + 30);
 
-        // Box 2: Tổng độc giả
-        statBox2.setSize(sf::Vector2f(450, 150));
-        statBox2.setPosition(780, 120);
-        statBox2.setFillColor(sf::Color(100, 180, 100));
-
-        stat2Title.setFont(font);
-        stat2Title.setString("Tong Doc Gia");
-        stat2Title.setCharacterSize(18);
-        stat2Title.setFillColor(sf::Color(200, 200, 200));
-        stat2Title.setPosition(800, 140);
-
-        stat2Value.setFont(font);
-        stat2Value.setString("567");
-        stat2Value.setCharacterSize(48);
-        stat2Value.setFillColor(sf::Color::White);
-        stat2Value.setPosition(800, 180);
-
-        // Box 3: Sách đang mượn
-        statBox3.setSize(sf::Vector2f(450, 150));
-        statBox3.setPosition(300, 300);
-        statBox3.setFillColor(sf::Color(200, 150, 60));
-
-        stat3Title.setFont(font);
-        stat3Title.setString("Sach Dang Muon");
-        stat3Title.setCharacterSize(18);
-        stat3Title.setFillColor(sf::Color(200, 200, 200));
-        stat3Title.setPosition(320, 320);
-
-        stat3Value.setFont(font);
-        stat3Value.setString("342");
-        stat3Value.setCharacterSize(48);
-        stat3Value.setFillColor(sf::Color::White);
-        stat3Value.setPosition(320, 360);
-
-        // Box 4: Sách quá hạn
-        statBox4.setSize(sf::Vector2f(450, 150));
-        statBox4.setPosition(780, 300);
-        statBox4.setFillColor(sf::Color(200, 80, 80));
-
-        stat4Title.setFont(font);
-        stat4Title.setString("Sach Qua Han");
-        stat4Title.setCharacterSize(18);
-        stat4Title.setFillColor(sf::Color(200, 200, 200));
-        stat4Title.setPosition(800, 320);
-
-        stat4Value.setFont(font);
-        stat4Value.setString("23");
-        stat4Value.setCharacterSize(48);
-        stat4Value.setFillColor(sf::Color::White);
-        stat4Value.setPosition(800, 360);
-
+            stats[i].value.setFont(font);
+            stats[i].value.setString("0");
+            stats[i].value.setCharacterSize(60);
+            stats[i].value.setStyle(sf::Text::Bold);
+            stats[i].value.setFillColor(sf::Color::White);
+            stats[i].value.setPosition(xPos[i] + 30, yPos[i] + 100);
+        }
         loadStatistics();
     }
 
-    ~StatisticsScreen() {
-        delete sidebar;
-    }
+    ~StatisticsScreen() { delete sidebar; }
 
     void loadStatistics() {
-    if (!libSystem) return;
-    int tongSoSach = 0;
-    int tongSoLuong = 0;
-    int tongDocGia = 0;
-    int soSachDangMuon = 0;
-    int soSachQuaHan = 0;
+        if (!libSystem) return;
+        int totalBooks = 0, totalReaders = 0, borrowed = 0, overdue = 0;
 
-    // Đếm sách
-    NodeBook* currentBook = libSystem->getDanhSachSach();
-    while (currentBook != nullptr) {
-        tongSoSach++;
-        tongSoLuong += currentBook->data->getSoLuong();
-        currentBook = currentBook->next;
+        NodeBook* curBook = libSystem->getDanhSachSach();
+        while (curBook) { totalBooks++; curBook = curBook->next; }
+
+        NodeReader* curReader = libSystem->getDanhSachDocGia();
+        while (curReader) {
+            totalReaders++;
+            borrowed += curReader->data->DemSachDaMuon();
+            overdue += curReader->data->DemSachQuaHan();
+            curReader = curReader->next;
+        }
+
+        stats[0].value.setString(std::to_string(totalBooks));
+        stats[1].value.setString(std::to_string(totalReaders));
+        stats[2].value.setString(std::to_string(borrowed));
+        stats[3].value.setString(std::to_string(overdue));
     }
-
-    // Đếm độc giả và sách đang mượn
-    NodeReader* currentReader = libSystem->getDanhSachDocGia();
-    while (currentReader != nullptr) {
-        tongDocGia++;
-        soSachDangMuon += currentReader->data->DemSachDaMuon();
-        soSachQuaHan += currentReader->data->DemSachQuaHan();
-        currentReader = currentReader->next;
-    }
-
-    // Cập nhật UI
-    stat1Value.setString(std::to_string(tongSoSach));
-    stat2Value.setString(std::to_string(tongDocGia));
-    stat3Value.setString(std::to_string(soSachDangMuon));
-    stat4Value.setString(std::to_string(soSachQuaHan));
-}
 
     void update(sf::Vector2f mousePos) {
         sidebar->update(mousePos);
+        for(int i=0; i<4; i++) {
+            if(stats[i].box.getGlobalBounds().contains(mousePos)) {
+                stats[i].box.setOutlineThickness(4);
+                stats[i].box.setOutlineColor(sf::Color(255, 255, 255, 150));
+            } else {
+                stats[i].box.setOutlineThickness(0);
+            }
+        }
     }
 
-    int handleSidebarClick(sf::Vector2f mousePos) {
-        return sidebar->handleClick(mousePos);
-    }
+    int handleSidebarClick(sf::Vector2f mousePos) { return sidebar->handleClick(mousePos); }
     
-    // FIX: Thêm hàm xử lý click trên các ô thống kê
     int handleClick(sf::Vector2f mousePos) {
-        if (statBox1.getGlobalBounds().contains(mousePos)) return 1; // Tổng số sách -> HOME
-        if (statBox2.getGlobalBounds().contains(mousePos)) return 2; // Tổng độc giả -> MANAGE_READERS
-        if (statBox3.getGlobalBounds().contains(mousePos)) return 3; // Sách đang mượn
-        if (statBox4.getGlobalBounds().contains(mousePos)) return 4; // Sách quá hạn -> OVERDUE_READERS
+        if(stats[0].box.getGlobalBounds().contains(mousePos)) return 1; // Home
+        if(stats[1].box.getGlobalBounds().contains(mousePos)) return 2; // Readers
+        if(stats[2].box.getGlobalBounds().contains(mousePos)) return 3; // Borrowed (Optional)
+        if(stats[3].box.getGlobalBounds().contains(mousePos)) return 4; // Overdue
         return 0;
     }
 
-    void setUserRole(UserRole role, sf::Font& font) {
-        sidebar->setUserRole(role, font);
-    }
+    void setUserRole(UserRole role, sf::Font& font) { sidebar->setUserRole(role, font); }
+    Sidebar* getSidebar() { return sidebar; }
 
     void render(sf::RenderWindow& window) {
         window.draw(background);
         sidebar->draw(window);
         window.draw(titleText);
-
-        window.draw(statBox1);
-        window.draw(stat1Title);
-        window.draw(stat1Value);
-
-        window.draw(statBox2);
-        window.draw(stat2Title);
-        window.draw(stat2Value);
-
-        window.draw(statBox3);
-        window.draw(stat3Title);
-        window.draw(stat3Value);
-
-        window.draw(statBox4);
-        window.draw(stat4Title);
-        window.draw(stat4Value);
+        for(int i=0; i<4; i++) {
+            window.draw(stats[i].box);
+            window.draw(stats[i].title);
+            window.draw(stats[i].value);
+        }
     }
-
-    Sidebar* getSidebar() { return sidebar; }
 };
 
-#endif
+#endif 

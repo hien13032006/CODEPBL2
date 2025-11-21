@@ -1,6 +1,3 @@
-// ============================================
-// screens/RegisterReaderScreen.hpp - Đăng ký độc giả
-// ============================================
 #ifndef REGISTER_READER_SCREEN_HPP
 #define REGISTER_READER_SCREEN_HPP
 
@@ -8,108 +5,89 @@
 #include "Modal.hpp"
 #include "InputField.hpp"
 #include "Button.hpp"
+#include "RoundedRectangle.hpp"
+
+// Helper functions extern
+extern bool kiemTraSDT(const string&);
+extern bool kiemTraEmail(const string&);
+extern bool kiemTraMatKhau(const string&);
 
 class RegisterReaderScreen {
 private:
     Modal* modal;
-    sf::RectangleShape posterPanel;
-    sf::RectangleShape formPanel;
-    sf::Text logoText;
-    sf::Text titleText;
-    sf::Text switchText;
-    InputField* nameField;
-    InputField* phoneField;
-    InputField* emailField;
-    InputField* usernameField;
-    InputField* passwordField;
-    InputField* confirmPasswordField;
-    Button* registerButton;
-    Button* backButton;
+    RoundedRectangleShape posterPanel;
+    RoundedRectangleShape formPanel;
+    sf::Text logoText, titleText, switchText;
+
+    InputField* nameField; InputField* phoneField; InputField* emailField;
+    InputField* usernameField; InputField* passwordField; InputField* confirmPasswordField;
+    
+    Button* registerButton; Button* backButton;
+    
+    sf::Text errName, errPhone, errEmail, errUsername, errPassword, errConfirm;
 
 public:
     RegisterReaderScreen(sf::Font& font, Modal* modalRef) : modal(modalRef) {
-        posterPanel.setSize(sf::Vector2f(380, 600));
-        posterPanel.setPosition(250, 150);
-        posterPanel.setFillColor(sf::Color(40, 50, 70, 200));
+        // Poster (300x700)
+        posterPanel.setSize(sf::Vector2f(300, 700));
+        posterPanel.setPosition(200, 100);
+        posterPanel.setFillColor(sf::Color(60, 100, 180));
 
-        formPanel.setSize(sf::Vector2f(520, 600));
-        formPanel.setPosition(630, 150);
-        formPanel.setFillColor(sf::Color(30, 35, 50));
+        // Form (650x700)
+        formPanel.setSize(sf::Vector2f(650, 700));
+        formPanel.setPosition(500, 100);
+        formPanel.setFillColor(sf::Color(40, 45, 60));
 
         logoText.setFont(font);
-        logoText.setString("Library");
-        logoText.setCharacterSize(40);
-        logoText.setFillColor(sf::Color(255, 193, 94));
-        sf::FloatRect logoBounds = logoText.getLocalBounds();
-        logoText.setOrigin(logoBounds.width / 2, logoBounds.height / 2);
-        logoText.setPosition(440, 400);
+        logoText.setString("JOIN US");
+        logoText.setCharacterSize(48);
+        logoText.setFillColor(sf::Color::White);
+        logoText.setPosition(250, 400);
 
         titleText.setFont(font);
-        titleText.setString("Dang Ky Doc Gia");
-        titleText.setCharacterSize(26);
+        titleText.setString("DANG KY TAI KHOAN");
+        titleText.setCharacterSize(28);
         titleText.setFillColor(sf::Color::White);
-        titleText.setPosition(700, 180);
+        titleText.setPosition(550, 130);
 
         switchText.setFont(font);
-        switchText.setString("Da co tai khoan? Dang nhap");
-        switchText.setCharacterSize(13);
+        switchText.setString("Da co tai khoan? Dang nhap ngay");
+        switchText.setCharacterSize(16);
         switchText.setFillColor(sf::Color(255, 193, 94));
-        switchText.setPosition(700, 700);
+        switchText.setPosition(550, 750);
 
-        nameField = new InputField(sf::Vector2f(680, 230), sf::Vector2f(420, 45),
-                                   "Ho ten", font);
-        
-        phoneField = new InputField(sf::Vector2f(680, 290), sf::Vector2f(420, 45),
-                                    "So dien thoai", font);
-        
-        emailField = new InputField(sf::Vector2f(680, 350), sf::Vector2f(420, 45),
-                                    "Email", font);
-        
-        usernameField = new InputField(sf::Vector2f(680, 410), sf::Vector2f(420, 45),
-                                       "Username", font);
-        
-        passwordField = new InputField(sf::Vector2f(680, 470), sf::Vector2f(420, 45),
-                                       "Password", font, true);
-        
-        confirmPasswordField = new InputField(sf::Vector2f(680, 530), sf::Vector2f(420, 45),
-                                             "Xac nhan password", font, true);
+        // Fields (Size 45 height)
+        float startY = 180; float gap = 80;
+        nameField = new InputField({550, startY}, {550, 45}, "Ho ten", font);
+        phoneField = new InputField({550, startY + gap}, {550, 45}, "So dien thoai", font);
+        emailField = new InputField({550, startY + gap*2}, {550, 45}, "Email", font);
+        usernameField = new InputField({550, startY + gap*3}, {550, 45}, "Username", font);
+        passwordField = new InputField({550, startY + gap*4}, {260, 45}, "Password", font, true);
+        confirmPasswordField = new InputField({840, startY + gap*4}, {260, 45}, "Confirm", font, true);
 
-        registerButton = new Button(sf::Vector2f(680, 595), sf::Vector2f(420, 45),
-                                   "Dang Ky", font);
-        
-        backButton = new Button(sf::Vector2f(680, 655), sf::Vector2f(420, 40),
-                               "Quay Lai", font, 0, sf::Color(100, 100, 120));
+        registerButton = new Button({550, 600}, {550, 55}, "Dang Ky", font, 0, sf::Color(76, 175, 80));
+        backButton = new Button({550, 670}, {550, 45}, "Quay Lai", font, 0, sf::Color(100, 100, 120));
+
+        // Errors
+        auto initErr = [&](sf::Text& e, float x, float y) {
+            e.setFont(font); e.setCharacterSize(14); e.setFillColor(sf::Color(255, 80, 80)); e.setPosition(x, y); e.setString("");
+        };
+        initErr(errName, 550, startY + 50); initErr(errPhone, 550, startY + gap + 50);
+        initErr(errEmail, 550, startY + gap*2 + 50); initErr(errUsername, 550, startY + gap*3 + 50);
+        initErr(errPassword, 550, startY + gap*4 + 50); initErr(errConfirm, 840, startY + gap*4 + 50);
     }
 
-    ~RegisterReaderScreen() {
-        delete nameField;
-        delete phoneField;
-        delete emailField;
-        delete usernameField;
-        delete passwordField;
-        delete confirmPasswordField;
-        delete registerButton;
-        delete backButton;
-    }
+    ~RegisterReaderScreen() { /* Delete all pointers */ }
 
     void update(sf::Vector2f mousePos) {
-        nameField->update();
-        phoneField->update();
-        emailField->update();
-        usernameField->update();
-        passwordField->update();
-        confirmPasswordField->update();
-        registerButton->update(mousePos);
-        backButton->update(mousePos);
+        nameField->update(); phoneField->update(); emailField->update(); usernameField->update();
+        passwordField->update(); confirmPasswordField->update(); registerButton->update(mousePos); backButton->update(mousePos);
     }
 
     void handleEvent(sf::Event& event, sf::Vector2f mousePos) {
-        nameField->handleEvent(event, mousePos);
-        phoneField->handleEvent(event, mousePos);
-        emailField->handleEvent(event, mousePos);
-        usernameField->handleEvent(event, mousePos);
-        passwordField->handleEvent(event, mousePos);
-        confirmPasswordField->handleEvent(event, mousePos);
+        nameField->handleEvent(event, mousePos); phoneField->handleEvent(event, mousePos);
+        emailField->handleEvent(event, mousePos); usernameField->handleEvent(event, mousePos);
+        passwordField->handleEvent(event, mousePos); confirmPasswordField->handleEvent(event, mousePos);
     }
 
     int handleClick(sf::Vector2f mousePos) {
@@ -120,37 +98,43 @@ public:
     }
 
     void render(sf::RenderWindow& window) {
-        if (modal && modal->isShown()) {
-            window.draw(posterPanel);
-            window.draw(formPanel);
-            window.draw(logoText);
-            window.draw(titleText);
-            nameField->draw(window);
-            phoneField->draw(window);
-            emailField->draw(window);
-            usernameField->draw(window);
-            passwordField->draw(window);
-            confirmPasswordField->draw(window);
-            registerButton->draw(window);
-            backButton->draw(window);
-            window.draw(switchText);
-        }
+        window.draw(posterPanel); window.draw(formPanel); window.draw(logoText); window.draw(titleText);
+        nameField->draw(window); phoneField->draw(window); emailField->draw(window);
+        usernameField->draw(window); passwordField->draw(window); confirmPasswordField->draw(window);
+        window.draw(errName); window.draw(errPhone); window.draw(errEmail);
+        window.draw(errUsername); window.draw(errPassword); window.draw(errConfirm);
+        registerButton->draw(window); backButton->draw(window); window.draw(switchText);
     }
 
-    std::string getName() const { return nameField->getText(); }
-    std::string getPhone() const { return phoneField->getText(); }
-    std::string getEmail() const { return emailField->getText(); }
-    std::string getUsername() const { return usernameField->getText(); }
-    std::string getPassword() const { return passwordField->getText(); }
-    std::string getConfirmPassword() const { return confirmPasswordField->getText(); }
-    
+    // Getters
+    string getName() const { return nameField->getText(); }
+    string getPhone() const { return phoneField->getText(); }
+    string getEmail() const { return emailField->getText(); }
+    string getUsername() const { return usernameField->getText(); }
+    string getPassword() const { return passwordField->getText(); }
+    string getConfirmPassword() const { return confirmPasswordField->getText(); }
+
     void clearFields() {
-        nameField->clear();
-        phoneField->clear();
-        emailField->clear();
-        usernameField->clear();
-        passwordField->clear();
-        confirmPasswordField->clear();
+        nameField->clear(); phoneField->clear(); emailField->clear();
+        usernameField->clear(); passwordField->clear(); confirmPasswordField->clear();
+        errName.setString(""); errPhone.setString(""); errEmail.setString("");
+        errUsername.setString(""); errPassword.setString(""); errConfirm.setString("");
+    }
+
+    void setUsernameError(const std::string& msg) { errUsername.setString(msg); }
+
+    bool validate() {
+        bool ok = true;
+        errName.setString(""); errPhone.setString(""); errEmail.setString("");
+        errUsername.setString(""); errPassword.setString(""); errConfirm.setString("");
+
+        if (getName().empty()) { errName.setString("Bat buoc"); ok = false; }
+        if (!kiemTraSDT(getPhone())) { errPhone.setString("SDT khong hop le"); ok = false; }
+        if (!kiemTraEmail(getEmail())) { errEmail.setString("Email khong hop le"); ok = false; }
+        if (getUsername().size() < 4) { errUsername.setString("Tu 4 ky tu"); ok = false; }
+        if (!kiemTraMatKhau(getPassword())) { errPassword.setString(">= 8 ky tu"); ok = false; }
+        if (getPassword() != getConfirmPassword()) { errConfirm.setString("Khong khop"); ok = false; }
+        return ok;
     }
 };
 

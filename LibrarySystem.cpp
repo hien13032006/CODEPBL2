@@ -327,7 +327,6 @@ void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
                 );
 
                 NodeMuonSach* newNode = new NodeMuonSach(phieu);
-
                 if (head == nullptr) {
                     head = tail = newNode;
                 } else {
@@ -1020,33 +1019,18 @@ void LibrarySystem::HienThiTatCaDocGia() const {
     }
 }
 
+// Trong LibrarySystem::XepHangSach (khoảng dòng 4470 trong merged.cpp)
+
 void LibrarySystem::XepHangSach() {
     if (HeadDsSach == nullptr) {
-        cout << "Thu vien chua co sach nao!\n";
+        std::cout << "Thu vien chua co sach nao!\n";
         return;
     }
 
-    //Danh sách thống kê trung gian
-    struct NodeThongKe {
-        string tenSach;
-        string tacGia;
-        int namXB;
-        string nhaXB;
-        double tongDiem;
-        int soDanhGia;
-        NodeThongKe* next;
-        NodeThongKe(string ten, string tg, int nxb, string nxbx,
-                    double tong, int so)
-            : tenSach(ten), tacGia(tg), namXB(nxb), nhaXB(nxbx),
-              tongDiem(tong), soDanhGia(so), next(nullptr) {}
-        double diemTB() const {
-            return soDanhGia == 0 ? 0 : tongDiem / soDanhGia;
-        }
-    };
-
+    // NodeThongKe* headTK = nullptr; (Giờ NodeThongKe được định nghĩa ở ngoài)
     NodeThongKe* headTK = nullptr;
 
-    //Gom nhóm sách giống nhau
+    // 1. Gom nhóm sách giống nhau và tính điểm
     for (NodeBook* cur = HeadDsSach; cur != nullptr; cur = cur->next) {
         Sach* s = cur->data;
 
@@ -1080,46 +1064,45 @@ void LibrarySystem::XepHangSach() {
     }
 
     if (headTK == nullptr) {
-        cout << "Chua co sach nao duoc danh gia.\n";
+        std::cout << "Chua co sach nao duoc danh gia.\n";
         return;
     }
 
-    //Sắp xếp giảm dần theo điểm trung bình
+    // 2. Sắp xếp giảm dần theo điểm trung bình
     for (NodeThongKe* i = headTK; i != nullptr; i = i->next) {
         for (NodeThongKe* j = i->next; j != nullptr; j = j->next) {
             if (i->diemTB() < j->diemTB()) {
-                swap(i->tenSach, j->tenSach);
-                swap(i->tacGia, j->tacGia);
-                swap(i->namXB, j->namXB);
-                swap(i->nhaXB, j->nhaXB);
-                swap(i->tongDiem, j->tongDiem);
-                swap(i->soDanhGia, j->soDanhGia);
+                // Sử dụng std::swap (Cần include <algorithm>)
+                std::swap(i->tenSach, j->tenSach);
+                std::swap(i->tacGia, j->tacGia);
+                std::swap(i->namXB, j->namXB);
+                std::swap(i->nhaXB, j->nhaXB);
+                std::swap(i->tongDiem, j->tongDiem);
+                std::swap(i->soDanhGia, j->soDanhGia);
             }
         }
     }
 
-    cout << "\n=====TOP 10 SACH DUOC DANH GIA CAO NHAT =====\n";
-    cout << left << setw(5) << "STT"
-         << setw(30) << "Ten sach"
-         << setw(20) << "Tac gia"
-         << setw(8)  << "NamXB"
-         << setw(20) << "NhaXB"
-         << setw(10) << "DiemTB" << endl;
-    cout << string(95, '-') << endl;
-
+    // 3. Xóa danh sách cũ và lưu ID của Top 10 sách
+    top10BookIDs.clear();
+    
     int stt = 1;
     for (NodeThongKe* p = headTK; p != nullptr && stt <= 10; p = p->next) {
-        cout << setw(5) << stt++
-             << setw(30) << p->tenSach
-             << setw(20) << p->tacGia
-             << setw(8)  << p->namXB
-             << setw(20) << p->nhaXB
-             << setw(10) << fixed << setprecision(1) << p->diemTB()
-             << endl;
+        // Tìm mã sách đầu tiên khớp với tên/tác giả/năm (dạng thống kê)
+        NodeBook* cur = HeadDsSach;
+        while (cur != nullptr) {
+            if (cur->data->getTenSach() == p->tenSach && 
+                cur->data->getTacGia() == p->tacGia &&
+                cur->data->getNamXuatBan() == p->namXB) {
+                 top10BookIDs.push_back(cur->data->getMaSach()); // LƯU ID
+                 break; // Chỉ cần ID của bản sao đầu tiên
+            }
+            cur = cur->next;
+        }
+        stt++;
     }
-    cout << string(95, '-') << endl;
 
-    // Giải phóng bộ nhớ tạm 
+    // 4. Giải phóng bộ nhớ tạm
     while (headTK != nullptr) {
         NodeThongKe* temp = headTK;
         headTK = headTK->next;

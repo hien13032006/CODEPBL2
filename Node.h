@@ -34,8 +34,6 @@ struct NodeReader {
         next = nullptr;
     }
 };
-
-
 struct NodeLibrarian {
     Librarian data;
     NodeLibrarian *next;
