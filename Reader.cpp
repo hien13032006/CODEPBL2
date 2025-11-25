@@ -36,7 +36,7 @@ Reader::Reader() : USER() {
     maID = ss.str();
     ngayDangKy = time(nullptr);
     HeadDsMuonSach = nullptr;
-    fileLichSu = "LichSu_" + maID + ".txt";
+    fileLichSu = "history/LichSu_" + maID + ".txt";
 }
 
 Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password) 
@@ -45,7 +45,7 @@ Reader::Reader(string ma, string hoTen, string sdt, string email, string usernam
     gioiHanSachMuon = 5;
     ngayDangKy = time(nullptr);
     HeadDsMuonSach = nullptr;
-    fileLichSu = "LichSu_" + maID + ".txt";
+    fileLichSu = "history/LichSu_" + maID + ".txt";
 }
 
 Reader::~Reader() {

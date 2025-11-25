@@ -7,58 +7,69 @@
 #include "InputField.hpp"
 #include "Button.hpp"
 #include "RoundedRectangle.hpp"
+#include "Theme.hpp"
 
 class LoginLibrarianScreen {
 private:
-    Modal* modal;
-    RoundedRectangleShape panel;
-    sf::Text titleText;
+    Modal* modal; 
+    RoundedRectangleShape panel; 
+    sf::Text titleText, errLogin; // Thêm text báo lỗi
+    InputField *usernameField, *passwordField; 
+    Button *loginButton, *backButton;
     
-    InputField* usernameField;
-    InputField* passwordField;
-    Button* loginButton;
-    Button* backButton;
-
-    sf::Text errLogin;
-    bool shaking = false;
+    // Biến hiệu ứng rung
+    bool shaking = false; 
     float shakeTime = 0.0f;
     const float shakeDuration = 0.4f;
 
 public:
     LoginLibrarianScreen(sf::Font& font, Modal* modalRef) : modal(modalRef) {
-        // Panel (500x600)
-        panel.setSize({500, 600});
-        panel.setCornerRadius(20.0f);
-        panel.setFillColor(sf::Color(40, 45, 60)); // Nền tối
-        panel.setPosition(450, 150);
+        // Panel căn giữa (1300x720)
+        panel.setSize({500, 600}); 
+        panel.setCornerRadius(20.0f); 
+        panel.setFillColor(sf::Color::White); 
+        panel.setOutlineThickness(2); 
+        panel.setOutlineColor(Theme::Primary); 
+        panel.setPosition(400, 60);
 
-        titleText.setFont(font);
-        titleText.setString("DANG NHAP THU THU");
-        titleText.setCharacterSize(30);
-        titleText.setFillColor(sf::Color::White);
-        sf::FloatRect b = titleText.getLocalBounds();
-        titleText.setOrigin(b.width/2, 0);
-        titleText.setPosition(700, 200); // Giữa panel (450 + 250)
+        titleText.setFont(font); 
+        titleText.setString("QUAN TRI VIEN"); 
+        titleText.setCharacterSize(30); 
+        titleText.setFillColor(Theme::Primary); 
+        sf::FloatRect b = titleText.getLocalBounds(); 
+        titleText.setOrigin(b.width/2, 0); 
+        titleText.setPosition(650, 130); 
 
-        usernameField = new InputField({500, 300}, {400, 55}, "Username", font);
-        passwordField = new InputField({500, 380}, {400, 55}, "Password", font, true);
+        usernameField = new InputField({450, 230}, {400, 55}, "Username", font); 
+        passwordField = new InputField({450, 310}, {400, 55}, "Password", font, true);
 
-        loginButton = new Button({500, 480}, {400, 60}, "Dang Nhap", font, 0, sf::Color(76, 175, 80));
-        loginButton->getText().setCharacterSize(22);
+        loginButton = new Button({450, 410}, {400, 60}, "Dang Nhap", font, 0, Theme::Primary); 
+        backButton = new Button({450, 490}, {400, 50}, "Quay Lai", font, 0, sf::Color(150, 150, 150));
 
-        backButton = new Button({500, 560}, {400, 50}, "Quay Lai", font, 0, sf::Color(100, 100, 120));
-
-        errLogin.setFont(font);
-        errLogin.setCharacterSize(16);
-        errLogin.setFillColor(sf::Color(255, 80, 80));
-        errLogin.setPosition(500, 445);
+        // Cấu hình dòng báo lỗi
+        errLogin.setFont(font); 
+        errLogin.setCharacterSize(16); 
+        errLogin.setFillColor(Theme::Error); 
+        errLogin.setPosition(450, 375);
+        errLogin.setString("");
     }
 
-    ~LoginLibrarianScreen() {
-        delete usernameField; delete passwordField; delete loginButton; delete backButton;
+    ~LoginLibrarianScreen() { 
+        delete usernameField; delete passwordField; delete loginButton; delete backButton; 
     }
 
+    // Hàm kích hoạt rung
     void startShake() { shaking = true; shakeTime = 0; }
+
+    // Hàm hiển thị lỗi và rung
+    void setLoginError(const std::string& msg) {
+        errLogin.setString(msg);
+        // Căn giữa thông báo lỗi
+        sf::FloatRect b = errLogin.getLocalBounds();
+        errLogin.setOrigin(b.width/2, 0);
+        errLogin.setPosition(650, 380); 
+        startShake();
+    }
 
     bool validate() {
         errLogin.setString("");
@@ -70,14 +81,20 @@ public:
     }
 
     void update(sf::Vector2f mousePos) {
-        usernameField->update(); passwordField->update();
-        loginButton->update(mousePos); backButton->update(mousePos);
+        usernameField->update(); 
+        passwordField->update(); 
+        loginButton->update(mousePos); 
+        backButton->update(mousePos);
 
+        // Logic rung lắc
         if (shaking) {
             shakeTime += 0.02f;
             float offset = sin(shakeTime * 50) * 10; 
-            panel.setPosition(450 + offset, 150);
-            if (shakeTime >= shakeDuration) { shaking = false; panel.setPosition(450, 150); }
+            panel.setPosition(400 + offset, 60);
+            if (shakeTime >= shakeDuration) { 
+                shaking = false; 
+                panel.setPosition(400, 60); // Trả về vị trí cũ
+            }
         }
     }
 
@@ -94,17 +111,24 @@ public:
 
     void render(sf::RenderWindow& window) {
         if (modal && modal->isShown()) {
-            window.draw(panel); window.draw(titleText);
-            usernameField->draw(window); passwordField->draw(window);
-            window.draw(errLogin);
-            loginButton->draw(window); backButton->draw(window);
+            window.draw(panel); 
+            window.draw(titleText);
+            usernameField->draw(window); 
+            passwordField->draw(window);
+            window.draw(errLogin); // Vẽ lỗi
+            loginButton->draw(window); 
+            backButton->draw(window);
         }
     }
 
     std::string getUsername() const { return usernameField->getText(); }
     std::string getPassword() const { return passwordField->getText(); }
-    void clearFields() { usernameField->clear(); passwordField->clear(); errLogin.setString(""); }
-    void setLoginError(const std::string& msg) { errLogin.setString(msg); startShake(); }
+    
+    void clearFields() { 
+        usernameField->clear(); 
+        passwordField->clear(); 
+        errLogin.setString(""); 
+    }
 };
 
 #endif

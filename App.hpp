@@ -5,8 +5,9 @@
 #include <iostream>
 #include <fstream>
 
-// Core
+// Core & Theme
 #include "State.hpp"
+#include "Theme.hpp"
 #include "LibrarySystem.h"
 #include "Reader.h"
 #include "Librarian.h"
@@ -28,13 +29,12 @@
 #include "AllBooksListScreen.hpp"
 #include "BorrowedBooksScreen.hpp" 
 #include "ReaderHistoryScreen.hpp"
-#include "BorrowedBooksScreen.hpp"
 #include "ManageBooksScreen.hpp"
 #include "ManageReadersScreen.hpp"
 #include "StatisticsScreen.hpp"
 #include "OverdueReadersScreen.hpp"
 
-// Popups & Forms
+// Popups
 #include "ScreenLibrarianCard.hpp"
 #include "ScreenReaderCard.hpp"
 #include "AddBookScreen.hpp"
@@ -95,7 +95,7 @@ private:
     Modal* detailModal;
 
 public:
-    App() : window(sf::VideoMode(1400, 900), "Quan Ly Thu Vien") {
+    App() : window(sf::VideoMode(1300, 720), "Quan Ly Thu Vien - Light Theme", sf::Style::Close | sf::Style::Titlebar) {
         window.setFramerateLimit(60);
         currentState = AppState::SPLASH;
         previousState = AppState::SPLASH; 
@@ -154,22 +154,21 @@ public:
         readerHistoryScreen = new ReaderHistoryScreen(mainFont, nullptr);
         
         manageBooksScreen = new ManageBooksScreen(mainFont, libSystem);
-        manageBooksScreen->setWindow(&window); // Fix scroll mouse
+        manageBooksScreen->setWindow(&window); // Set window ref cho xử lý chuột
         
         manageReadersScreen = new ManageReadersScreen(mainFont, libSystem);
-        manageReadersScreen->setWindow(&window); // Fix scroll mouse
+        manageReadersScreen->setWindow(&window); // Set window ref
         
         statisticsScreen = new StatisticsScreen(mainFont, libSystem);
         overdueReadersScreen = new OverdueReadersScreen(mainFont, libSystem);
+        overdueReadersScreen->setWindow(&window); // Set window ref
         
-        // Popups
         addBookScreen = new AddBookScreen(mainFont, libSystem);
         deleteBookScreen = new DeleteBookScreen(mainFont, modal);
         borrowBookScreen = new BorrowBookScreen(mainFont, modal);
         returnBookScreen = new ReturnBookScreen(mainFont, modal);
         ratingBookScreen = new RatingBookScreen(mainFont, modal);
         
-        // Dynamic screens (init null)
         readerCardScreen = nullptr;
         librarianCardScreen = nullptr;
         updateLibrarianScreen = nullptr;
@@ -177,7 +176,6 @@ public:
     }
 
     void changeState(AppState newState) {
-        // Các state này là popup, không làm mất màn hình nền cũ
         if (newState != currentState && 
             newState != AppState::ADD_BOOK && newState != AppState::DELETE_BOOK &&
             newState != AppState::BORROW_BOOK && newState != AppState::RETURN_BOOK &&
@@ -199,7 +197,6 @@ public:
         return nullptr;
     }
 
-    // --- NAVIGATION ---
     void handleSidebarNavigation(int menuId, Sidebar* sidebar) {
         std::string label = sidebar->getMenuLabel(menuId);
         if (label == "Home") changeState(AppState::HOME);
@@ -208,8 +205,13 @@ public:
         else if (label == "The loai") { categoryScreen->loadCategories(mainFont); changeState(AppState::CATEGORY); }
         else if (label == "Tim kiem") changeState(AppState::SEARCH);
         else if (label == "Thanh vien" && currentUserRole == UserRole::NONE) { loginChoiceScreen->reset(); modal->show(); changeState(AppState::LOGIN_CHOICE); }
-        else if (label == "Dang xuat") handleLogout();
-
+        else if (label == "Dang xuat") {
+            currentUser = nullptr; currentReader = nullptr; currentLibrarian = nullptr; currentUserRole = UserRole::NONE;
+            homeScreen->setUserRole(currentUserRole, mainFont); categoryScreen->setUserRole(currentUserRole, mainFont);
+            searchScreen->setUserRole(currentUserRole, mainFont); topBooksScreen->setUserRole(currentUserRole, mainFont);
+            allBooksListScreen->setUserRole(currentUserRole, mainFont);
+            changeState(AppState::HOME);
+        }
         else if (label == "Sach dang muon") { 
             if(currentReader) { libSystem->DocDanhSachMuonCuaDocGia(currentReader); borrowedBooksScreen->loadBorrowedBooks(mainFont); }
             changeState(AppState::BORROWED_BOOKS); 
@@ -223,7 +225,6 @@ public:
             readerCardScreen = new ScreenReaderCard(mainFont, currentReader);
             modal->show(); changeState(AppState::READER_CARD);
         }
-
         else if (label == "Quan ly sach") { manageBooksScreen->loadBooksTable(mainFont); changeState(AppState::MANAGE_BOOKS); }
         else if (label == "Quan ly doc gia") { manageReadersScreen->loadReaders(mainFont); changeState(AppState::MANAGE_READERS); }
         else if (label == "Doc gia qua han") { overdueReadersScreen->loadOverdueReaders(mainFont); changeState(AppState::OVERDUE_READERS); }
@@ -235,18 +236,47 @@ public:
         }
     }
 
-    void handleLogout() {
-        currentUser = nullptr; currentReader = nullptr; currentLibrarian = nullptr; currentUserRole = UserRole::NONE;
-        homeScreen->setUserRole(currentUserRole, mainFont); categoryScreen->setUserRole(currentUserRole, mainFont);
-        searchScreen->setUserRole(currentUserRole, mainFont); topBooksScreen->setUserRole(currentUserRole, mainFont);
-        allBooksListScreen->setUserRole(currentUserRole, mainFont);
-        changeState(AppState::HOME);
+    // --- LOGIC ĐĂNG KÝ (MỚI) ---
+    void handleRegister() {
+        // Validate từ GUI Screen
+        if (!registerReaderScreen->validate()) return; 
+
+        // Check trùng username
+        if (libSystem->KiemTraDocGiaDaDangKy(registerReaderScreen->getUsername())) {
+            registerReaderScreen->setUsernameError("Username da ton tai! Vui long chon ten khac.");
+            return;
+        }
+
+        // Tạo độc giả mới
+        Reader* r = new Reader();
+        r->SignUp(
+            registerReaderScreen->getName(),
+            registerReaderScreen->getPhone(),
+            registerReaderScreen->getEmail(),
+            registerReaderScreen->getUsername(),
+            registerReaderScreen->getPassword()
+        );
+
+        // Ghi file
+        std::ofstream o("DocGia.txt", std::ios::app);
+        if (o.is_open()) {
+            o << r->toCSV() << std::endl;
+            o.close();
+        }
+
+        // Reload và chuyển trang
+        libSystem->DocFileDocGia();
+        registerReaderScreen->clearFields();
+        changeState(AppState::LOGIN_READER);
     }
 
-    // --- LOGIC LOGIN ---
     void handleReaderLogin() {
+        // Trick: Update nhẹ để sync text input nếu cần
+        loginReaderScreen->update(sf::Vector2f(0,0)); 
         if (!loginReaderScreen->validate()) return;
+        
         NodeReader* cur = libSystem->getDanhSachDocGia();
+        bool found = false;
         while(cur) {
             if(cur->data->getUsername() == loginReaderScreen->getUsername() && cur->data->getPassword() == loginReaderScreen->getPassword()) {
                 currentUser = cur->data; currentReader = cur->data; currentUserRole = UserRole::READER;
@@ -256,14 +286,15 @@ public:
                 allBooksListScreen->setUserRole(currentUserRole, mainFont);
                 delete borrowedBooksScreen; borrowedBooksScreen = new BorrowedBooksScreen(mainFont, currentReader); borrowedBooksScreen->setUserRole(currentUserRole, mainFont);
                 loginReaderScreen->clearFields(); modal->hide(); changeState(AppState::HOME);
-                return;
+                found = true; return;
             }
             cur = cur->next;
         }
-        loginReaderScreen->setLoginError("Sai thong tin dang nhap!");
+        if (!found) loginReaderScreen->setLoginError("Sai thong tin dang nhap!");
     }
 
     void handleLibrarianLogin() {
+        loginLibrarianScreen->update(sf::Vector2f(0,0));
         if (!loginLibrarianScreen->validate()) return;
         USER* temp = nullptr;
         if (libSystem->DangNhapThuThu(loginLibrarianScreen->getUsername(), loginLibrarianScreen->getPassword(), temp)) {
@@ -279,7 +310,6 @@ public:
         }
     }
 
-    // --- MAIN LOOP ---
     void handleEvents() {
         sf::Event event;
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
@@ -303,22 +333,89 @@ public:
 
                 case AppState::TOP_BOOKS: topBooksScreen->handleScrollEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=topBooksScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, topBooksScreen->getSidebar()); std::string b=topBooksScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::TOP_BOOKS; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
                 case AppState::ALL_BOOKS_LIST: allBooksListScreen->handleScrollEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=allBooksListScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, allBooksListScreen->getSidebar()); std::string b=allBooksListScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::ALL_BOOKS_LIST; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
-                case AppState::CATEGORY: if(event.type==sf::Event::MouseButtonPressed){ int m=categoryScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, categoryScreen->getSidebar()); if(categoryScreen->handleCategoryButtonClick(mousePos, mainFont)) break; categoryScreen->handleClick(mousePos, mainFont); std::string b=categoryScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::CATEGORY; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
+                
+                case AppState::CATEGORY: 
+                    categoryScreen->handleScrollEvent(event, mousePos); // Fix scroll
+                    if(event.type==sf::Event::MouseButtonPressed){ 
+                        int m=categoryScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, categoryScreen->getSidebar()); 
+                        if(categoryScreen->handleCategoryButtonClick(mousePos, mainFont)) break; 
+                        categoryScreen->handleClick(mousePos, mainFont); 
+                        std::string b=categoryScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::CATEGORY; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
+                
                 case AppState::SEARCH: searchScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=searchScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, searchScreen->getSidebar()); searchScreen->handleSearchClick(mousePos, mainFont); std::string b=searchScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::SEARCH; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
 
-                case AppState::BOOK_DETAIL: if(event.type==sf::Event::MouseButtonPressed){ if(detailModal->handleClose(mousePos)){ detailModal->hide(); changeState(previousState); } else { int a=bookDetailScreen->handleClick(mousePos); if(a==0){ detailModal->hide(); changeState(previousState); } else if(a==1){ borrowBookScreen->setCurrentBook(bookDetailScreen->getCurrentBook()); borrowBookScreen->clearInput(); borrowBookScreen->clearMessage(); modal->show(); changeState(AppState::BORROW_BOOK); } } } break;
+                case AppState::BOOK_DETAIL: 
+                    if(event.type==sf::Event::MouseButtonPressed){ 
+                        if(detailModal->handleClose(mousePos)){ detailModal->hide(); changeState(previousState); } 
+                        else { 
+                            int a = bookDetailScreen->handleClick(mousePos); 
+                            if(a==0){ detailModal->hide(); changeState(previousState); } 
+                            else if(a==1){ // Mượn
+                                borrowBookScreen->setCurrentBook(bookDetailScreen->getCurrentBook()); 
+                                borrowBookScreen->clearInput(); 
+                                borrowBookScreen->clearMessage(); 
+                                modal->show(); 
+                                changeState(AppState::BORROW_BOOK); 
+                            } 
+                            else if(a==2){ // Xóa (Thủ thư)
+                                detailModal->hide();
+                                deleteBookScreen->setBookID(bookDetailScreen->getCurrentBook()->getMaSach());
+                                modal->show();
+                                changeState(AppState::DELETE_BOOK);
+                            } 
+                            else if(a==3){ // Sửa (Thủ thư)
+                                detailModal->hide();
+                                manageBooksScreen->setBookToEdit(bookDetailScreen->getCurrentBook());
+                                manageBooksScreen->showUpdateModal();
+                                changeState(AppState::MANAGE_BOOKS);
+                            }
+                        } 
+                    } break;
                 
                 case AppState::LOGIN_CHOICE: loginChoiceScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ if(loginChoiceScreen->isClosed()){ modal->hide(); changeState(AppState::HOME); } else { int c=loginChoiceScreen->handleClick(mousePos); if(c==1) changeState(AppState::LOGIN_LIBRARIAN); else if(c==2) changeState(AppState::LOGIN_READER); } } break;
                 case AppState::LOGIN_LIBRARIAN: loginLibrarianScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ if(modal->handleClose(mousePos)){ modal->hide(); changeState(AppState::HOME); } else { int a=loginLibrarianScreen->handleClick(mousePos); if(a==1) handleLibrarianLogin(); else if(a==2) changeState(AppState::LOGIN_CHOICE); } } break;
                 case AppState::LOGIN_READER: loginReaderScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ if(modal->handleClose(mousePos)){ modal->hide(); changeState(AppState::HOME); } else { int a=loginReaderScreen->handleClick(mousePos); if(a==1) handleReaderLogin(); else if(a==2) changeState(AppState::REGISTER_READER); else if(a==3) changeState(AppState::LOGIN_CHOICE); } } break;
-                case AppState::REGISTER_READER: registerReaderScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ if(modal->handleClose(mousePos)){ modal->hide(); changeState(AppState::HOME); } else { int a=registerReaderScreen->handleClick(mousePos); if(a==1){ /*Register*/ if(!registerReaderScreen->validate()) break; Reader* r=new Reader(); r->SignUp(registerReaderScreen->getName(),registerReaderScreen->getPhone(),registerReaderScreen->getEmail(),registerReaderScreen->getUsername(),registerReaderScreen->getPassword()); std::ofstream o("DocGia.txt",std::ios::app); if(o.is_open()){o<<r->toCSV()<<std::endl; o.close();} libSystem->DocFileDocGia(); registerReaderScreen->clearFields(); changeState(AppState::LOGIN_READER); } else if(a==2) changeState(AppState::LOGIN_READER); else if(a==3) changeState(AppState::LOGIN_CHOICE); } } break;
+                
+                case AppState::REGISTER_READER: 
+                    registerReaderScreen->handleEvent(event, mousePos); 
+                    if(event.type==sf::Event::MouseButtonPressed){ 
+                        if(modal->handleClose(mousePos)){ modal->hide(); changeState(AppState::HOME); } 
+                        else { 
+                            int a=registerReaderScreen->handleClick(mousePos); 
+                            if(a==1){ handleRegister(); } // Gọi hàm handleRegister mới
+                            else if(a==2) changeState(AppState::LOGIN_READER); 
+                            else if(a==3) changeState(AppState::LOGIN_CHOICE); 
+                        } 
+                    } break;
 
-                case AppState::BORROWED_BOOKS: if(event.type==sf::Event::MouseButtonPressed){ int m=borrowedBooksScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, borrowedBooksScreen->getSidebar()); std::string b=borrowedBooksScreen->handleReturnClick(mousePos); if(!b.empty()){ std::string realID=b.substr(8); returnBookScreen->clear(); modal->show(); changeState(AppState::RETURN_BOOK); } } break;
+                case AppState::BORROWED_BOOKS: if(event.type==sf::Event::MouseButtonPressed){ int m=borrowedBooksScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, borrowedBooksScreen->getSidebar()); std::string b=borrowedBooksScreen->handleReturnClick(mousePos); if(!b.empty()){ returnBookScreen->clear(); modal->show(); changeState(AppState::RETURN_BOOK); } } break;
                 case AppState::HISTORY: readerHistoryScreen->handleEvent(event, mousePos); if(readerHistoryScreen->wasClosed()) changeState(AppState::HOME); break;
                 
-                case AppState::MANAGE_BOOKS: manageBooksScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=manageBooksScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, manageBooksScreen->getSidebar()); int act=manageBooksScreen->handleClick(mousePos); if(act==1){manageBooksScreen->handleAddBook(); libSystem->BuildHashTable(); homeScreen->loadBooks(mainFont);} else if(act==5){manageBooksScreen->handleUpdateBookLogic(); libSystem->BuildHashTable(); homeScreen->loadBooks(mainFont);} else if(act==7){std::string id=manageBooksScreen->getClickedBookId(mousePos); if(!id.empty()){Sach* s=findBookById(id); if(s){previousState=AppState::MANAGE_BOOKS; bookDetailScreen->setBook(s,currentUserRole,libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL);}}} else if(act==8){deleteBookScreen->clear(); modal->show(); changeState(AppState::DELETE_BOOK);} } break;
+                case AppState::MANAGE_BOOKS: manageBooksScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=manageBooksScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, manageBooksScreen->getSidebar()); int act=manageBooksScreen->handleClick(mousePos); if(act==1){manageBooksScreen->handleAddBook(); libSystem->BuildHashTable(); homeScreen->loadBooks(mainFont);} else if(act==5){manageBooksScreen->handleUpdateBookLogic(); libSystem->BuildHashTable(); homeScreen->loadBooks(mainFont);} else if(act==7){std::string id=manageBooksScreen->getClickedBookId(mousePos); if(!id.empty()){ manageBooksScreen->handleRowClick(id); } } else if(act==8){deleteBookScreen->clear(); modal->show(); changeState(AppState::DELETE_BOOK);} } break;
                 case AppState::MANAGE_READERS: manageReadersScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=manageReadersScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, manageReadersScreen->getSidebar()); manageReadersScreen->handleClick(mousePos, mainFont); } break;
-                case AppState::STATISTICS: if(event.type==sf::Event::MouseButtonPressed){ int m=statisticsScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, statisticsScreen->getSidebar()); int c=statisticsScreen->handleClick(mousePos); if(c==1) changeState(AppState::HOME); else if(c==2){manageReadersScreen->loadReaders(mainFont); changeState(AppState::MANAGE_READERS);} else if(c==4){overdueReadersScreen->loadOverdueReaders(mainFont); changeState(AppState::OVERDUE_READERS);} } break;
+                case AppState::STATISTICS: 
+                    if(event.type == sf::Event::MouseButtonPressed) { 
+                        // Xử lý Sidebar
+                        int m = statisticsScreen->handleSidebarClick(mousePos); 
+                        if(m >= 0) handleSidebarNavigation(m, statisticsScreen->getSidebar()); 
+                        
+                        // Xử lý click vào các ô Thống kê
+                        int c = statisticsScreen->handleClick(mousePos); 
+                        
+                        if(c == 1) { // Ô 1: Tổng số sách -> Chuyển sang Quản Lý Sách
+                            manageBooksScreen->loadBooksTable(mainFont); 
+                            changeState(AppState::MANAGE_BOOKS); 
+                        } 
+                        else if(c == 2) { // Ô 2: Tổng độc giả -> Chuyển sang Quản Lý Độc Giả
+                            manageReadersScreen->loadReaders(mainFont); 
+                            changeState(AppState::MANAGE_READERS); 
+                        } 
+                        else if(c == 4) { // Ô 4: Quá hạn -> Chuyển sang Độc Giả Quá Hạn
+                            overdueReadersScreen->loadOverdueReaders(mainFont); 
+                            changeState(AppState::OVERDUE_READERS); 
+                        } 
+                    } 
+                    break;
                 case AppState::OVERDUE_READERS: overdueReadersScreen->handleScrollEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=overdueReadersScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, overdueReadersScreen->getSidebar()); } break;
                 
                 case AppState::BORROW_BOOK: borrowBookScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int a=borrowBookScreen->handleClick(mousePos); if(a==1){if(borrowBookScreen->validate()){std::string id=borrowBookScreen->getMaSachInput(); if(currentReader->DaMuonSach(id)) borrowBookScreen->setBorrowMessage("Da muon!"); else {libSystem->MuonSach(currentReader,id); borrowBookScreen->setBorrowMessage("Thanh cong!"); homeScreen->loadBooks(mainFont);}}} else if(a==2){modal->hide(); changeState(previousState);} } break;
@@ -360,7 +457,7 @@ public:
     }
 
     void render() {
-        window.clear(sf::Color(245, 245, 250)); 
+        window.clear(Theme::Background); 
         switch (currentState) {
             case AppState::SPLASH: splashScreen->render(window); break;
             case AppState::HOME: homeScreen->render(window); break;
@@ -368,7 +465,7 @@ public:
             case AppState::ALL_BOOKS_LIST: allBooksListScreen->render(window); break;
             case AppState::CATEGORY: categoryScreen->render(window); break;
             case AppState::SEARCH: searchScreen->render(window); break;
-            case AppState::BOOK_DETAIL: if(previousState==AppState::HOME) homeScreen->render(window); else if(previousState==AppState::MANAGE_BOOKS) manageBooksScreen->render(); {sf::RectangleShape ov({1400,900}); ov.setFillColor(sf::Color(0,0,0,150)); window.draw(ov); detailModal->draw(window); bookDetailScreen->render(window);} break;
+            case AppState::BOOK_DETAIL: if(previousState==AppState::HOME) homeScreen->render(window); else if(previousState==AppState::MANAGE_BOOKS) manageBooksScreen->render(); {sf::RectangleShape ov({1300,720}); ov.setFillColor(sf::Color(0,0,0,150)); window.draw(ov); detailModal->draw(window); bookDetailScreen->render(window);} break;
             case AppState::LOGIN_CHOICE: homeScreen->render(window); modal->draw(window); loginChoiceScreen->render(window); break;
             case AppState::LOGIN_LIBRARIAN: homeScreen->render(window); modal->draw(window); loginLibrarianScreen->render(window); break;
             case AppState::LOGIN_READER: homeScreen->render(window); modal->draw(window); loginReaderScreen->render(window); break;

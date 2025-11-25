@@ -4,7 +4,10 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
+#include <iomanip>
+#include <sstream>
 #include "RoundedRectangle.hpp"
+#include "Theme.hpp"
 
 class Card {
 private:
@@ -13,11 +16,37 @@ private:
     sf::Text titleText;
     sf::Text authorText;
     sf::Text ratingText;
+    sf::ConvexShape starShape; // Vẽ ngôi sao bằng hình học
     sf::Text hotTag;
     bool isHovered;
     sf::Vector2f originalPos;
     std::string bookId;
     bool isHotBook;
+
+    // Helper: Cắt chuỗi thông minh
+    std::string truncate(std::string str, size_t width) {
+        if (str.length() > width) return str.substr(0, width - 3) + "...";
+        return str;
+    }
+
+    // Helper: Tạo hình ngôi sao
+    void createStar(float x, float y, float size) {
+        starShape.setPointCount(10);
+        starShape.setFillColor(sf::Color(255, 193, 7)); // Màu vàng hổ phách
+        
+        float angle = -3.14159 / 2; // Bắt đầu từ đỉnh trên cùng
+        float step = 3.14159 / 5;   // Bước nhảy góc
+        
+        for (int i = 0; i < 10; i++) {
+            // Bán kính: Đỉnh nhọn (size), Đỉnh lõm (size / 2)
+            float r = (i % 2 == 0) ? size : size / 2.2f; 
+            starShape.setPoint(i, sf::Vector2f(
+                x + cos(angle) * r,
+                y + sin(angle) * r
+            ));
+            angle += step;
+        }
+    }
 
 public:
     Card(sf::Vector2f position, sf::Vector2f size, const std::string& id,
@@ -30,83 +59,103 @@ public:
         
         // 1. Khung thẻ
         cardShape.setSize(size);
-        cardShape.setCornerRadius(8.0f);
+        cardShape.setCornerRadius(12.0f);
         cardShape.setPosition(position);
-        cardShape.setFillColor(sf::Color(30, 33, 45)); // Màu nền tối
-        
+        cardShape.setFillColor(sf::Color::White);
+        cardShape.setOutlineThickness(1);
+        cardShape.setOutlineColor(Theme::Border);
         isHovered = false;
 
-        // 2. Ảnh bìa (Chiếm 62% chiều cao)
-        coverImage.setSize(sf::Vector2f(size.x - 20, size.y * 0.62));
+        // 2. Ảnh bìa (Giảm xuống 55% để dành chỗ cho chữ)
+        float coverHeight = size.y * 0.55f; 
+        coverImage.setSize(sf::Vector2f(size.x - 20, coverHeight));
         coverImage.setPosition(position.x + 10, position.y + 10);
         coverImage.setFillColor(coverColor);
 
-        // --- CẤU HÌNH CHỮ (NORMAL FONT) ---
-        
-        // Tiêu đề: Size 18, Trắng
+        // 3. Tiêu đề sách (Title) - Đẩy lên sát ảnh bìa
         titleText.setFont(font);
-        std::string displayTitle = title.length() > 35 ? title.substr(0, 32) + "..." : title;
-        // Tự động xuống dòng
-        if (displayTitle.length() > 16 && displayTitle.find('\n') == std::string::npos) {
-             size_t space = displayTitle.find_last_of(' ', 16);
+        // Cho phép dài hơn chút nhưng cắt gọn
+        std::string displayTitle = truncate(title, 35);
+        
+        // Xử lý xuống dòng thủ công để không bị tràn ngang
+        if (displayTitle.length() > 17 && displayTitle.find('\n') == std::string::npos) {
+             size_t space = displayTitle.find_last_of(' ', 17);
              if (space != std::string::npos) displayTitle.insert(space + 1, "\n");
         }
+
         titleText.setString(displayTitle);
-        titleText.setCharacterSize(17);
-        titleText.setFillColor(sf::Color::White);
-        // Ép kiểu int để chữ sắc nét
-        titleText.setPosition((int)(position.x + 12), (int)(position.y + size.y * 0.62 + 20));
+        titleText.setCharacterSize(15); // Giảm size chữ xuống 15 cho gọn
+        titleText.setStyle(sf::Text::Bold);
+        titleText.setFillColor(Theme::TextDark);
+        titleText.setPosition(position.x + 12, position.y + coverHeight + 15);
 
-        // Tác giả: Size 14, Xám
+        // 4. Tác giả (Author) - Neo vị trí gần đáy
         authorText.setFont(font);
-        std::string displayAuthor = author.length() > 22 ? author.substr(0, 19) + "..." : author;
-        authorText.setString(displayAuthor);
-        authorText.setCharacterSize(14);
-        authorText.setFillColor(sf::Color(180, 180, 180));
-        authorText.setPosition((int)(position.x + 12), (int)(position.y + size.y - 40));
+        authorText.setString(truncate(author, 22));
+        authorText.setCharacterSize(13); // Chữ nhỏ hơn tiêu đề
+        authorText.setFillColor(sf::Color(100, 100, 100));
+        // Đặt vị trí cố định cách đáy 45px (để chừa chỗ cho rating)
+        authorText.setPosition(position.x + 12, position.y + size.y - 50);
 
-        // Rating: Size 14, Vàng
-        ratingText.setFont(font);
-        char ratingStr[20]; sprintf(ratingStr, "%.1f/10", rating);
-        ratingText.setString(ratingStr);
-        ratingText.setCharacterSize(12);
-        ratingText.setFillColor(sf::Color(255, 193, 94));
-        ratingText.setPosition((int)(position.x + size.x - 60), (int)(position.y + size.y - 45));
+        // 5. Đánh giá (Rating) - Neo dưới cùng bên phải
+        // Tạo ngôi sao
+        createStar(position.x + size.x - 65, position.y + size.y - 18, 7.0f);
         
-        // Tag HOT (Nhỏ gọn)
-        hotTag.setFont(font);
-        hotTag.setString("HOT");
-        hotTag.setCharacterSize(11);
-        hotTag.setFillColor(sf::Color::White);
-        hotTag.setOutlineColor(sf::Color(220, 50, 50));
-        hotTag.setOutlineThickness(1.5f);
-        hotTag.setPosition((int)(position.x + size.x - 38), (int)(position.y + 8));
+        ratingText.setFont(font);
+        std::stringstream ss; 
+        ss << std::fixed << std::setprecision(1) << rating;
+        ratingText.setString(ss.str()); // Chỉ hiện số
+        ratingText.setCharacterSize(13);
+        ratingText.setStyle(sf::Text::Bold);
+        ratingText.setFillColor(sf::Color(255, 160, 0)); // Màu cam đậm
+        // Số nằm bên phải ngôi sao
+        ratingText.setPosition(position.x + size.x - 55, position.y + size.y - 26);
+        
+        // 6. Tag HOT
+        if (isHotBook) {
+            hotTag.setFont(font);
+            hotTag.setString("HOT");
+            hotTag.setCharacterSize(10);
+            hotTag.setStyle(sf::Text::Bold);
+            hotTag.setFillColor(sf::Color::White);
+            hotTag.setOutlineColor(Theme::Primary);
+            hotTag.setOutlineThickness(3); 
+            hotTag.setPosition(position.x + size.x - 30, position.y + 5);
+        }
     }
 
     void update(sf::Vector2f mousePos, float scrollOffsetX = 0, float scrollOffsetY = 0) {
-        // Tính toán vị trí thực tế
         float actualX = std::floor(originalPos.x - scrollOffsetX);
         float actualY = std::floor(originalPos.y - scrollOffsetY);
         
         cardShape.setPosition(actualX, actualY);
+        
         sf::Vector2f pos = cardShape.getPosition();
         sf::Vector2f size = cardShape.getSize();
+        float coverHeight = size.y * 0.55f;
         
-        coverImage.setPosition((int)(pos.x + 10), (int)(pos.y + 10));
-        titleText.setPosition((int)(pos.x + 12), (int)(pos.y + size.y * 0.62 + 20));
-        authorText.setPosition((int)(pos.x + 12), (int)(pos.y + size.y - 45));
-        ratingText.setPosition((int)(pos.x + size.x - 60), (int)(pos.y + size.y - 45));
-        hotTag.setPosition((int)(pos.x + size.x - 38), (int)(pos.y + 8));
+        coverImage.setPosition(pos.x + 10, pos.y + 10);
+        titleText.setPosition(pos.x + 12, pos.y + coverHeight + 15);
+        authorText.setPosition(pos.x + 12, pos.y + size.y - 50);
+        
+        // Cập nhật vị trí ngôi sao và điểm số
+        createStar(pos.x + size.x - 65, pos.y + size.y - 18, 7.0f);
+        ratingText.setPosition(pos.x + size.x - 55, pos.y + size.y - 26);
+        
+        if (isHotBook) hotTag.setPosition(pos.x + size.x - 30, pos.y + 5);
 
         if (cardShape.getGlobalBounds().contains(mousePos)) {
             if (!isHovered) {
                 isHovered = true;
-                cardShape.setOutlineThickness(1.5f);
-                cardShape.setOutlineColor(sf::Color(100, 150, 255));
+                cardShape.setOutlineThickness(2.0f);
+                cardShape.setOutlineColor(Theme::Secondary);
             }
         } else {
-            isHovered = false;
-            cardShape.setOutlineThickness(0);
+            if (isHovered) {
+                isHovered = false;
+                cardShape.setOutlineThickness(1);
+                cardShape.setOutlineColor(Theme::Border);
+            }
         }
     }
 
@@ -115,6 +164,7 @@ public:
         window.draw(coverImage);
         window.draw(titleText);
         window.draw(authorText);
+        window.draw(starShape); // Vẽ hình ngôi sao
         window.draw(ratingText);
         if (isHotBook) window.draw(hotTag);
     }

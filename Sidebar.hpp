@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "USER.h"
+#include "Theme.hpp"
 
 struct MenuItem {
     sf::RectangleShape shape;
@@ -22,14 +23,16 @@ private:
 
 public:
     Sidebar(sf::Font& font) {
-        background.setSize(sf::Vector2f(250, 900));
-        background.setFillColor(sf::Color::White);
+        background.setSize(sf::Vector2f(250, 768)); // Chiều cao khớp cửa sổ mới
+        background.setFillColor(Theme::Surface);
+        background.setOutlineThickness(1);
+        background.setOutlineColor(Theme::Border);
         
         logo.setFont(font);
         logo.setString("Library");
         logo.setCharacterSize(36);
         logo.setStyle(sf::Text::Bold);
-        logo.setFillColor(sf::Color(41, 98, 255)); // Xanh dương
+        logo.setFillColor(Theme::Primary); 
         logo.setPosition(40, 40);
         
         currentRole = UserRole::NONE;
@@ -56,12 +59,12 @@ public:
             
             item.shape.setSize(sf::Vector2f(230, 50));
             item.shape.setPosition(10, y);
-            item.shape.setFillColor(sf::Color::White);
+            item.shape.setFillColor(Theme::Surface);
             item.shape.setOutlineThickness(0);
 
             item.text.setFont(font);
             item.text.setString(lbl);
-            item.text.setCharacterSize(18); // Chữ thường 18
+            item.text.setCharacterSize(18); 
             item.text.setFillColor(sf::Color(80, 80, 80));
             item.text.setPosition(30, y + 12);
 
@@ -78,10 +81,10 @@ public:
     void update(sf::Vector2f mousePos) {
         for (auto& item : items) {
             if (item.shape.getGlobalBounds().contains(mousePos)) {
-                item.shape.setFillColor(sf::Color(240, 245, 255)); // Hover xanh nhạt
-                item.text.setFillColor(sf::Color(41, 98, 255));
+                item.shape.setFillColor(sf::Color(255, 240, 245)); // Hover hồng nhạt
+                item.text.setFillColor(Theme::Primary);
             } else {
-                item.shape.setFillColor(sf::Color::White);
+                item.shape.setFillColor(Theme::Surface);
                 item.text.setFillColor(sf::Color(80, 80, 80));
             }
         }

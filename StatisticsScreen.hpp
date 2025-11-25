@@ -5,6 +5,7 @@
 #include "Sidebar.hpp"
 #include "LibrarySystem.h"
 #include "RoundedRectangle.hpp"
+#include "Theme.hpp"
 
 struct StatBox {
     RoundedRectangleShape box;
@@ -17,29 +18,28 @@ private:
     sf::RectangleShape background;
     sf::Text titleText;
     Sidebar* sidebar;
-    
-    StatBox stats[4]; // 0: Sách, 1: Độc giả, 2: Đang mượn, 3: Quá hạn
+    StatBox stats[4]; 
     LibrarySystem* libSystem;
 
 public:
     StatisticsScreen(sf::Font& font, LibrarySystem* lib) : libSystem(lib) {
-        background.setSize(sf::Vector2f(1150, 900));
+        background.setSize(sf::Vector2f(1280, 768));
         background.setPosition(250, 0);
-        background.setFillColor(sf::Color(13, 15, 23));
+        background.setFillColor(Theme::Background);
 
         titleText.setFont(font);
         titleText.setString("THONG KE HE THONG");
-        titleText.setCharacterSize(32);
-        titleText.setFillColor(sf::Color::White);
+        titleText.setCharacterSize(30);
+        titleText.setFillColor(Theme::TextDark);
         titleText.setPosition(280, 30);
 
         sidebar = new Sidebar(font);
 
-        // Config Stats
         std::string titles[] = {"TONG SO SACH", "TONG DOC GIA", "SACH DANG MUON", "SACH QUA HAN"};
-        sf::Color colors[] = {sf::Color(60, 100, 180), sf::Color(100, 180, 100), sf::Color(200, 150, 60), sf::Color(200, 80, 80)};
+        // Màu Pastel
+        sf::Color colors[] = {sf::Color(173, 216, 230), sf::Color(152, 251, 152), sf::Color(255, 228, 181), sf::Color(255, 182, 193)};
         float xPos[] = {300, 750, 300, 750};
-        float yPos[] = {150, 150, 450, 450};
+        float yPos[] = {120, 120, 400, 400};
 
         for(int i=0; i<4; i++) {
             stats[i].box.setSize({400, 250});
@@ -50,14 +50,14 @@ public:
             stats[i].title.setFont(font);
             stats[i].title.setString(titles[i]);
             stats[i].title.setCharacterSize(20);
-            stats[i].title.setFillColor(sf::Color(255, 255, 255, 200));
+            stats[i].title.setFillColor(sf::Color(80, 80, 80));
             stats[i].title.setPosition(xPos[i] + 30, yPos[i] + 30);
 
             stats[i].value.setFont(font);
             stats[i].value.setString("0");
             stats[i].value.setCharacterSize(60);
             stats[i].value.setStyle(sf::Text::Bold);
-            stats[i].value.setFillColor(sf::Color::White);
+            stats[i].value.setFillColor(Theme::TextDark);
             stats[i].value.setPosition(xPos[i] + 30, yPos[i] + 100);
         }
         loadStatistics();
@@ -91,20 +91,18 @@ public:
         for(int i=0; i<4; i++) {
             if(stats[i].box.getGlobalBounds().contains(mousePos)) {
                 stats[i].box.setOutlineThickness(4);
-                stats[i].box.setOutlineColor(sf::Color(255, 255, 255, 150));
-            } else {
-                stats[i].box.setOutlineThickness(0);
-            }
+                stats[i].box.setOutlineColor(sf::Color(255, 255, 255, 200));
+            } else { stats[i].box.setOutlineThickness(0); }
         }
     }
 
     int handleSidebarClick(sf::Vector2f mousePos) { return sidebar->handleClick(mousePos); }
     
     int handleClick(sf::Vector2f mousePos) {
-        if(stats[0].box.getGlobalBounds().contains(mousePos)) return 1; // Home
-        if(stats[1].box.getGlobalBounds().contains(mousePos)) return 2; // Readers
-        if(stats[2].box.getGlobalBounds().contains(mousePos)) return 3; // Borrowed (Optional)
-        if(stats[3].box.getGlobalBounds().contains(mousePos)) return 4; // Overdue
+        if(stats[0].box.getGlobalBounds().contains(mousePos)) return 1;
+        if(stats[1].box.getGlobalBounds().contains(mousePos)) return 2;
+        if(stats[2].box.getGlobalBounds().contains(mousePos)) return 3;
+        if(stats[3].box.getGlobalBounds().contains(mousePos)) return 4;
         return 0;
     }
 
@@ -112,15 +110,11 @@ public:
     Sidebar* getSidebar() { return sidebar; }
 
     void render(sf::RenderWindow& window) {
-        window.draw(background);
-        sidebar->draw(window);
-        window.draw(titleText);
+        window.draw(background); sidebar->draw(window); window.draw(titleText);
         for(int i=0; i<4; i++) {
-            window.draw(stats[i].box);
-            window.draw(stats[i].title);
-            window.draw(stats[i].value);
+            window.draw(stats[i].box); window.draw(stats[i].title); window.draw(stats[i].value);
         }
     }
 };
 
-#endif 
+#endif

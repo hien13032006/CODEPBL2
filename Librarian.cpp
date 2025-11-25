@@ -35,7 +35,9 @@ void Librarian::ThemSach(LibrarySystem &L) {
     L.GhiFileSach("DanhSachSach.txt");
 }
 string Librarian::toCSV(ostream &out) const {
-    out << maID << "," << hoTen << "," << SDT << "," << Email << "," << username << "," << password << "," << chucVu << "\n";
+    std::string csv =  maID  + "," + hoTen +  "," + SDT + "," + Email + "," + username + "," + password + "," + chucVu + "\n";
+   out << csv;
+   return csv;
 }
 void Librarian::XoaSach(LibrarySystem &L) {
     string maSach;

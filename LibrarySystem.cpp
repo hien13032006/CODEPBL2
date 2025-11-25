@@ -295,7 +295,7 @@ vector<BorrowerInfo> LibrarySystem::TimNguoiMuonSach(const std::string& maSach) 
 }
 
 void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
-    string fileName = "MuonSach_" + docGia->getMaID() + ".txt";
+    string fileName = "muon_tra/MuonSach_" + docGia->getMaID() + ".txt";
     ifstream file(fileName);
     if (!file.is_open()) return;
 
@@ -347,7 +347,7 @@ void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
 
 //Ghi danh sách sách đang mượn của độc giả
 void LibrarySystem::GhiDanhSachMuonCuaDocGia(Reader* docGia) {
-    string fileName = "MuonSach_" + docGia->getMaID() + ".txt";
+    string fileName = "muon_tra/MuonSach_" + docGia->getMaID() + ".txt";
     ofstream file(fileName, ios::app);
     
     if (!file.is_open()) {
@@ -943,49 +943,45 @@ bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {
 
 
 bool LibrarySystem::DangNhapThuThu(const string &usernameInput, const string &passwordInput, USER* &currentUser) {
-    string username = usernameInput;
-    string password = passwordInput;
-
-    while (true) {
-        ifstream in("ThuThu.txt");
-        if (!in.is_open()) {
-            cout << "Khong the mo file ThuThu.txt\n";
-            return false;
-        }
-
-        bool found = false;
-        string line;
-
-        while (getline(in, line)) {
-            stringstream ss(line);
-            string maID, hoTen, sdt, email, user, pass;
-            getline(ss, maID, '|');
-            getline(ss, hoTen, '|');
-            getline(ss, sdt, '|');
-            getline(ss, email, '|');
-            getline(ss, user, '|');
-            getline(ss, pass, '|');
-
-            if (user == username && pass == password) {
-                Librarian* tt = new Librarian();
-                tt->SetThongTin(maID, hoTen, sdt, email, user, pass);
-                currentUser = tt;
-                cout << "Dang nhap thanh cong!\n";
-                found = true;
-                break;
-            }
-        }
-        in.close();
-
-        if (found) return true;
-
-        cout << "Ten dang nhap: ";
-        getline(cin, username);
-        cout << "Mat khau: ";
-        getline(cin, password);
+    // Mở file để đọc
+    ifstream in("ThuThu.txt");
+    if (!in.is_open()) {
+        // Nếu không mở được file coi như đăng nhập thất bại (hoặc tạo mặc định)
+        return false; 
     }
-}
 
+    string line;
+    while (getline(in, line)) {
+        if (line.empty()) continue;
+
+        stringstream ss(line);
+        string maID, hoTen, sdt, email, user, pass, chucVu;
+        
+        // Tách chuỗi: NV01|Admin|...
+        getline(ss, maID, '|');
+        getline(ss, hoTen, '|');
+        getline(ss, sdt, '|');
+        getline(ss, email, '|');
+        getline(ss, user, '|');
+        getline(ss, pass, '|');
+        getline(ss, chucVu); // Đọc nốt phần còn lại (chức vụ)
+
+        // So sánh input với dữ liệu trong file
+        if (user == usernameInput && pass == passwordInput) {
+            Librarian* tt = new Librarian();
+            // Lưu ý: Hàm SetThongTin của bạn cần khớp tham số, ở đây mình dùng constructor cho tiện
+            // Hoặc dùng SetThongTin nếu class Librarian của bạn hỗ trợ
+            tt->SetThongTin(maID, hoTen, sdt, email, user, pass); 
+            currentUser = tt;
+            
+            in.close();
+            return true; // Đăng nhập thành công -> Trả về true ngay
+        }
+    }
+
+    in.close();
+    return false; // Quét hết file không thấy -> Trả về false (để GUI báo lỗi)
+}
 
 bool LibrarySystem::DangXuat(USER* &currentUser) {
     if (currentUser != nullptr) {

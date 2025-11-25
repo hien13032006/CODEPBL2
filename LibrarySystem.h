@@ -22,8 +22,8 @@ struct HashNode {
 class LibrarySystem {
     private:
         NodeBook *HeadDsSach; //con tro den dau danh sach sach
-        NodeReader *HeadDsDocGia; //con tro den dau danh sach doc gia
-        NodeLibrarian *HeadDsTThu; //con tro den dau danh sach thu thu
+        NodeReader *HeadDsDocGia; 
+        NodeLibrarian *HeadDsTThu; 
         HashNode* hashTable[TABLE_SIZE];
         std::vector<std::string> top10BookIDs;
     public:
