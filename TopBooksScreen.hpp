@@ -35,7 +35,13 @@ public:
             NodeBook* current = libSystem->getDanhSachSach();
             while(current != nullptr) {
                 if (current->data->getMaSach() == id) {
-                    Card* card = new Card(sf::Vector2f(startX + col * gapX, startY + row * gapY), sf::Vector2f(cardW, cardH), current->data->getMaSach(), current->data->getTenSach(), current->data->getTacGia(), current->data->getDiemTrungBinh(), colors[count % 10], font, true);
+                    Card* card = new Card(
+                        sf::Vector2f(startX + col * gapX, startY + row * gapY), sf::Vector2f(cardW, cardH), 
+                        current->data->getMaSach(), 
+                        current->data->getImagePath(), // [NEW] Ảnh bìa
+                        current->data->getTenSach(), current->data->getTacGia(), current->data->getDiemTrungBinh(), 
+                        colors[count % 10], font, true
+                    );
                     topBookCards.push_back(card); col++; count++; if (col >= 5) { col = 0; row++; } break;
                 } current = current->next;
             }

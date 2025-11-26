@@ -206,7 +206,6 @@ void LibrarySystem::GhiFileHeThong(const string& fileName) const {
     cout << "Da cap nhat file he thong sau khi muon/tra sach.\n";
 }
 
-
 void LibrarySystem::DocFileDocGia() {
     ifstream in("DocGia.txt");
     if (!in.is_open()) {
@@ -231,10 +230,13 @@ void LibrarySystem::DocFileDocGia() {
         getline(ss, pass, '|');
         getline(ss, ngayDKStr);
 
+        std::tm tm = {};
+        std::istringstream ssNgay(ngayDKStr);
+        ssNgay >> std::get_time(&tm, "%d/%m/%Y"); // định dạng file
+        time_t ngayDK = mktime(&tm);
 
         // Tạo đối tượng Reader bằng new (trên heap)
-        Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass);
-
+        Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass, ngayDK);
 
         NodeReader* newNode = new NodeReader(newReader);
         newNode->next = nullptr;
@@ -266,6 +268,7 @@ void LibrarySystem::DocFileDocGia() {
 
     cin.clear();
 }
+
 
 vector<BorrowerInfo> LibrarySystem::TimNguoiMuonSach(const std::string& maSach) const {
     vector<BorrowerInfo> results;

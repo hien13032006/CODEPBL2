@@ -19,7 +19,7 @@ class Reader : public USER {
 
     public:
         Reader();
-        Reader(string ma, string hoTen, string sdt, string email, string username, string password);
+        Reader(string ma, string hoTen, string sdt, string email, string username, string password, time_t ngaydk);
         ~Reader();
 
         void HienThiThongTin() const override;

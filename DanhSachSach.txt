@@ -1,128 +1,128 @@
-GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|8|18|6|images/GT00001.png
-GT00002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|5|12|4|images/GT00002.png
-GT00003|Lap trinh C co ban|Pham Van At|Giao trinh|2018|NXB Giao Duc|12|30|8|images/GT00003.png
-GT00004|Cau truc du lieu|Le Minh Hoang|Giao trinh|2020|NXB BKHN|10|21|7|images/GT00004.png
-GT00005|He dieu hanh|Nguyen Thanh Binh|Giao trinh|2018|NXB DHQG|9|17|5|images/GT00005.png
-GT00006|Mang may tinh|Nguyen Tan Dung|Giao trinh|2017|NXB Giao Duc|12|28|9|images/GT00006.png
-GT00007|Nhap mon lap trinh C++|Hoang Anh Kiet|Giao trinh|2020|NXB DHQG|10|24|6|images/GT00007.png
-GT00008|Phan tich thiet ke HTTT|Nguyen Thi Quynh|Giao trinh|2021|NXB DHQG|8|14|3|images/GT00008.png
-TK00009|Machine Learning Co Ban|Andrew Ng|Tham khao|2017|NXB Tri Thuc|15|40|10|images/TK00009.png
-TK00010|Giai thuat toi uu|Stephen Boyd|Tham khao|2010|NXB BKHN|6|19|4|images/TK00010.png
-TK00011|Nhap mon AI|Stuart Russell|Tham khao|2014|NXB DHQG|7|16|4|images/TK00011.png
-TK00012|Python nang cao|Mark Lutz|Tham khao|2013|NXB Tri Thuc|12|38|11|images/TK00012.png
-TK00013|C++ nang cao|Bjarne Stroustrup|Tham khao|2012|NXB Tri Thuc|10|31|8|images/TK00013.png
-TK00014|Big Data co ban|Nathan Marz|Tham khao|2015|NXB DHQG|10|22|6|images/TK00014.png
-TK00015|Blockchain can ban|Don Tapscott|Tham khao|2018|NXB Tri Thuc|8|17|5|images/TK00015.png
-TT00016|Mat biec|Nguyen Nhat Anh|Tieu thuyet|1995|NXB Tre|10|45|12|images/TT00016.png
-TT00017|Nha gia kim|Paulo Coelho|Tieu thuyet|1988|NXB VH Tong Hop|7|33|9|images/TT00017.png
-TT00018|Harry Potter 1|J.K. Rowling|Tieu thuyet|1997|NXB Tre|20|60|15|images/TT00018.png
-TT00019|Cho toi xin mot ve di tuoi tho|Nguyen Nhat Anh|Tieu thuyet|2008|NXB Tre|12|42|10|images/TT00019.png
-TT00020|Toi thay hoa vang tren co xanh|Nguyen Nhat Anh|Tieu thuyet|2010|NXB Tre|10|36|9|images/TT00020.png
-TT00021|Nhung nguoi khon kho|Victor Hugo|Tieu thuyet|1862|NXB Van Hoc|11|48|11|images/TT00021.png
-TT00022|Kieu|Nguyen Du|Tieu thuyet|1820|NXB Van Hoc|15|55|13|images/TT00022.png
-TN00023|Chi Pheo|Nam Cao|Truyen ngan|1941|NXB Van Hoc|12|28|7|images/TN00023.png
-TN00024|Lao Hac|Nam Cao|Truyen ngan|1943|NXB Van Hoc|10|24|6|images/TN00024.png
-TN00025|Vo chong A Phu|To Hoai|Truyen ngan|1952|NXB Van Hoc|8|19|5|images/TN00025.png
-TN00026|Hai dua tre|Thach Lam|Truyen ngan|1937|NXB Van Hoc|10|21|6|images/TN00026.png
-TN00027|Doi thua|Nam Cao|Truyen ngan|1942|NXB Van Hoc|10|42|8|images/TN00027.png
-TTR00028|Doraemon Tap 1|Fujiko F Fujio|Truyen tranh|1970|NXB Kim Dong|29|61|16|images/TTR00028.png
-TTR00029|One Piece Tap 1|Oda Eiichiro|Truyen tranh|1997|NXB Kim Dong|40|82|22|images/TTR00029.png
-TTR00030|Conan Tap 1|Aoyama Gosho|Truyen tranh|1994|NXB Kim Dong|25|49|12|images/TTR00030.png
-TTR00031|Naruto Tap 1|Masashi Kishimoto|Truyen tranh|1999|NXB Kim Dong|35|70|18|images/TTR00031.png
-TTR00032|Attack On Titan 1|Hajime Isayama|Truyen tranh|2010|NXB Kim Dong|20|44|10|images/TTR00032.png
-TC00033|Suc khoe & Doi song So 1|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|40|80|0|images/TC00033.png
-TC00034|The thao 247 So 15|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|60|0|images/TC00034.png
-TC00035|Kinh te Viet Nam 2023|Nhieu tac gia|Tap chi|2023|NXB Lao Dong|25|52|0|images/TC00035.png
-TC00036|Giao duc So 10|Nhieu tac gia|Tap chi|2021|NXB Giao Duc|20|39|0|images/TC00036.png
-TC00037|Am nhac & Cuoc song So 1|Nhieu tac gia|Tap chi|2020|NXB VHNN|20|35|2|images/TC00037.png
-KN00038|Dac nhan tam|Dale Carnegie|Sach ki nang|1936|NXB Tre|15|40|10|images/KN00038.png
-KN00039|7 tho quen cua nguoi thanh dat|Stephen Covey|Sach ki nang|1989|NXB Tre|20|50|12|images/KN00039.png
-KN00040|Tu duy tich cuc|Norman Vincent Peale|Sach ki nang|1952|NXB Tre|10|22|5|images/KN00040.png
-KN00041|Thoi quen tot|James Clear|Sach ki nang|2018|NXB Tre|18|47|9|images/KN00041.png
-KN00042|Lam chu thoi gian|Brian Tracy|Sach ki nang|2001|NXB Tre|10|24|6|images/KN00042.png
-KN00043|Ban hang thong minh|Brian Tracy|Sach ki nang|2005|NXB Tre|15|34|8|images/KN00043.png
-GT00044|Toan roi rac|Nguyen Thanh Long|Giao trinh|2019|NXB DHQG|12|27|7|images/GT00044.png
-GT00045|Lap trinh Java|Tran Khanh Huy|Giao trinh|2021|NXB Giao Duc|10|22|6|images/GT00045.png
-GT00046|Mang neural co ban|Pham Quang Huy|Giao trinh|2022|NXB BKHN|8|19|5|images/GT00046.png
-GT00047|Phan tich va thiet ke thuat toan|Le Minh Tri|Giao trinh|2018|NXB DHQG|9|20|5|images/GT00047.png
-GT00048|Co so lap trinh Web|Nguyen Quoc Bao|Giao trinh|2020|NXB DHQG|11|25|7|images/GT00048.png
-GT00049|An toan thong tin|Pham Thanh Hai|Giao trinh|2021|NXB DHQG|10|23|6|images/GT00049.png
-GT00050|Phan mem ma nguon mo|Do Hoai Nam|Giao trinh|2022|NXB DHQG|8|18|4|images/GT00050.png
-TK00051|Hoc sau trong AI|Ian Goodfellow|Tham khao|2016|NXB Tri Thuc|15|45|12|images/TK00051.png
-TK00052|Khoa hoc du lieu nang cao|Joel Grus|Tham khao|2019|NXB Tri Thuc|12|33|9|images/TK00052.png
-TK00053|Thiet ke he thong|Martin Kleppmann|Tham khao|2017|NXB Tri Thuc|10|38|11|images/TK00053.png
-TK00054|Mo hinh hoa du lieu|Ralph Kimball|Tham khao|2012|NXB Tri Thuc|8|24|6|images/TK00054.png
-TK00055|AI for Everyone|Andrew Ng|Tham khao|2020|NXB Tri Thuc|10|30|8|images/TK00055.png
-TK00056|Blockchain nang cao|Don Tapscott|Tham khao|2019|NXB Tri Thuc|9|28|7|images/TK00056.png
-TK00057|Cyber Security Principles|William Stallings|Tham khao|2014|NXB Giao Duc|7|20|5|images/TK00057.png
-TT00058|Doi thua|Nam Cao|Tieu thuyet|1942|NXB Van Hoc|12|41|10|images/TT00058.png
-TT00059|Nha la noi de ve|Nguyen Nhat Anh|Tieu thuyet|2020|NXB Tre|10|30|7|images/TT00059.png
-TT00060|Tuoi tre lua doi|Mac Ngon|Tieu thuyet|2012|NXB Phu Nu|9|26|6|images/TT00060.png
-TT00061|Nha gia kim (ban dac biet)|Paulo Coelho|Tieu thuyet|2005|NXB VH Tong Hop|8|29|7|images/TT00061.png
-TT00062|Gac lai uoc mo|Nicholas Sparks|Tieu thuyet|2011|NXB VH Tong Hop|12|37|8|images/TT00062.png
-TT00063|Chiec la cuoi cung|O Henry|Tieu thuyet|1907|NXB Van Hoc|7|18|4|images/TT00063.png
-TT00064|Nhung ngay tho au|Le Minh Khue|Tieu thuyet|1990|NXB Van Hoc|10|20|5|images/TT00064.png
-TN00065|Nguoi lai do song Da|Nguyen Tuan|Truyen ngan|1960|NXB Van Hoc|7|14|3|images/TN00065.png
-TN00066|Buom buom trang|Nguyen Minh Chau|Truyen ngan|1980|NXB Van Hoc|8|16|4|images/TN00066.png
-TN00067|Vo nhat|Nguyen Cong Hoan|Truyen ngan|1935|NXB Van Hoc|9|19|5|images/TN00067.png
-TN00068|Dong song|Le Hong Thai|Truyen ngan|1998|NXB Tre|12|25|6|images/TN00068.png
-TN00069|Sau con bao|Doan Gio|Truyen ngan|2004|NXB Tre|10|22|5|images/TN00069.png
-TTR00070|Doraemon Tap 3|Fujiko F Fujio|Truyen tranh|1970|NXB Kim Dong|30|62|16|images/TTR00070.png
-TTR00071|One Piece Tap 3|Oda Eiichiro|Truyen tranh|1998|NXB Kim Dong|40|84|22|images/TTR00071.png
-TTR00072|Conan Tap 2|Aoyama Gosho|Truyen tranh|1994|NXB Kim Dong|25|50|13|images/TTR00072.png
-TTR00073|Naruto Tap 2|Masashi Kishimoto|Truyen tranh|2000|NXB Kim Dong|35|68|17|images/TTR00073.png
-TTR00074|Dragon Ball Tap 1|Toriyama Akira|Truyen tranh|1984|NXB Kim Dong|30|55|14|images/TTR00074.png
-TTR00075|Attack On Titan 2|Hajime Isayama|Truyen tranh|2011|NXB Kim Dong|20|42|9|images/TTR00075.png
-TC00076|Suc khoe & Doi song So 3|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|40|78|0|images/TC00076.png
-TC00077|The thao 247 So 17|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|59|0|images/TC00077.png
-TC00078|Am thuc Viet Nam So 1|Nhieu tac gia|Tap chi|2021|NXB Phu Nu|25|50|0|images/TC00078.png
-TC00079|Giai tri 24h So 4|Nhieu tac gia|Tap chi|2020|NXB Lao Dong|20|39|0|images/TC00079.png
-TC00080|Du lich 2022 So 2|Nhieu tac gia|Tap chi|2022|NXB VHNN|20|35|1|images/TC00080.png
-KN00081|Song cham lai|Ha Thanh|Sach ki nang|2020|NXB Tre|15|34|8|images/KN00081.png
-KN00082|Nghi giau lam giau|Napoleon Hill|Sach ki nang|1937|NXB Tre|20|46|12|images/KN00082.png
-KN00083|Suc manh cua tho quen|Charles Duhigg|Sach ki nang|2012|NXB Tre|18|40|10|images/KN00083.png
-KN00084|Song tot hon moi ngay|Thich Phuoc Dat|Sach ki nang|2019|NXB Phuong Dong|12|28|6|images/KN00084.png
-KN00085|Loi song toi gian|Leo Babauta|Sach ki nang|2010|NXB Tre|10|24|5|images/KN00085.png
-GT00086|Co so lap trinh Python|Nguyen Thanh Hai|Giao trinh|2021|NXB DHQG|12|25|7|images/GT00086.png
-GT00087|Nhap mon du lieu lon|Pham Duc Thanh|Giao trinh|2020|NXB DHQG|10|22|6|images/GT00087.png
-GT00088|Thiet ke giao dien|Nguyen Minh Quang|Giao trinh|2022|NXB Giao Duc|8|18|4|images/GT00088.png
-GT00089|Mo hinh hoa phan mem|Tran Ngoc Lam|Giao trinh|2019|NXB BKHN|11|26|7|images/GT00089.png
-GT00090|Ly thuyet do thi|Le Quang Hung|Giao trinh|2018|NXB DHQG|9|20|5|images/GT00090.png
-GT00091|Lap trinh di dong co ban|Do Xuan Truong|Giao trinh|2021|NXB DHQG|10|23|6|images/GT00091.png
-GT00092|Lap trinh Web nang cao|Pham Hoang Nam|Giao trinh|2022|NXB DHQG|12|27|7|images/GT00092.png
-TK00093|Giai thuat may hoc|Pedro Domingos|Tham khao|2015|NXB Tri Thuc|14|39|11|images/TK00093.png
-TK00094|He thong thong minh|Russell & Norvig|Tham khao|2021|NXB DHQG|10|33|9|images/TK00094.png
-TK00095|Cloud Computing Co Ban|Thomas Erl|Tham khao|2016|NXB Tri Thuc|8|22|6|images/TK00095.png
-TK00096|Phan tich du lieu|Jake VanderPlas|Tham khao|2017|NXB Tri Thuc|12|36|10|images/TK00096.png
-TK00097|So hoa du lieu|Alex Pentland|Tham khao|2019|NXB DHQG|9|20|5|images/TK00097.png
-TK00098|Mo hinh du doan|Trevor Hastie|Tham khao|2009|NXB Tri Thuc|11|34|8|images/TK00098.png
-TK00099|Cong nghe trong tuong lai|Michio Kaku|Tham khao|2011|NXB Tre|10|30|7|images/TK00099.png
-TT00100|Thanh pho khong ten|Nguyen Nhat Anh|Tieu thuyet|2003|NXB Tre|10|28|7|images/TT00100.png
-TT00101|Ngay xua co mot chuyen tinh|Guillaume Musso|Tieu thuyet|2012|NXB VH Tong Hop|12|35|8|images/TT00101.png
-TT00102|Ke an xin|Victor Hugo|Tieu thuyet|1862|NXB Van Hoc|10|30|7|images/TT00102.png
-TT00103|Nha la noi de ve 2|Nguyen Nhat Anh|Tieu thuyet|2021|NXB Tre|11|25|6|images/TT00103.png
-TT00104|Phia sau nghi can X|Higashino Keigo|Tieu thuyet|2005|NXB VHNN|10|26|6|images/TT00104.png
-TT00105|Nguoi cung kho|F. Dostoevsky|Tieu thuyet|1866|NXB Van Hoc|12|40|9|images/TT00105.png
-TT00106|Bien ca|Ernest Hemingway|Tieu thuyet|1952|NXB Van Hoc|10|22|5|images/TT00106.png
-TN00107|Trang sang|Nguyen Minh Chau|Truyen ngan|1980|NXB Van Hoc|9|18|4|images/TN00107.png
-TN00108|Mot lan cuoi|Nguyen Ngoc Tu|Truyen ngan|2005|NXB Tre|10|20|5|images/TN00108.png
-TN00109|Giong to|Le Minh Khue|Truyen ngan|1973|NXB Van Hoc|8|17|4|images/TN00109.png
-TN00110|Con mua ngang qua|Nguyen Ngoc Thach|Truyen ngan|2010|NXB Tre|10|23|6|images/TN00110.png
-TN00111|Chiec la cuoi cung|O Henry|Truyen ngan|1907|NXB Van Hoc|7|14|3|images/TN00111.png
-TTR00112|Doraemon Tap 4|Fujiko F Fujio|Truyen tranh|1971|NXB Kim Dong|30|63|17|images/TTR00112.png
-TTR00113|One Piece Tap 4|Oda Eiichiro|Truyen tranh|1998|NXB Kim Dong|40|86|23|images/TTR00113.png
-TTR00114|Conan Tap 3|Aoyama Gosho|Truyen tranh|1995|NXB Kim Dong|25|52|13|images/TTR00114.png
-TTR00115|Naruto Tap 3|Masashi Kishimoto|Truyen tranh|2000|NXB Kim Dong|35|71|18|images/TTR00115.png
-TTR00116|Attack On Titan 3|Hajime Isayama|Truyen tranh|2011|NXB Kim Dong|20|43|9|images/TTR00116.png
-TTR00117|Dragon Ball Tap 2|Toriyama Akira|Truyen tranh|1985|NXB Kim Dong|30|54|13|images/TTR00117.png
-TTR00118|Thanh guom diet quy Tap 1|Koyoharu Gotouge|Truyen tranh|2016|NXB Kim Dong|25|50|12|images/TTR00118.png
-TC00119|Suc khoe & Doi song So 4|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|40|79|0|images/TC00119.png
-TC00120|Kien thuc moi So 12|Nhieu tac gia|Tap chi|2021|NXB Lao Dong|30|58|0|images/TC00120.png
-TC00121|Am nhac & Cuoc song So 2|Nhieu tac gia|Tap chi|2020|NXB VHNN|20|38|1|images/TC00121.png
-TC00122|Khoa hoc va Doi song So 5|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|25|52|0|images/TC00122.png
-TC00123|Giao duc 24h So 3|Nhieu tac gia|Tap chi|2022|NXB Giao Duc|20|35|0|images/TC00123.png
-KN00124|Y nghia cua song|Thich Nhat Hanh|Sach ki nang|2010|NXB Tre|15|30|7|images/KN00124.png
-KN00125|Song don gian cho minh thanh tho|Ha Minh Thanh|Sach ki nang|2019|NXB Tre|12|26|6|images/KN00125.png
-KN00126|Bi quyet tu tin|Brian Tracy|Sach ki nang|2009|NXB Tre|14|31|8|images/KN00126.png
-KN00127|Tu duy khac biet|Adam Grant|Sach ki nang|2016|NXB Tre|18|42|10|images/KN00127.png
-KN00128|Suc manh tinh tam|Thich Nhat Hanh|Sach ki nang|2013|NXB Phuong Dong|10|24|6|images/KN00128.png
+GT00001|Co so du lieu|Vo Duc Hoang|Giao trinh|2000|Dai hoc Da Nang|10|87|10|images/GT00001.png
+GT00002|Toan cao cap|Tran Van Su|Giao trinh|2006|Dai hoc Da Nang|5|32|4|images/GT00002.png
+GT00003|Lap trinh C co ban|Pham Van At|Giao trinh|2018|NXB Giao Duc|13|94|11|images/GT00003.png
+GT00004|Cau truc du lieu|Le Minh Hoang|Giao trinh|2020|NXB BKHN|10|49|7|images/GT00004.png
+GT00005|He dieu hanh|Nguyen Thanh Binh|Giao trinh|2018|NXB DHQG|9|40|5|images/GT00005.png
+GT00006|Mang may tinh|Nguyen Tan Dung|Giao trinh|2017|NXB Giao Duc|12|65|9|images/GT00006.png
+GT00007|Nhap mon lap trinh C++|Hoang Anh Kiet|Giao trinh|2020|NXB DHQG|10|50|6|images/GT00007.png
+GT00008|Phan tich thiet ke HTTT|Nguyen Thi Quynh|Giao trinh|2021|NXB DHQG|8|21|3|images/GT00008.png
+TK00009|Machine Learning Co Ban|Andrew Ng|Tham khao|2017|NXB Tri Thuc|15|111|12|images/TK00009.png
+TK00010|Giai thuat toi uu|Stephen Boyd|Tham khao|2010|NXB BKHN|6|28|4|images/TK00010.png
+TK00011|Nhap mon AI|Stuart Russell|Tham khao|2014|NXB DHQG|6|33|4|images/TK00011.png
+TK00012|Python nang cao|Mark Lutz|Tham khao|2013|NXB Tri Thuc|12|82|11|images/TK00012.png
+TK00013|C++ nang cao|Bjarne Stroustrup|Tham khao|2012|NXB Tri Thuc|10|60|8|images/TK00013.png
+TK00014|Big Data co ban|Nathan Marz|Tham khao|2015|NXB DHQG|10|51|6|images/TK00014.png
+TK00015|Blockchain can ban|Don Tapscott|Tham khao|2018|NXB Tri Thuc|8|39|5|images/TK00015.png
+TT00016|Mat biec|Nguyen Nhat Anh|Tieu thuyet|1995|NXB Tre|10|105|12|images/TT00016.png
+TT00017|Nha gia kim|Paulo Coelho|Tieu thuyet|1988|NXB VH Tong Hop|6|82|9|images/TT00017.png
+TT00018|Harry Potter 1|J.K. Rowling|Tieu thuyet|1997|NXB Tre|20|143|15|images/TT00018.png
+TT00019|Cho toi xin mot ve di tuoi tho|Nguyen Nhat Anh|Tieu thuyet|2008|NXB Tre|12|93|10|images/TT00019.png
+TT00020|Toi thay hoa vang tren co xanh|Nguyen Nhat Anh|Tieu thuyet|2010|NXB Tre|10|84|9|images/TT00020.png
+TT00021|Nhung nguoi khon kho|Victor Hugo|Tieu thuyet|1862|NXB Van Hoc|11|105|11|images/TT00021.png
+TT00022|Kieu|Nguyen Du|Tieu thuyet|1820|NXB Van Hoc|15|130|13|images/TT00022.png
+TN00023|Chi Pheo|Nam Cao|Truyen ngan|1941|NXB Van Hoc|12|61|7|images/TN00023.png
+TN00024|Lao Hac|Nam Cao|Truyen ngan|1943|NXB Van Hoc|10|55|6|images/TN00024.png
+TN00025|Vo chong A Phu|To Hoai|Truyen ngan|1952|NXB Van Hoc|8|36|5|images/TN00025.png
+TN00026|Hai dua tre|Thach Lam|Truyen ngan|1937|NXB Van Hoc|10|56|6|images/TN00026.png
+TN00027|Doi thua|Nam Cao|Truyen ngan|1942|NXB Van Hoc|10|69|8|images/TN00027.png
+TTR00028|Doraemon Tap 1|Fujiko F Fujio|Truyen tranh|1970|NXB Kim Dong|29|158|16|images/TTR00028.png
+TTR00029|One Piece Tap 1|Oda Eiichiro|Truyen tranh|1997|NXB Kim Dong|40|202|22|images/TTR00029.png
+TTR00030|Conan Tap 1|Aoyama Gosho|Truyen tranh|1994|NXB Kim Dong|25|115|12|images/TTR00030.png
+TTR00031|Naruto Tap 1|Masashi Kishimoto|Truyen tranh|1999|NXB Kim Dong|35|180|18|images/TTR00031.png
+TTR00032|Attack On Titan 1|Hajime Isayama|Truyen tranh|2010|NXB Kim Dong|20|94|10|images/TTR00032.png
+TC00033|Suc khoe & Doi song So 1|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|40|0|0|images/TC00033.png
+TC00034|The thao 247 So 15|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|0|0|images/TC00034.png
+TC00035|Kinh te Viet Nam 2023|Nhieu tac gia|Tap chi|2023|NXB Lao Dong|25|0|0|images/TC00035.png
+TC00036|Giao duc So 10|Nhieu tac gia|Tap chi|2021|NXB Giao Duc|20|0|0|images/TC00036.png
+TC00037|Am nhac & Cuoc song So 1|Nhieu tac gia|Tap chi|2020|NXB VHNN|20|16|2|images/TC00037.png
+KN00038|Dac nhan tam|Dale Carnegie|Sach ki nang|1936|NXB Tre|15|92|10|images/KN00038.png
+KN00039|7 tho quen cua nguoi thanh dat|Stephen Covey|Sach ki nang|1989|NXB Tre|20|99|12|images/KN00039.png
+KN00040|Tu duy tich cuc|Norman Vincent Peale|Sach ki nang|1952|NXB Tre|10|38|5|images/KN00040.png
+KN00041|Thoi quen tot|James Clear|Sach ki nang|2018|NXB Tre|18|68|9|images/KN00041.png
+KN00042|Lam chu thoi gian|Brian Tracy|Sach ki nang|2001|NXB Tre|10|43|6|images/KN00042.png
+KN00043|Ban hang thong minh|Brian Tracy|Sach ki nang|2005|NXB Tre|15|70|8|images/KN00043.png
+GT00044|Toan roi rac|Nguyen Thanh Long|Giao trinh|2019|NXB DHQG|12|60|7|images/GT00044.png
+GT00045|Lap trinh Java|Tran Khanh Huy|Giao trinh|2021|NXB Giao Duc|10|48|6|images/GT00045.png
+GT00046|Mang neural co ban|Pham Quang Huy|Giao trinh|2022|NXB BKHN|8|44|5|images/GT00046.png
+GT00047|Phan tich va thiet ke thuat toan|Le Minh Tri|Giao trinh|2018|NXB DHQG|9|37|5|images/GT00047.png
+GT00048|Co so lap trinh Web|Nguyen Quoc Bao|Giao trinh|2020|NXB DHQG|11|57|7|images/GT00048.png
+GT00049|An toan thong tin|Pham Thanh Hai|Giao trinh|2021|NXB DHQG|10|45|6|images/GT00049.png
+GT00050|Phan mem ma nguon mo|Do Hoai Nam|Giao trinh|2022|NXB DHQG|8|34|4|images/GT00050.png
+TK00051|Hoc sau trong AI|Ian Goodfellow|Tham khao|2016|NXB Tri Thuc|15|97|12|images/TK00051.png
+TK00052|Khoa hoc du lieu nang cao|Joel Grus|Tham khao|2019|NXB Tri Thuc|12|73|9|images/TK00052.png
+TK00053|Thiet ke he thong|Martin Kleppmann|Tham khao|2017|NXB Tri Thuc|10|94|11|images/TK00053.png
+TK00054|Mo hinh hoa du lieu|Ralph Kimball|Tham khao|2012|NXB Tri Thuc|8|46|6|images/TK00054.png
+TK00055|AI for Everyone|Andrew Ng|Tham khao|2020|NXB Tri Thuc|10|63|8|images/TK00055.png
+TK00056|Blockchain nang cao|Don Tapscott|Tham khao|2019|NXB Tri Thuc|9|51|7|images/TK00056.png
+TK00057|Cyber Security Principles|William Stallings|Tham khao|2014|NXB Giao Duc|7|39|5|images/TK00057.png
+TT00058|Doi thua|Nam Cao|Tieu thuyet|1942|NXB Van Hoc|12|92|10|images/TT00058.png
+TT00059|Nha la noi de ve|Nguyen Nhat Anh|Tieu thuyet|2020|NXB Tre|10|60|7|images/TT00059.png
+TT00060|Tuoi tre lua doi|Mac Ngon|Tieu thuyet|2012|NXB Phu Nu|9|56|6|images/TT00060.png
+TT00061|Nha gia kim (ban dac biet)|Paulo Coelho|Tieu thuyet|2005|NXB VH Tong Hop|8|70|7|images/TT00061.png
+TT00062|Gac lai uoc mo|Nicholas Sparks|Tieu thuyet|2011|NXB VH Tong Hop|12|69|8|images/TT00062.png
+TT00063|Chiec la cuoi cung|O Henry|Tieu thuyet|1907|NXB Van Hoc|7|35|4|images/TT00063.png
+TT00064|Nhung ngay tho au|Le Minh Khue|Tieu thuyet|1990|NXB Van Hoc|10|43|5|images/TT00064.png
+TN00065|Nguoi lai do song Da|Nguyen Tuan|Truyen ngan|1960|NXB Van Hoc|7|26|3|images/TN00065.png
+TN00066|Buom buom trang|Nguyen Minh Chau|Truyen ngan|1980|NXB Van Hoc|8|37|4|images/TN00066.png
+TN00067|Vo nhat|Nguyen Cong Hoan|Truyen ngan|1935|NXB Van Hoc|9|37|5|images/TN00067.png
+TN00068|Dong song|Le Hong Thai|Truyen ngan|1998|NXB Tre|12|50|6|images/TN00068.png
+TN00069|Sau con bao|Doan Gio|Truyen ngan|2004|NXB Tre|10|39|5|images/TN00069.png
+TTR00070|Doraemon Tap 3|Fujiko F Fujio|Truyen tranh|1970|NXB Kim Dong|30|150|16|images/TTR00070.png
+TTR00071|One Piece Tap 3|Oda Eiichiro|Truyen tranh|1998|NXB Kim Dong|40|216|22|images/TTR00071.png
+TTR00072|Conan Tap 2|Aoyama Gosho|Truyen tranh|1994|NXB Kim Dong|25|125|13|images/TTR00072.png
+TTR00073|Naruto Tap 2|Masashi Kishimoto|Truyen tranh|2000|NXB Kim Dong|35|158|17|images/TTR00073.png
+TTR00074|Dragon Ball Tap 1|Toriyama Akira|Truyen tranh|1984|NXB Kim Dong|30|130|14|images/TTR00074.png
+TTR00075|Attack On Titan 2|Hajime Isayama|Truyen tranh|2011|NXB Kim Dong|20|89|9|images/TTR00075.png
+TC00076|Suc khoe & Doi song So 3|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|40|0|0|images/TC00076.png
+TC00077|The thao 247 So 17|Nhieu tac gia|Tap chi|2022|NXB The Thao|30|0|0|images/TC00077.png
+TC00078|Am thuc Viet Nam So 1|Nhieu tac gia|Tap chi|2021|NXB Phu Nu|25|0|0|images/TC00078.png
+TC00079|Giai tri 24h So 4|Nhieu tac gia|Tap chi|2020|NXB Lao Dong|20|0|0|images/TC00079.png
+TC00080|Du lich 2022 So 2|Nhieu tac gia|Tap chi|2022|NXB VHNN|20|8|1|images/TC00080.png
+KN00081|Song cham lai|Ha Thanh|Sach ki nang|2020|NXB Tre|15|63|8|images/KN00081.png
+KN00082|Nghi giau lam giau|Napoleon Hill|Sach ki nang|1937|NXB Tre|20|92|12|images/KN00082.png
+KN00083|Suc manh cua tho quen|Charles Duhigg|Sach ki nang|2012|NXB Tre|18|76|10|images/KN00083.png
+KN00084|Song tot hon moi ngay|Thich Phuoc Dat|Sach ki nang|2019|NXB Phuong Dong|12|49|6|images/KN00084.png
+KN00085|Loi song toi gian|Leo Babauta|Sach ki nang|2010|NXB Tre|10|42|5|images/KN00085.png
+GT00086|Co so lap trinh Python|Nguyen Thanh Hai|Giao trinh|2021|NXB DHQG|12|57|7|images/GT00086.png
+GT00087|Nhap mon du lieu lon|Pham Duc Thanh|Giao trinh|2020|NXB DHQG|10|50|6|images/GT00087.png
+GT00088|Thiet ke giao dien|Nguyen Minh Quang|Giao trinh|2022|NXB Giao Duc|8|35|4|images/GT00088.png
+GT00089|Mo hinh hoa phan mem|Tran Ngoc Lam|Giao trinh|2019|NXB BKHN|11|58|7|images/GT00089.png
+GT00090|Ly thuyet do thi|Le Quang Hung|Giao trinh|2018|NXB DHQG|9|43|5|images/GT00090.png
+GT00091|Lap trinh di dong co ban|Do Xuan Truong|Giao trinh|2021|NXB DHQG|10|51|6|images/GT00091.png
+GT00092|Lap trinh Web nang cao|Pham Hoang Nam|Giao trinh|2022|NXB DHQG|12|58|7|images/GT00092.png
+TK00093|Giai thuat may hoc|Pedro Domingos|Tham khao|2015|NXB Tri Thuc|14|78|11|images/TK00093.png
+TK00094|He thong thong minh|Russell & Norvig|Tham khao|2021|NXB DHQG|10|74|9|images/TK00094.png
+TK00095|Cloud Computing Co Ban|Thomas Erl|Tham khao|2016|NXB Tri Thuc|8|43|6|images/TK00095.png
+TK00096|Phan tich du lieu|Jake VanderPlas|Tham khao|2017|NXB Tri Thuc|12|81|10|images/TK00096.png
+TK00097|So hoa du lieu|Alex Pentland|Tham khao|2019|NXB DHQG|9|36|5|images/TK00097.png
+TK00098|Mo hinh du doan|Trevor Hastie|Tham khao|2009|NXB Tri Thuc|11|62|8|images/TK00098.png
+TK00099|Cong nghe trong tuong lai|Michio Kaku|Tham khao|2011|NXB Tre|10|58|7|images/TK00099.png
+TT00100|Thanh pho khong ten|Nguyen Nhat Anh|Tieu thuyet|2003|NXB Tre|10|62|7|images/TT00100.png
+TT00101|Ngay xua co mot chuyen tinh|Guillaume Musso|Tieu thuyet|2012|NXB VH Tong Hop|12|69|8|images/TT00101.png
+TT00102|Ke an xin|Victor Hugo|Tieu thuyet|1862|NXB Van Hoc|10|62|7|images/TT00102.png
+TT00103|Nha la noi de ve 2|Nguyen Nhat Anh|Tieu thuyet|2021|NXB Tre|11|56|6|images/TT00103.png
+TT00104|Phia sau nghi can X|Higashino Keigo|Tieu thuyet|2005|NXB VHNN|10|50|6|images/TT00104.png
+TT00105|Nguoi cung kho|F. Dostoevsky|Tieu thuyet|1866|NXB Van Hoc|12|70|9|images/TT00105.png
+TT00106|Bien ca|Ernest Hemingway|Tieu thuyet|1952|NXB Van Hoc|10|42|5|images/TT00106.png
+TN00107|Trang sang|Nguyen Minh Chau|Truyen ngan|1980|NXB Van Hoc|9|37|4|images/TN00107.png
+TN00108|Mot lan cuoi|Nguyen Ngoc Tu|Truyen ngan|2005|NXB Tre|10|37|5|images/TN00108.png
+TN00109|Giong to|Le Minh Khue|Truyen ngan|1973|NXB Van Hoc|8|31|4|images/TN00109.png
+TN00110|Con mua ngang qua|Nguyen Ngoc Thach|Truyen ngan|2010|NXB Tre|10|52|6|images/TN00110.png
+TN00111|Chiec la cuoi cung|O Henry|Truyen ngan|1907|NXB Van Hoc|7|27|3|images/TN00111.png
+TTR00112|Doraemon Tap 4|Fujiko F Fujio|Truyen tranh|1971|NXB Kim Dong|30|162|17|images/TTR00112.png
+TTR00113|One Piece Tap 4|Oda Eiichiro|Truyen tranh|1998|NXB Kim Dong|40|211|23|images/TTR00113.png
+TTR00114|Conan Tap 3|Aoyama Gosho|Truyen tranh|1995|NXB Kim Dong|25|128|13|images/TTR00114.png
+TTR00115|Naruto Tap 3|Masashi Kishimoto|Truyen tranh|2000|NXB Kim Dong|35|163|18|images/TTR00115.png
+TTR00116|Attack On Titan 3|Hajime Isayama|Truyen tranh|2011|NXB Kim Dong|20|83|9|images/TTR00116.png
+TTR00117|Dragon Ball Tap 2|Toriyama Akira|Truyen tranh|1985|NXB Kim Dong|30|128|13|images/TTR00117.png
+TTR00118|Thanh guom diet quy Tap 1|Koyoharu Gotouge|Truyen tranh|2016|NXB Kim Dong|25|117|12|images/TTR00118.png
+TC00119|Suc khoe & Doi song So 4|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|40|0|0|images/TC00119.png
+TC00120|Kien thuc moi So 12|Nhieu tac gia|Tap chi|2021|NXB Lao Dong|30|0|0|images/TC00120.png
+TC00121|Am nhac & Cuoc song So 2|Nhieu tac gia|Tap chi|2020|NXB VHNN|20|8|1|images/TC00121.png
+TC00122|Khoa hoc va Doi song So 5|Nhieu tac gia|Tap chi|2023|NXB Khoa Hoc|25|0|0|images/TC00122.png
+TC00123|Giao duc 24h So 3|Nhieu tac gia|Tap chi|2022|NXB Giao Duc|20|0|0|images/TC00123.png
+KN00124|Y nghia cua song|Thich Nhat Hanh|Sach ki nang|2010|NXB Tre|15|60|7|images/KN00124.png
+KN00125|Song don gian cho minh thanh tho|Ha Minh Thanh|Sach ki nang|2019|NXB Tre|12|51|6|images/KN00125.png
+KN00126|Bi quyet tu tin|Brian Tracy|Sach ki nang|2009|NXB Tre|14|58|8|images/KN00126.png
+KN00127|Tu duy khac biet|Adam Grant|Sach ki nang|2016|NXB Tre|18|84|10|images/KN00127.png
+KN00128|Suc manh tinh tam|Thich Nhat Hanh|Sach ki nang|2013|NXB Phuong Dong|10|50|6|images/KN00128.png

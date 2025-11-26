@@ -40,7 +40,13 @@ public:
             Sach* book = current->data; std::string ten = book->getTenSach(), tg = book->getTacGia(), tl = book->getTheLoai(), ma = book->getMaSach();
             std::transform(ten.begin(), ten.end(), ten.begin(), ::tolower); std::transform(tg.begin(), tg.end(), tg.begin(), ::tolower); std::transform(tl.begin(), tl.end(), tl.begin(), ::tolower); std::transform(ma.begin(), ma.end(), ma.begin(), ::tolower);
             if (ten.find(kLower)!=std::string::npos || tg.find(kLower)!=std::string::npos || tl.find(kLower)!=std::string::npos || ma.find(kLower)!=std::string::npos) {
-                Card* card = new Card(sf::Vector2f(startX + col*gapX, startY + row*gapY), sf::Vector2f(cardW, cardH), book->getMaSach(), book->getTenSach(), book->getTacGia(), book->getDiemTrungBinh(), colors[count % 5], font, (book->getDiemTrungBinh()>=8.0));
+                Card* card = new Card(
+                    sf::Vector2f(startX + col*gapX, startY + row*gapY), sf::Vector2f(cardW, cardH), 
+                    book->getMaSach(), 
+                    book->getImagePath(), // [NEW] Ảnh bìa
+                    book->getTenSach(), book->getTacGia(), book->getDiemTrungBinh(), 
+                    colors[count % 5], font, (book->getDiemTrungBinh()>=8.0)
+                );
                 resultCards.push_back(card); col++; count++; if (col >= 5) { col = 0; row++; }
             } current = current->next;
         }

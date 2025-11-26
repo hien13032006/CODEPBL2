@@ -4,161 +4,99 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include "Button.hpp"
+#include "RoundedRectangle.hpp"
+#include "Theme.hpp"
 
-enum class MessageType {
-    INFO,
-    SUCCESS,
-    WARNING,
-    ERROR,
-    CONFIRM
-};
+enum class MsgType { INFO, SUCCESS, WARNING, ERROR, CONFIRM };
 
 class MessageBox {
 private:
     sf::RectangleShape overlay;
-    sf::RectangleShape box;
-    sf::Text titleText;
-    sf::Text messageText;
-    Button* okButton;
-    Button* cancelButton;
-    bool isVisible;
-    bool hasCancel;
-    MessageType type;
-    std::function<void()> onConfirm;
-    std::function<void()> onCancel;
+    RoundedRectangleShape box;
+    sf::Text titleText, msgText;
+    Button *btnOK, *btnCancel;
+    bool visible, hasCancel;
 
 public:
     MessageBox(sf::Font& font) {
-        overlay.setSize(sf::Vector2f(1400, 900));
-        overlay.setFillColor(sf::Color(0, 0, 0, 200));
+        visible = false; hasCancel = false;
+        overlay.setSize(sf::Vector2f(1300, 720));
+        overlay.setFillColor(sf::Color(0, 0, 0, 150)); // Làm tối nền
 
         box.setSize(sf::Vector2f(500, 250));
-        box.setPosition(450, 325);
-        box.setFillColor(sf::Color(30, 35, 50));
+        box.setCornerRadius(15.0f);
+        box.setFillColor(sf::Color::White);
         box.setOutlineThickness(2);
+        box.setPosition(400, 235); 
 
-        titleText.setFont(font);
-        titleText.setCharacterSize(22);
-        titleText.setFillColor(sf::Color::White);
-        titleText.setPosition(480, 350);
+        titleText.setFont(font); titleText.setCharacterSize(24); titleText.setPosition(430, 255);
+        msgText.setFont(font); msgText.setCharacterSize(18); msgText.setFillColor(Theme::TextDark); msgText.setPosition(430, 300);
 
-        messageText.setFont(font);
-        messageText.setCharacterSize(16);
-        messageText.setFillColor(sf::Color(200, 200, 200));
-        messageText.setPosition(480, 400);
-
-        okButton = new Button(sf::Vector2f(650, 500), sf::Vector2f(120, 45),
-                             "OK", font, 0, sf::Color(100, 180, 100));
-        
-        cancelButton = new Button(sf::Vector2f(500, 500), sf::Vector2f(120, 45),
-                                 "Huy", font, 0, sf::Color(120, 120, 120));
-
-        isVisible = false;
-        hasCancel = false;
-        type = MessageType::INFO;
+        btnOK = new Button({430, 420}, {200, 45}, "OK", font, 1, Theme::Success);
+        btnCancel = new Button({660, 420}, {200, 45}, "Huy", font, 2, sf::Color(150, 150, 150));
     }
 
-    ~MessageBox() {
-        delete okButton;
-        delete cancelButton;
+    ~MessageBox() { delete btnOK; delete btnCancel; }
+
+    // Hàm mới để đổi chữ nút bấm
+    void setButtonLabels(std::string okLabel, std::string cancelLabel = "Huy") {
+        btnOK->setText(okLabel);
+        btnCancel->setText(cancelLabel);
     }
 
-    void show(const std::string& title, const std::string& message, 
-              MessageType msgType = MessageType::INFO, bool showCancel = false) {
+    void show(const std::string& title, const std::string& msg, MsgType type, bool showCancel = false) {
         titleText.setString(title);
-        messageText.setString(message);
-        type = msgType;
+        msgText.setString(msg);
         hasCancel = showCancel;
-        isVisible = true;
+        visible = true;
 
-        // Đặt màu theo loại
-        switch(type) {
-            case MessageType::SUCCESS:
-                box.setOutlineColor(sf::Color(100, 180, 100));
-                titleText.setFillColor(sf::Color(100, 255, 100));
-                break;
-            case MessageType::ERROR:
-                box.setOutlineColor(sf::Color(255, 100, 100));
-                titleText.setFillColor(sf::Color(255, 100, 100));
-                break;
-            case MessageType::WARNING:
-                box.setOutlineColor(sf::Color(255, 193, 94));
-                titleText.setFillColor(sf::Color(255, 193, 94));
-                break;
-            case MessageType::CONFIRM:
-                box.setOutlineColor(sf::Color(100, 150, 255));
-                titleText.setFillColor(sf::Color(100, 150, 255));
-                break;
-            default:
-                box.setOutlineColor(sf::Color(100, 100, 120));
-                titleText.setFillColor(sf::Color::White);
-        }
-
-        // Điều chỉnh vị trí nút
-        if (hasCancel) {
-            okButton->setPosition(sf::Vector2f(650, 500));
-            cancelButton->setPosition(sf::Vector2f(500, 500));
+        if (type == MsgType::CONFIRM) {
+            titleText.setFillColor(Theme::Primary);
+            box.setOutlineColor(Theme::Primary);
+            btnOK->setColor(Theme::Primary);
+        } else if (type == MsgType::SUCCESS) {
+            titleText.setFillColor(Theme::Success);
+            box.setOutlineColor(Theme::Success);
+            btnOK->setColor(Theme::Success);
         } else {
-            okButton->setPosition(sf::Vector2f(575, 500));
+            titleText.setFillColor(Theme::Error);
+            box.setOutlineColor(Theme::Error);
+            btnOK->setColor(Theme::Error);
+        }
+
+        // Căn chỉnh vị trí nút
+        if (!hasCancel) {
+            btnOK->setPosition({550, 420}); // Giữa
+        } else {
+            btnOK->setPosition({430, 420}); // Trái
+            btnCancel->setPosition({660, 420}); // Phải
         }
     }
 
-    void hide() {
-        isVisible = false;
-    }
-
-    bool isShown() const {
-        return isVisible;
-    }
-
-    void setOnConfirm(std::function<void()> callback) {
-        onConfirm = callback;
-    }
-
-    void setOnCancel(std::function<void()> callback) {
-        onCancel = callback;
-    }
+    void hide() { visible = false; }
+    bool isShown() const { return visible; }
 
     void update(sf::Vector2f mousePos) {
-        if (!isVisible) return;
-        
-        okButton->update(mousePos);
-        if (hasCancel) {
-            cancelButton->update(mousePos);
-        }
+        if (!visible) return;
+        btnOK->update(mousePos);
+        if (hasCancel) btnCancel->update(mousePos);
     }
 
-    bool handleClick(sf::Vector2f mousePos) {
-        if (!isVisible) return false;
-
-        if (okButton->handleClick(mousePos)) {
-            if (onConfirm) onConfirm();
-            hide();
-            return true;
-        }
-
-        if (hasCancel && cancelButton->handleClick(mousePos)) {
-            if (onCancel) onCancel();
-            hide();
-            return true;
-        }
-
-        return false;
+    int handleClick(sf::Vector2f mousePos) {
+        if (!visible) return 0;
+        if (btnOK->handleClick(mousePos)) return 1;
+        if (hasCancel && btnCancel->handleClick(mousePos)) return 2;
+        return 0;
     }
 
     void draw(sf::RenderWindow& window) {
-        if (!isVisible) return;
-
+        if (!visible) return;
         window.draw(overlay);
         window.draw(box);
         window.draw(titleText);
-        window.draw(messageText);
-        okButton->draw(window);
-        
-        if (hasCancel) {
-            cancelButton->draw(window);
-        }
+        window.draw(msgText);
+        btnOK->draw(window);
+        if (hasCancel) btnCancel->draw(window);
     }
 };
-
 #endif

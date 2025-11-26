@@ -35,25 +35,38 @@ public:
         libSystem->XepHangSach(); const auto& topIDs = libSystem->getTop10IDs();
         std::vector<sf::Color> colors = { sf::Color(255, 182, 193), sf::Color(176, 224, 230), sf::Color(255, 228, 181), sf::Color(221, 160, 221), sf::Color(152, 251, 152) };
         float startX = 10; float cardW = 160; float cardH = 240; float gapX = 180;  int idx = 0;
+        
+        // Load Top 10
         for (const auto& id : topIDs) {
             NodeBook* node = libSystem->getDanhSachSach();
             while(node) {
                 if (node->data->getMaSach() == id) {
-                    Card* card = new Card(sf::Vector2f(startX + idx * gapX, 10), sf::Vector2f(cardW, cardH), node->data->getMaSach(), node->data->getTenSach(), node->data->getTacGia(), node->data->getDiemTrungBinh(), colors[idx % 5], font, true);
+                    Card* card = new Card(
+                        sf::Vector2f(startX + idx * gapX, 10), sf::Vector2f(cardW, cardH), 
+                        node->data->getMaSach(), 
+                        node->data->getImagePath(), // [NEW] Ảnh bìa
+                        node->data->getTenSach(), node->data->getTacGia(), node->data->getDiemTrungBinh(), 
+                        colors[idx % 5], font, true
+                    );
                     top10Cards.push_back(card); idx++; break;
                 } node = node->next;
             }
         }
-        // FIX: Padding 400.0f
         scrollTop10->setMaxScroll(idx * gapX + 400.0f); 
 
+        // Load All Books
         idx = 0; NodeBook* curr = libSystem->getDanhSachSach();
         while (curr) {
             bool isHot = (curr->data->getDiemTrungBinh() >= 8.0);
-            Card* card = new Card(sf::Vector2f(startX + idx * gapX, 10), sf::Vector2f(cardW, cardH), curr->data->getMaSach(), curr->data->getTenSach(), curr->data->getTacGia(), curr->data->getDiemTrungBinh(), colors[idx % 5], font, isHot);
+            Card* card = new Card(
+                sf::Vector2f(startX + idx * gapX, 10), sf::Vector2f(cardW, cardH), 
+                curr->data->getMaSach(), 
+                curr->data->getImagePath(), // [NEW] Ảnh bìa
+                curr->data->getTenSach(), curr->data->getTacGia(), curr->data->getDiemTrungBinh(), 
+                colors[idx % 5], font, isHot
+            );
             allBookCards.push_back(card); idx++; curr = curr->next;
         }
-        // FIX: Padding 400.0f
         scrollAll->setMaxScroll(idx * gapX + 400.0f);
     }
 

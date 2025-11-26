@@ -30,10 +30,16 @@ public:
         NodeBook* current = libSystem->getDanhSachSach();
         float startX = 10; float startY = 20; float cardW = 170; float cardH = 250; float gapX = 200; float gapY = 280; int col = 0; int row = 0;
         while (current != nullptr) {
-            Card* card = new Card(sf::Vector2f(startX + col * gapX, startY + row * gapY), sf::Vector2f(cardW, cardH), current->data->getMaSach(), current->data->getTenSach(), current->data->getTacGia(), current->data->getDiemTrungBinh(), colors[allBookCards.size() % 5], font, (current->data->getDiemTrungBinh() >= 8.0));
+            Card* card = new Card(
+                sf::Vector2f(startX + col * gapX, startY + row * gapY), sf::Vector2f(cardW, cardH), 
+                current->data->getMaSach(), 
+                current->data->getImagePath(), // [NEW] Ảnh bìa
+                current->data->getTenSach(), current->data->getTacGia(), current->data->getDiemTrungBinh(), 
+                colors[allBookCards.size() % 5], font, (current->data->getDiemTrungBinh() >= 8.0)
+            );
             allBookCards.push_back(card); col++; if (col >= 5) { col = 0; row++; } current = current->next;
         }
-        // FIX: Tăng padding lên 950.0f để trượt dư nhiều
+        // FIX: Padding 950.0f
         float contentHeight = startY + (row + 1) * gapY + 950.0f;
         scrollView->setMaxScroll(std::max(0.0f, contentHeight - VIEW_H)); scrollView->reset();
     }
