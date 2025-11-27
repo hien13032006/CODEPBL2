@@ -13,7 +13,7 @@ class LoginReaderScreen {
 private:
     Modal* modal; RoundedRectangleShape posterPanel, formPanel; sf::Text logoText, titleText, switchText, errLogin;
     InputField *usernameField, *passwordField; Button *loginButton, *backButton; bool shaking = false; float shakeTime = 0.0f; const float shakeDuration = 0.4f;
-
+    
 public:
     LoginReaderScreen(sf::Font& font, Modal* modalRef) : modal(modalRef) {
         posterPanel.setSize(sf::Vector2f(400, 600)); posterPanel.setPosition(150, 60); posterPanel.setFillColor(Theme::Primary); 

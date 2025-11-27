@@ -27,30 +27,52 @@ public:
     ~TopBooksScreen() { delete sidebar; delete scrollView; for (auto card : topBookCards) delete card; }
 
     void loadBooks(sf::Font& font) {
-        for (auto card : topBookCards) delete card; topBookCards.clear(); if (!libSystem) return;
-        libSystem->XepHangSach(); const auto& topIDs = libSystem->getTop10IDs();
-        std::vector<sf::Color> colors = { sf::Color(255, 182, 193), sf::Color(173, 216, 230), sf::Color(144, 238, 144), sf::Color(255, 218, 185), sf::Color(221, 160, 221), sf::Color(255, 228, 181), sf::Color(176, 224, 230), sf::Color(240, 230, 140), sf::Color(255, 192, 203), sf::Color(175, 238, 238) };
-        float startX = 20; float startY = 10; float cardW = 170; float cardH = 250; float gapX = 200; float gapY = 280; int col = 0, row = 0, count = 0;
-        for (const std::string& id : topIDs) {
+        for (auto card : topBookCards) delete card; 
+        topBookCards.clear(); 
+        if (!libSystem) return;
+        
+        libSystem->XepHangSach(); 
+        int soLuong = libSystem->getTop10Count();
+        
+        // Danh sách màu (10 màu)
+        std::vector<sf::Color> colors = { 
+            sf::Color(255, 182, 193), sf::Color(173, 216, 230), sf::Color(144, 238, 144), 
+            sf::Color(255, 218, 185), sf::Color(221, 160, 221), sf::Color(255, 228, 181), 
+            sf::Color(176, 224, 230), sf::Color(240, 230, 140), sf::Color(255, 192, 203), 
+            sf::Color(175, 238, 238) 
+        };
+
+        float startX = 20; float startY = 10; float cardW = 170; float cardH = 250; 
+        float gapX = 200; float gapY = 280; 
+        int col = 0, row = 0, count = 0;
+
+        for (int i = 0; i < soLuong; ++i) {
+            std::string id = libSystem->getTop10ID(i);
+            
             NodeBook* current = libSystem->getDanhSachSach();
             while(current != nullptr) {
                 if (current->data->getMaSach() == id) {
+                    
+                    // [SỬA LỖI] Dùng % colors.size() để đảm bảo không bao giờ vượt quá phạm vi
+                    sf::Color c = colors.empty() ? sf::Color::White : colors[count % colors.size()];
+
                     Card* card = new Card(
                         sf::Vector2f(startX + col * gapX, startY + row * gapY), sf::Vector2f(cardW, cardH), 
                         current->data->getMaSach(), 
-                        current->data->getImagePath(), // [NEW] Ảnh bìa
+                        current->data->getImagePath(), 
                         current->data->getTenSach(), current->data->getTacGia(), current->data->getDiemTrungBinh(), 
-                        colors[count % 10], font, true
+                        c, font, true
                     );
                     topBookCards.push_back(card); col++; count++; if (col >= 5) { col = 0; row++; } break;
                 } current = current->next;
             }
         }
-        // FIX: Padding 950.0f
+        
         float totalHeight = startY + (row + 1) * gapY + 950.0f;
         scrollView->setMaxScroll(std::max(0.0f, totalHeight - VIEW_H)); scrollView->reset();
     }
 
+    // Các hàm khác giữ nguyên
     void update(sf::Vector2f mousePos) { sidebar->update(mousePos); float scrollOffset = scrollView->getScrollOffset(); if (mousePos.y > VIEW_Y && mousePos.x > 250) { sf::Vector2f relativeMouse(mousePos.x - VIEW_X, mousePos.y - VIEW_Y + scrollOffset); for (auto card : topBookCards) card->update(relativeMouse, 0, 0); } else { for (auto card : topBookCards) card->update(sf::Vector2f(-1000, -1000), 0, 0); } }
     void handleScrollEvent(sf::Event& event, sf::Vector2f mousePos) { scrollView->handleScroll(event, mousePos); }
     std::string handleCardClick(sf::Vector2f mousePos) { float scrollOffset = scrollView->getScrollOffset(); if (mousePos.y > VIEW_Y && mousePos.x > 250) { sf::Vector2f relativeMouse(mousePos.x - VIEW_X, mousePos.y - VIEW_Y + scrollOffset); for (auto card : topBookCards) if (card->isClicked(relativeMouse)) return card->getBookId(); } return ""; }

@@ -49,7 +49,3 @@ void Librarian::XoaSach(LibrarySystem &L) {
 void Librarian::CapNhatThongTinSach(LibrarySystem &L) {
     L.CapNhatThongTinSach();
 }
-
-void Librarian::XemThongKe(LibrarySystem &L) {
-    L.XemThongKe();
-}

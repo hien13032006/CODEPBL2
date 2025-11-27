@@ -13,7 +13,7 @@ private:
 public:
     LoginChoiceScreen(sf::Font& f, Modal* modalRef) : font(f), modal(modalRef), btnClose({1000, 130}, {50, 50}, "X", f, 0, Theme::Error), closed(false) {
         panel.setSize({800, 500}); panel.setCornerRadius(20.0f); panel.setFillColor(sf::Color::White); panel.setOutlineThickness(2); panel.setOutlineColor(Theme::Primary); panel.setPosition(250, 110);
-        if (bgTexture.loadFromFile("picChoice1.png")) { bgSprite.setTexture(bgTexture); float scaleY = 500.0f / bgTexture.getSize().y; bgSprite.setScale(scaleY, scaleY); bgSprite.setPosition(250, 110); }
+        if (bgTexture.loadFromFile("images/picChoice1.png")) { bgSprite.setTexture(bgTexture); float scaleY = 500.0f / bgTexture.getSize().y; bgSprite.setScale(scaleY, scaleY); bgSprite.setPosition(250, 110); }
         titleText.setFont(font); titleText.setString("CHAO MUNG"); titleText.setCharacterSize(36); titleText.setFillColor(Theme::Primary); titleText.setPosition(700, 180);
         descText.setFont(font); descText.setString("Ban muon dang nhap voi tu cach?"); descText.setCharacterSize(18); descText.setFillColor(Theme::TextLight); descText.setPosition(680, 240);
         librarianButton = new Button({700, 300}, {250, 60}, "Thu Thu", font, 0, Theme::Primary); readerButton = new Button({700, 380}, {250, 60}, "Doc Gia", font, 0, Theme::Secondary);

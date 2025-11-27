@@ -24,29 +24,25 @@ private:
     std::string bookId;
     bool isHotBook;
     
-    // Biến lưu trữ ảnh (Phải là thành viên class để không bị mất khi ra khỏi hàm)
     sf::Texture bookTexture; 
 
-    // Helper: Cắt chuỗi nếu quá dài
+    // Helper: Cắt chuỗi an toàn
     std::string truncate(std::string str, size_t width) {
         if (str.length() > width) return str.substr(0, width - 3) + "...";
         return str;
     }
 
-    // Helper: Vẽ hình ngôi sao
+    // Helper: Vẽ ngôi sao
     void createStar(float x, float y, float size) {
         starShape.setPointCount(10);
-        starShape.setFillColor(sf::Color(255, 193, 7)); // Màu vàng hổ phách
+        starShape.setFillColor(sf::Color(255, 193, 7)); // Màu Vàng
         
-        float angle = -3.14159 / 2; // Bắt đầu từ đỉnh trên
-        float step = 3.14159 / 5;   // Bước nhảy góc
+        float angle = -3.14159 / 2;
+        float step = 3.14159 / 5;
         
         for (int i = 0; i < 10; i++) {
-            float r = (i % 2 == 0) ? size : size / 2.2f; // Bán kính trong/ngoài
-            starShape.setPoint(i, sf::Vector2f(
-                x + cos(angle) * r,
-                y + sin(angle) * r
-            ));
+            float r = (i % 2 == 0) ? size : size / 2.2f;
+            starShape.setPoint(i, sf::Vector2f(x + cos(angle) * r, y + sin(angle) * r));
             angle += step;
         }
     }
@@ -63,84 +59,91 @@ public:
         
         // 1. Khung thẻ
         cardShape.setSize(size);
-        cardShape.setCornerRadius(12.0f);
+        cardShape.setCornerRadius(10.0f);
         cardShape.setPosition(position);
         cardShape.setFillColor(sf::Color::White);
         cardShape.setOutlineThickness(1);
         cardShape.setOutlineColor(Theme::Border);
         isHovered = false;
 
-        // 2. Ảnh bìa (Chiếm 58% chiều cao)
-        float coverHeight = size.y * 0.58f; 
+        // 2. Ảnh bìa (Chiếm 55% chiều cao để chừa chỗ cho chữ)
+        float coverHeight = size.y * 0.55f; 
         coverImage.setSize(sf::Vector2f(size.x - 20, coverHeight));
         coverImage.setPosition(position.x + 10, position.y + 10);
 
-        // [QUAN TRỌNG] Xử lý load ảnh
         bool loadSuccess = false;
         if (!imagePath.empty()) {
-            // Thử load ảnh từ đường dẫn
             if (bookTexture.loadFromFile(imagePath)) {
                 loadSuccess = true;
-                bookTexture.setSmooth(true); // Làm mịn ảnh
+                bookTexture.setSmooth(true);
                 coverImage.setTexture(&bookTexture);
-                // Reset màu về Trắng để hiển thị đúng màu gốc của ảnh (không bị ám màu nền)
                 coverImage.setFillColor(sf::Color::White); 
             }
         }
-
-        // Nếu không có ảnh hoặc lỗi -> Dùng màu nền mặc định (coverColor)
         if (!loadSuccess) {
             coverImage.setTexture(nullptr);
             coverImage.setFillColor(coverColor);
         }
 
-        // 3. Tiêu đề sách
+        // [SỬA LỖI TRÀN CHỮ] 3. Tiêu đề sách
+        float titleY = position.y + coverHeight + 12; // Cách ảnh bìa 12px
+        
         titleText.setFont(font);
-        // Cắt ngắn tiêu đề (khoảng 2 dòng)
-        std::string displayTitle = truncate(title, 35);
-        // Xử lý xuống dòng thủ công để đẹp hơn
-        if (displayTitle.length() > 17 && displayTitle.find('\n') == std::string::npos) {
-             size_t space = displayTitle.find_last_of(' ', 17);
-             if (space != std::string::npos) displayTitle.insert(space + 1, "\n");
+        
+        // Cắt chuỗi nghiêm ngặt: Tối đa 28 ký tự
+        std::string displayTitle = truncate(title, 28); 
+        
+        // Tự động xuống dòng nếu dài hơn 14 ký tự
+        if (displayTitle.length() > 14) {
+             size_t space = displayTitle.find_last_of(' ', 14); // Tìm dấu cách gần giữa
+             if (space != std::string::npos) {
+                 displayTitle.insert(space + 1, "\n");
+             } else {
+                 // Nếu không có dấu cách (tên dính liền), ép xuống dòng ở ký tự 14
+                 displayTitle.insert(14, "\n");
+             }
         }
+        
         titleText.setString(displayTitle);
-        titleText.setCharacterSize(15); 
+        titleText.setCharacterSize(14); // Giảm size chữ xuống 14 cho an toàn
         titleText.setStyle(sf::Text::Bold);
         titleText.setFillColor(Theme::TextDark);
-        titleText.setPosition(position.x + 12, position.y + coverHeight + 15);
+        titleText.setPosition(position.x + 12, titleY);
 
-        // --- CẤU HÌNH HÀNG CUỐI CÙNG (Tác giả & Điểm) ---
+        // [CỐ ĐỊNH VỊ TRÍ] 4. Hàng cuối (Tác giả & Điểm) - Đẩy sát đáy
+        // Luôn nằm ở đáy thẻ trừ đi 25px
         float bottomLineY = position.y + size.y - 25; 
 
-        // 4. Đánh giá (Rating) - Căn phải
-        // Xử lý logic điểm số (Max 10)
+        // --- Điểm số (Bên Phải) ---
         if (rating > 10.0) rating = 10.0;
-
         ratingText.setFont(font);
         std::stringstream ss; 
         ss << std::fixed << std::setprecision(1) << rating;
-        ratingText.setString(ss.str() + "/10"); 
+        ratingText.setString(ss.str()); // Chỉ hiện số (vd: 8.5) cho gọn, bỏ "/10" nếu cần
         
-        ratingText.setCharacterSize(12);
+        ratingText.setCharacterSize(13);
         ratingText.setStyle(sf::Text::Bold);
-        ratingText.setFillColor(sf::Color(255, 160, 0)); // Màu cam đậm
+        ratingText.setFillColor(sf::Color(255, 160, 0)); // Màu cam
         
         sf::FloatRect rateBounds = ratingText.getLocalBounds();
-        float ratingX = position.x + size.x - rateBounds.width - 10;
-        ratingText.setPosition(ratingX, bottomLineY - 5); 
+        // Căn phải: Vị trí X = (X thẻ + Rộng thẻ) - (Rộng chữ) - Padding
+        float ratingX = position.x + size.x - rateBounds.width - 12;
+        ratingText.setPosition(ratingX, bottomLineY - 6); 
 
-        // Vẽ ngôi sao bên trái điểm số
-        createStar(ratingX - 12, bottomLineY + 2, 6.0f);
+        // Ngôi sao nằm bên trái điểm số
+        createStar(ratingX - 12, bottomLineY, 6.0f);
 
-        // 5. Tác giả (Author) - Căn trái
-        authorText.setFont(font);
-        // Cắt ngắn 18 ký tự để không đè vào điểm số
-        authorText.setString(truncate(author, 18)); 
-        authorText.setCharacterSize(12);
-        authorText.setFillColor(sf::Color(120, 120, 120)); // Màu xám
-        authorText.setPosition(position.x + 12, bottomLineY - 5);
+        // --- Tác giả (Bên Trái) ---
+        // Giới hạn tên tác giả cực ngắn (12 ký tự) để không đâm vào ngôi sao
+        std::string shortAuthor = truncate(author, 12);
         
-        // 6. Tag HOT (Góc trên phải)
+        authorText.setFont(font);
+        authorText.setString(shortAuthor); 
+        authorText.setCharacterSize(12); // Chữ tác giả nhỏ và nhạt hơn
+        authorText.setFillColor(sf::Color(120, 120, 120)); 
+        authorText.setPosition(position.x + 12, bottomLineY - 6);
+        
+        // 5. Tag HOT
         if (isHotBook) {
             hotTag.setFont(font);
             hotTag.setString("HOT");
@@ -154,31 +157,31 @@ public:
     }
 
     void update(sf::Vector2f mousePos, float scrollOffsetX = 0, float scrollOffsetY = 0) {
-        // Tính toán vị trí thực tế khi cuộn
         float actualX = std::floor(originalPos.x - scrollOffsetX);
         float actualY = std::floor(originalPos.y - scrollOffsetY);
         
         cardShape.setPosition(actualX, actualY);
         sf::Vector2f pos = cardShape.getPosition();
         sf::Vector2f size = cardShape.getSize();
-        float coverHeight = size.y * 0.58f;
         
-        // Cập nhật vị trí các thành phần con theo khung
+        // Cập nhật vị trí các thành phần theo khung
+        float coverHeight = size.y * 0.55f; 
         coverImage.setPosition(pos.x + 10, pos.y + 10);
-        titleText.setPosition(pos.x + 12, pos.y + coverHeight + 15);
+        
+        titleText.setPosition(pos.x + 12, pos.y + coverHeight + 12);
         
         float bottomLineY = pos.y + size.y - 25;
         
         sf::FloatRect rateBounds = ratingText.getLocalBounds();
-        float ratingX = pos.x + size.x - rateBounds.width - 10;
-        ratingText.setPosition(ratingX, bottomLineY - 5);
+        float ratingX = pos.x + size.x - rateBounds.width - 12;
+        ratingText.setPosition(ratingX, bottomLineY - 6);
         
-        createStar(ratingX - 12, bottomLineY + 2, 6.0f);
-        authorText.setPosition(pos.x + 12, bottomLineY - 5);
+        createStar(ratingX - 12, bottomLineY, 6.0f);
+        authorText.setPosition(pos.x + 12, bottomLineY - 6);
         
         if (isHotBook) hotTag.setPosition(pos.x + size.x - 30, pos.y + 5);
 
-        // Hiệu ứng Hover
+        // Hover Effect
         if (cardShape.getGlobalBounds().contains(mousePos)) {
             if (!isHovered) {
                 isHovered = true;

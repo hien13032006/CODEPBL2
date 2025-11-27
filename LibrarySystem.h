@@ -12,28 +12,47 @@
 const int TABLE_SIZE = 1000;
 
 struct HashNode {
-    string key;        // từ khóa
-    NodeBook* list;    // danh sách các sách có chứa từ khóa
+    string key;
+    NodeBook* list;
     HashNode* next;
-    
 };
 
+struct NodeThongKe {
+    std::string tenSach;
+    std::string tacGia;
+    int namXB;
+    std::string nhaXB;
+    double tongDiem;
+    int soDanhGia;
+    NodeThongKe* next;
+    
+    NodeThongKe(std::string ten, std::string tg, int nxb, std::string nxbx, double tong, int so)
+        : tenSach(ten), tacGia(tg), namXB(nxb), nhaXB(nxbx), tongDiem(tong), soDanhGia(so), next(nullptr) {}
+    
+    double diemTB() const {
+        return soDanhGia == 0 ? 0 : tongDiem / soDanhGia;
+    }
+};
 
 class LibrarySystem {
     private:
-        NodeBook *HeadDsSach; //con tro den dau danh sach sach
+        NodeBook *HeadDsSach; 
         NodeReader *HeadDsDocGia; 
         NodeLibrarian *HeadDsTThu; 
         HashNode* hashTable[TABLE_SIZE];
-        std::vector<std::string> top10BookIDs;
+        
+        // Mảng tĩnh cho Top 10 (Thay thế Vector)
+        std::string top10BookIDs[10]; 
+        int top10Count = 0; 
+
     public:
         LibrarySystem();
         ~LibrarySystem();
 
         int hashFunction(const string& s);
-
-        void DocFileSach(const string& fileName);//them sach tu file
-        void GhiFileSach(const string& fileName) const;//luu thong tin sach vua them vao file sau khi cap maSach
+        int DemTongSachDangMuon(const string& maSach);
+        void DocFileSach(const string& fileName);
+        void GhiFileSach(const string& fileName) const;
         void GhiFileHeThong(const string& fileName) const;
         void DocFileHeThong(const string& fileName);
         void DocFileDocGia();
@@ -45,9 +64,16 @@ class LibrarySystem {
         void TimSach(const string& keyword);
         void BuildHashTable();
         void MuonSach(Reader* docGia, const string& maSach);
+        
+        // [CẬP NHẬT] TraSach không còn hỏi đánh giá console
         void TraSach(Reader* docGia, const string& maSach);
 
-        void DanhGiaSach(Reader* docGia, Sach* sach);
+        // [CẬP NHẬT] Thêm tham số int diem để gọi từ GUI
+        void DanhGiaSach(Reader* docGia, Sach* sach, int diem);
+        
+        bool KiemTraDaDanhGia(const string& maDocGia, const string& maSach);
+        int LayDiemDanhGia(const string& maDocGia, const string& maSach);
+
         double TinhDiemTrungBinhTuFile(const string& tenSach,const string& tacGia,int namXB,const string& nhaXB);
         void HienThiDanhSachSach() ;
         void HienThiDocGiaQuaHan();
@@ -64,27 +90,15 @@ class LibrarySystem {
         NodeBook* getDanhSachSach() { return HeadDsSach; }
         NodeReader* getDanhSachDocGia() { return HeadDsDocGia; }
 
-        void DocTatCaDanhSachMuon();
-        void XemThongKe();
-        std::vector<BorrowerInfo> TimNguoiMuonSach(const std::string& maSach) const;
-        const std::vector<std::string>& getTop10IDs() const { return top10BookIDs; }
-};
-struct NodeThongKe {
-    std::string tenSach;
-    std::string tacGia;
-    int namXB;
-    std::string nhaXB;
-    double tongDiem;
-    int soDanhGia;
-    NodeThongKe* next;
-    
-    // Thêm constructor để dễ dàng khởi tạo
-    NodeThongKe(std::string ten, std::string tg, int nxb, std::string nxbx, double tong, int so)
-        : tenSach(ten), tacGia(tg), namXB(nxb), nhaXB(nxbx), tongDiem(tong), soDanhGia(so), next(nullptr) {}
-    
-    double diemTB() const {
-        return soDanhGia == 0 ? 0 : tongDiem / soDanhGia;
-    }
-};
+        void DocTatCaDanhSachMuon();       
+        // Cấu trúc trả về danh sách liên kết thay vì vector
+        NodeBorrowerInfo* TimNguoiMuonSach(const std::string& maSach) const;
         
+        // Getter cho mảng Top 10
+        int getTop10Count() const { return top10Count; }
+        std::string getTop10ID(int index) const { 
+            if (index >= 0 && index < top10Count) return top10BookIDs[index];
+            return "";
+        }
+};
 #endif

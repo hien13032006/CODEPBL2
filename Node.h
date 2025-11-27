@@ -98,6 +98,12 @@ struct NodeMuonSach {
     
     NodeMuonSach(PhieuMuonSach* p) : phieu(p), next(nullptr) {}
 };
+struct NodeBorrowerInfo {
+    BorrowerInfo data;
+    NodeBorrowerInfo* next;
+
+    NodeBorrowerInfo(BorrowerInfo info) : data(info), next(nullptr) {}
+};
 
 
 #endif
