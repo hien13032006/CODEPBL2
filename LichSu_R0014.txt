@@ -1,0 +1,10 @@
+Muon|R0014|TN00021|Nang Thang Sau|19/11/2025 07:37:27
+Tra|R0014|TN00021|Nang Thang Sau|25/11/2025 07:37:27
+Muon|R0014|GT00011|Pattern Recognition and Machine Learning|24/06/2025 01:49:48
+Tra|R0014|GT00011|Pattern Recognition and Machine Learning|11/07/2025 01:49:48
+Muon|R0014|KN00015|Tu Duy Giai Phong|20/09/2025 18:23:10
+Tra|R0014|KN00015|Tu Duy Giai Phong|14/11/2025 18:23:10
+Muon|R0014|GT00005|Introduction to Algorithms|31/07/2025 06:34:46
+Tra|R0014|GT00005|Introduction to Algorithms|16/09/2025 06:34:46
+Muon|R0014|TN00002|Lao Hac|20/11/2025 05:45:32
+Tra|R0014|TN00002|Lao Hac|27/12/2025 05:45:32

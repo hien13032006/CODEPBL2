@@ -1,0 +1,12 @@
+Muon|R0080|TTR00008|Naruto Vol.2|03/07/2025 15:30:28
+Tra|R0080|TTR00008|Naruto Vol.2|23/07/2025 15:30:28
+Muon|R0080|GT00018|Computer Security: Art and Science|27/10/2025 04:39:36
+Tra|R0080|GT00018|Computer Security: Art and Science|21/12/2025 04:39:36
+Muon|R0080|TTR00012|Detective Conan Vol.3|05/07/2025 01:44:05
+Tra|R0080|TTR00012|Detective Conan Vol.3|29/08/2025 01:44:05
+Muon|R0080|TK00027|Programming Pearls|26/05/2025 16:02:38
+Tra|R0080|TK00027|Programming Pearls|27/05/2025 16:02:38
+Muon|R0080|TT00022|Kafka on the Shore|14/09/2025 03:43:00
+Tra|R0080|TT00022|Kafka on the Shore|06/10/2025 03:43:00
+Muon|R0080|TK00026|Speech and Language Processing|17/05/2025 11:44:03
+Tra|R0080|TK00026|Speech and Language Processing|05/06/2025 11:44:03

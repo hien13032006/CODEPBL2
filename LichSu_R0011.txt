@@ -1,0 +1,16 @@
+Muon|R0011|TT00020|One Hundred Years of Solitude|22/06/2025 16:48:00
+Tra|R0011|TT00020|One Hundred Years of Solitude|05/08/2025 16:48:00
+Muon|R0011|TK00022|Reinforcement Learning: An Introduction|25/10/2025 11:22:12
+Tra|R0011|TK00022|Reinforcement Learning: An Introduction|01/12/2025 11:22:12
+Muon|R0011|TTR00028|Sailor Moon Vol.1|25/08/2025 12:44:05
+Tra|R0011|TTR00028|Sailor Moon Vol.1|09/10/2025 12:44:05
+Muon|R0011|TTR00010|Detective Conan Vol.1|15/06/2025 17:37:16
+Tra|R0011|TTR00010|Detective Conan Vol.1|21/06/2025 17:37:16
+Muon|R0011|GT00016|Modern Operating Systems|30/07/2025 18:00:43
+Tra|R0011|GT00016|Modern Operating Systems|26/08/2025 18:00:43
+Muon|R0011|TK00017|Effective C++|19/08/2025 20:56:20
+Tra|R0011|TK00017|Effective C++|05/10/2025 20:56:20
+Muon|R0011|TK00005|The Art of Computer Programming Vol.3|06/09/2025 18:07:59
+Tra|R0011|TK00005|The Art of Computer Programming Vol.3|29/09/2025 18:07:59
+Muon|R0011|TTR00019|My Hero Academia Vol.1|09/08/2025 22:04:37
+Tra|R0011|TTR00019|My Hero Academia Vol.1|11/09/2025 22:04:37

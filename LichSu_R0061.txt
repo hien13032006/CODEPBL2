@@ -1,0 +1,12 @@
+Muon|R0061|TN00002|Lao Hac|22/09/2025 14:52:08
+Tra|R0061|TN00002|Lao Hac|16/10/2025 14:52:08
+Muon|R0061|GT00006|Database System Concepts|21/11/2025 15:48:33
+Tra|R0061|GT00006|Database System Concepts|07/01/2026 15:48:33
+Muon|R0061|KN00008|Tu Duy Khac Biet|10/09/2025 18:15:53
+Tra|R0061|KN00008|Tu Duy Khac Biet|28/09/2025 18:15:53
+Muon|R0061|KN00008|Tu Duy Khac Biet|13/06/2025 20:29:04
+Tra|R0061|KN00008|Tu Duy Khac Biet|19/07/2025 20:29:04
+Muon|R0061|TK00024|Introduction to Information Retrieval|10/09/2025 10:53:41
+Tra|R0061|TK00024|Introduction to Information Retrieval|25/10/2025 10:53:41
+Muon|R0061|GT00005|Introduction to Algorithms|12/11/2025 19:33:10
+Tra|R0061|GT00005|Introduction to Algorithms|13/11/2025 19:33:10

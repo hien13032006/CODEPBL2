@@ -1,0 +1,10 @@
+Muon|R0052|GT00010|Computer Graphics: Principles and Practice|01/10/2025 14:28:14
+Tra|R0052|GT00010|Computer Graphics: Principles and Practice|18/11/2025 14:28:14
+Muon|R0052|GT00013|Data Mining: Concepts and Techniques|23/07/2025 10:44:49
+Tra|R0052|GT00013|Data Mining: Concepts and Techniques|23/08/2025 10:44:49
+Muon|R0052|GT00006|Database System Concepts|24/11/2025 19:03:38
+Tra|R0052|GT00006|Database System Concepts|12/01/2026 19:03:38
+Muon|R0052|TN00024|Buc Thu Khong Gui|15/07/2025 22:00:43
+Tra|R0052|TN00024|Buc Thu Khong Gui|28/07/2025 22:00:43
+Muon|R0052|KN00012|Suc Manh Tinh Tam|08/09/2025 19:59:18
+Tra|R0052|KN00012|Suc Manh Tinh Tam|21/10/2025 19:59:18

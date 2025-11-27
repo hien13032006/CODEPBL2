@@ -1,0 +1,10 @@
+Muon|R0039|TT00030|The Hobbit|21/05/2025 07:59:57
+Tra|R0039|TT00030|The Hobbit|19/06/2025 07:59:57
+Muon|R0039|TT00007|Harry Potter and the Prisoner of Azkaban|08/08/2025 23:28:48
+Tra|R0039|TT00007|Harry Potter and the Prisoner of Azkaban|16/09/2025 23:28:48
+Muon|R0039|KN00010|Song Tot Hon Moi Ngay|21/07/2025 14:18:33
+Tra|R0039|KN00010|Song Tot Hon Moi Ngay|26/08/2025 14:18:33
+Muon|R0039|TN00015|Doan Tau Trong Dem|03/06/2025 12:09:44
+Tra|R0039|TN00015|Doan Tau Trong Dem|16/07/2025 12:09:44
+Muon|R0039|TK00024|Introduction to Information Retrieval|11/10/2025 04:16:06
+Tra|R0039|TK00024|Introduction to Information Retrieval|26/11/2025 04:16:06

@@ -1,0 +1,6 @@
+Muon|R0019|KN00018|La Ban Cuoc Doi|29/09/2025 23:18:23
+Tra|R0019|KN00018|La Ban Cuoc Doi|27/11/2025 23:18:23
+Muon|R0019|TT00021|Norwegian Wood|19/10/2025 12:50:08
+Tra|R0019|TT00021|Norwegian Wood|24/11/2025 12:50:08
+Muon|R0019|TT00002|Cho toi xin mot ve di tuoi tho|05/06/2025 17:37:49
+Tra|R0019|TT00002|Cho toi xin mot ve di tuoi tho|24/07/2025 17:37:49
