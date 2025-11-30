@@ -18,11 +18,11 @@ GT00017|Distributed Systems|Andrew S. Tanenbaum|Giao trinh|2017|Pearson|40|30|5|
 GT00018|Computer Security: Art and Science|Matt Bishop|Giao trinh|2018|Addison-Wesley|50|44|5|images/GT00018.png
 GT00019|Computer Networking: A Top-Down Approach|James F. Kurose|Giao trinh|2017|Pearson|40|16|3|images/GT00019.png
 GT00020|Digital Signal Processing|Alan V. Oppenheim|Giao trinh|1999|Prentice Hall|30|28|8|images/GT00020.png
-GT00021|Machine Learning|Tom M. Mitchell|Giao trinh|1997|McGraw-Hill|40|12|2|images/GT00021.png
+GT00021|Machine Learning|Tom M. Mitchell|Giao trinh|1997|McGraw-Hill|39|12|2|images/GT00021.png
 GT00022|Deep Learning|Ian Goodfellow|Giao trinh|2016|MIT Press|30|38|5|images/GT00022.png
 GT00023|Computer Vision: Algorithms and Applications|Richard Szeliski|Giao trinh|2010|Springer|40|30|4|images/GT00023.png
-GT00024|Software Engineering|Ian Sommerville|Giao trinh|2015|Pearson|50|14|4|images/GT00024.png
-GT00025|Clean Code|Robert C. Martin|Giao trinh|2008|Prentice Hall|40|32|5|images/GT00025.png
+GT00024|Software Engineering|Ian Sommerville|Giao trinh|2015|Pearson|49|14|4|images/GT00024.png
+GT00025|Clean Code|Robert C. Martin|Giao trinh|2008|Prentice Hall|40|42|6|images/GT00025.png
 GT00026|Refactoring|Martin Fowler|Giao trinh|2018|Addison-Wesley|50|20|3|images/GT00026.png
 GT00027|Design Patterns|Erich Gamma|Giao trinh|1994|Addison-Wesley|30|12|3|images/GT00027.png
 GT00028|Agile Software Development|Robert C. Martin|Giao trinh|2002|Prentice Hall|40|28|4|images/GT00028.png
@@ -88,7 +88,7 @@ TT00027|The Hunger Games|Suzanne Collins|Tieu thuyet|2008|Scholastic Press|50|40
 TT00028|Twilight|Stephenie Meyer|Tieu thuyet|2005|Little, Brown and Company|30|30|5|images/TT00028.png
 TT00029|Dune|Frank Herbert|Tieu thuyet|1965|Chilton Books|30|2|1|images/TT00029.png
 TT00030|The Hobbit|J.R.R. Tolkien|Tieu thuyet|1937|George Allen & Unwin|30|18|3|images/TT00030.png
-TTR00001|Doraemon Vol.1|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|50|66|10|images/TTR00001.png
+TTR00001|Doraemon Vol.1|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|49|66|10|images/TTR00001.png
 TTR00002|Doraemon Vol.2|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|30|20|2|images/TTR00002.png
 TTR00003|Doraemon Vol.3|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|50|0|0|images/TTR00003.png
 TTR00004|One Piece Vol.1|Eiichiro Oda|Truyen tranh|1997|Shueisha|40|26|3|images/TTR00004.png

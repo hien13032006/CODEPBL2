@@ -6,7 +6,7 @@
 #include "Node.h" // Đảm bảo đã có file này định nghĩa NodeBook
 using namespace std;
 
-// [MỚI] Struct lưu thông tin đếm cho mảng tĩnh
+// Struct lưu thông tin đếm cho mảng tĩnh
 struct TypeCounter {
     string prefix; 
     int count;     
@@ -25,10 +25,10 @@ protected:
     double tongDiemDanhGia = 0;
     int soLuotDanhGia = 0;
 
-    // [MỚI] Dùng mảng tĩnh để đếm số lượng từng loại thay vì vector/map
-    static const int MAX_TYPES = 50; // Giới hạn 50 loại sách
+    // Dùng mảng tĩnh để đếm số lượng từng loại
+    static const int MAX_TYPES = 50; 
     static TypeCounter typeCounts[MAX_TYPES]; 
-    static int currentTypeSize; // Biến đếm số lượng loại hiện có
+    static int currentTypeSize; 
 
 public:
     Sach() : namXuatBan(0), soLuong(0) {}
@@ -38,9 +38,9 @@ public:
     virtual ~Sach() = default;
 
     // Các phương thức ảo
-    virtual string prefix() const = 0;     // Mã loại, ví dụ: "GT", "TT"
-    virtual Sach* clone() const = 0;       // Tạo bản sao 
-    virtual string toCSV() const;          // Xuất ra file
+    virtual string prefix() const = 0;     
+    virtual Sach* clone() const = 0;       
+    virtual string toCSV() const;          
     virtual void hienThiThongTin() const;
 
     bool muonSach() {
@@ -50,10 +50,12 @@ public:
         }
         return false; 
     }
+    
     void traSach() {
         soLuong++;
     }
 
+    // [QUAN TRỌNG] Hàm này chỉ được xuất hiện 1 lần duy nhất ở đây
     void themDanhGia(int diem) {
         tongDiemDanhGia += diem;
         soLuotDanhGia++;
@@ -69,9 +71,11 @@ public:
     int getSoLuong() const { return soLuong; }
     double getTongDiem() const { return tongDiemDanhGia; }
     int getSoDanhGia() const { return soLuotDanhGia; }
+    
     double getDiemTrungBinh() const {
         return soLuotDanhGia == 0 ? 0 : tongDiemDanhGia / soLuotDanhGia;
     }
+    
     string getImagePath() const { return imagePath; }
 
     void setMaSach(string ma) { maSach = ma; }
@@ -87,17 +91,9 @@ public:
         tongDiemDanhGia = tong;
         soLuotDanhGia = so;
     }
-    void themDanhGia(int diem) {
-        tongDiemDanhGia += diem;
-        soLuotDanhGia++;
-    }
-    void suaDanhGia(int diemCu, int diemMoi) {
-        tongDiemDanhGia = tongDiemDanhGia - diemCu + diemMoi;
-        // Số lượt đánh giá không đổi
-    }
-    // [MỚI] Hàm đồng bộ bộ đếm sau khi đọc file
-    static void resyncCounters(NodeBook* head);
 
+    // Các hàm static quản lý file
+    static void resyncCounters(NodeBook* head);
     static Sach* createFromData(const string& ten, const string& tg, const string& tl, int nam, const string& nxb);
     static void docFileInput(const string& fileName, NodeBook*& head);
     static void ghiFile(const string& fileName, NodeBook* head);

@@ -491,90 +491,34 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
         current = current->next;
     }
 }
-void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach, int diemMoi) {
-    int diemCu = LayDiemDanhGia(docGia->getMaID(), sach->getMaSach());
-
-    string danhGiaText;
-    if (diemMoi >= 9) danhGiaText = "Xuat sac";
-    else if (diemMoi >= 8) danhGiaText = "Rat hay";
-    else if (diemMoi >= 6) danhGiaText = "Hay";
-    else if (diemMoi >= 4) danhGiaText = "Tam duoc";
-    else danhGiaText = "Te";
-    // TRƯỜNG HỢP 1: CHƯA TỪNG ĐÁNH GIÁ -> THÊM MỚI
-    if (diemCu == 0) {
-        sach->themDanhGia(diemMoi); // Cộng dồn vào sách
-        
-        // Ghi nối đuôi vào file
-        ofstream out("DanhGia.txt", ios::app);
-        if (out.is_open()) {
-            out << sach->getMaSach() << "|" 
-                << sach->getTenSach() << "|" 
-                << sach->getTacGia() << "|" 
-                << sach->getNamXuatBan() << "|" 
-                << sach->getNhaXuatBan() << "|"
-                << docGia->getMaID() << "|" 
-                << docGia->getUsername() << "|" 
-                << danhGiaText << "|" 
-                << diemMoi << endl;
-            out.close();
-        }
-        cout << "Da them danh gia moi (" << diemMoi << " diem).\n";
-    }
-    // TRƯỜNG HỢP 2: ĐÃ ĐÁNH GIÁ -> CẬP NHẬT (GHI ĐÈ)
-    else {
-        sach->suaDanhGia(diemCu, diemMoi); // Sửa điểm trong RAM của sách
-
-        // Đọc toàn bộ file đánh giá vào bộ nhớ để sửa dòng tương ứng
-        vector<string> lines;
-        ifstream in("DanhGia.txt");
-        string line;
-        while (getline(in, line)) {
-            if (line.empty()) continue;
-            stringstream ss(line);
-            string mSach, tSach, tGia, nam, nxb, mDG, tDG, text, diem;
-            // Tách các thành phần để kiểm tra ID
-            getline(ss, mSach, '|');
-            size_t pos1 = line.find('|'); // Sau MaSach
-            // ... Logic tách chuỗi hơi phức tạp, ta dùng cách check string đơn giản hơn:
-            
-            // Kiểm tra xem dòng này có phải của User và Sách này không
-            // Format: MaSach|...|MaDG|...
-            // Ta sẽ parse lại dòng này để check chính xác
-            stringstream ssCheck(line);
-            string checkMS, temp, checkMDG;
-            getline(ssCheck, checkMS, '|');
-            for(int i=0; i<4; ++i) getline(ssCheck, temp, '|'); // Skip 4 field
-            getline(ssCheck, checkMDG, '|');
-
-            if (checkMS == sach->getMaSach() && checkMDG == docGia->getMaID()) {
-                // ĐÂY LÀ DÒNG CẦN SỬA -> Tạo dòng mới thay thế
-                stringstream newLine;
-                newLine << sach->getMaSach() << "|" 
-                        << sach->getTenSach() << "|" 
-                        << sach->getTacGia() << "|" 
-                        << sach->getNamXuatBan() << "|" 
-                        << sach->getNhaXuatBan() << "|"
-                        << docGia->getMaID() << "|" 
-                        << docGia->getUsername() << "|" 
-                        << danhGiaText << "|" 
-                        << diemMoi;
-                lines.push_back(newLine.str());
-            } else {
-                // Không phải dòng cần sửa -> Giữ nguyên
-                lines.push_back(line);
-            }
-        }
-        in.close();
-        ofstream out("DanhGia.txt", ios::trunc);
-        for (const string& l : lines) {
-            out << l << endl;
-        }
-        out.close();
-        cout << "Da cap nhat danh gia tu " << diemCu << " -> " << diemMoi << " diem.\n";
-    }
+void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach, int diem) {
+    sach->themDanhGia(diem);
+    
+    // 2. Lưu cập nhật điểm trung bình vào file sách
     GhiFileHeThong("DanhSachSach.txt");
+
+    // 3. Tạo text mô tả
+    string danhGiaText;
+    if (diem >= 9) danhGiaText = "Xuat sac";
+    else if (diem >= 8) danhGiaText = "Rat hay";
+    else if (diem >= 6) danhGiaText = "Hay";
+    else if (diem >= 4) danhGiaText = "Tam duoc";
+    else danhGiaText = "Te";
+    ofstream out("DanhGia.txt", ios::app);
+    if (out.is_open()) {
+        out << sach->getMaSach() << "|" 
+            << sach->getTenSach() << "|" 
+            << sach->getTacGia() << "|" 
+            << sach->getNamXuatBan() << "|" 
+            << sach->getNhaXuatBan() << "|"
+            << docGia->getMaID() << "|" 
+            << docGia->getUsername() << "|" 
+            << danhGiaText << "|" 
+            << diem << endl;
+        out.close();
+    }
+    cout << "Da ghi nhan danh gia (" << diem << " diem).\n";
 }
-// [MỚI] Kiểm tra và lấy điểm đánh giá
 bool LibrarySystem::KiemTraDaDanhGia(const string& maDocGia, const string& maSach) {
     ifstream in("DanhGia.txt");
     if (!in.is_open()) return false;
