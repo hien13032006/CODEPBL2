@@ -673,3 +673,21 @@ void LibrarySystem::DocTatCaDanhSachMuon() {
         cur = cur->next;
     }
 }
+void LibrarySystem::ThemSachMoi(Sach* sachMoi) {
+    // Tạo node mới chứa sách
+    NodeBook* newNode = new NodeBook(sachMoi);
+    newNode->next = nullptr;
+
+    // Thêm vào cuối danh sách liên kết
+    if (HeadDsSach == nullptr) {
+        HeadDsSach = newNode;
+    } else {
+        NodeBook* temp = HeadDsSach;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }    // Cập nhật lại bảng băm để tìm kiếm được ngay lập tức
+    BuildHashTable();    // Debug
+    cout << "Da them sach moi vao bo nho: " << sachMoi->getTenSach() << endl;
+}

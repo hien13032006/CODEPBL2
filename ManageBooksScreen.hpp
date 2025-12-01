@@ -15,10 +15,10 @@
 #include "RoundedRectangle.hpp"
 #include "ScrollView.hpp"
 #include "Theme.hpp"
+#include "ResourceManager.hpp"
 
 struct BookTableItem { 
     RoundedRectangleShape box; 
-    sf::Texture coverTexture; 
     sf::Sprite coverSprite;   
     sf::Text maSachText, tenSachText, tacGiaText, theLoaiText, namXBText, soLuongText; 
 };
@@ -133,17 +133,38 @@ public:
         addBookModal->show(); 
     }
 
+    // [MỚI] Hàm thêm sách trực tiếp vào bộ nhớ, không qua file tạm
     void handleAddManual() { 
-        std::ofstream out("TempManualBook.txt"); 
-        if(out.is_open()){
-            out << nameField->getText() << "|" << authorField->getText() << "|" << categoryField->getText() << "|" << yearField->getText() << "|" << publisherField->getText() << "|" << quantityField->getText() << "|" << imagePathField->getText() << "\n"; 
-            out.close(); 
-            libSystem->DocFileSach("TempManualBook.txt"); 
-            libSystem->GhiFileHeThong("DanhSachSach.txt"); 
-            loadBooksTable(storedFont); 
-            addBookModal->hide(); 
-            clearFields(); 
-        }
+        // 1. Lấy dữ liệu từ các ô nhập
+        std::string ten = nameField->getText();
+        std::string tg = authorField->getText();
+        std::string tl = categoryField->getText();
+        std::string nxb = publisherField->getText();
+        std::string img = imagePathField->getText();
+        
+        int nam = 0;
+        int sl = 0;
+        
+        try { nam = std::stoi(yearField->getText()); } catch(...) { nam = 2000; }
+        try { sl = std::stoi(quantityField->getText()); } catch(...) { sl = 0; }
+
+        // 2. Tạo đối tượng sách (Hàm createFromData đã tự sinh mã ID theo thể loại)
+        Sach* s = Sach::createFromData(ten, tg, tl, nam, nxb);
+        
+        // 3. Set các thông tin phụ
+        s->setSoLuong(sl);
+        s->setImagePath(img);
+        
+        // 4. Thêm trực tiếp vào hệ thống (Linked List & Hash Table)
+        libSystem->ThemSachMoi(s);
+        
+        // 5. Lưu toàn bộ danh sách mới xuống file chính để đảm bảo dữ liệu bền vững
+        libSystem->GhiFileHeThong("DanhSachSach.txt"); 
+        
+        // 6. Refresh giao diện
+        loadBooksTable(storedFont); 
+        addBookModal->hide(); 
+        clearFields(); 
     }
 
     void handleAddFromFile() {
@@ -177,7 +198,6 @@ public:
     }
 
     void loadBooksTable(sf::Font& font, std::string keyword = "") {
-        // [MỚI] Tải lại toàn bộ dữ liệu mượn để đảm bảo tính toán chính xác
         if(libSystem) {
             libSystem->DocTatCaDanhSachMuon();
         }
@@ -185,7 +205,6 @@ public:
         for (auto item : bookItems) delete item; bookItems.clear(); for (auto header : tableHeaders) delete header; tableHeaders.clear(); if (!libSystem) return;
         std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::tolower); const float ITEM_HEIGHT = 80.0f; const int FONT_SIZE = 18; float itemY = 180; 
         
-        // [CẬP NHẬT TỌA ĐỘ] Căn chỉnh lại để tránh đè chữ
         std::vector<std::pair<std::string, float>> headers = { {"MA SACH", 340}, {"TEN SACH", 440}, {"TAC GIA", 740}, {"THE LOAI", 960}, {"NAM XB", 1110}, {"SL", 1210} };
         for (const auto& pair : headers) { sf::Text* headerText = new sf::Text(pair.first, font, 16); headerText->setFillColor(Theme::TextLight); headerText->setPosition(pair.second, 150); tableHeaders.push_back(headerText); }
         
@@ -197,28 +216,24 @@ public:
                 item->box.setSize(sf::Vector2f(1030, ITEM_HEIGHT - 10)); 
                 item->box.setCornerRadius(8.0f); item->box.setPosition(270, itemY); item->box.setFillColor(sf::Color::White); item->box.setOutlineThickness(1); item->box.setOutlineColor(Theme::Border);
 
-                if (!book->getImagePath().empty() && item->coverTexture.loadFromFile(book->getImagePath())) {
-                    item->coverSprite.setTexture(item->coverTexture);
-                    float imgW = 50.0f; float imgH = 70.0f;
-                    item->coverSprite.setScale(imgW / item->coverTexture.getSize().x, imgH / item->coverTexture.getSize().y);
-                    item->coverSprite.setPosition(280, itemY); 
+                sf::Texture& tex = ResourceManager::getInstance()->getTexture(book->getImagePath());
+                item->coverSprite.setTexture(tex);
+                float imgW = 50.0f; float imgH = 70.0f;
+                if (tex.getSize().x > 0) {
+                    item->coverSprite.setScale(imgW / tex.getSize().x, imgH / tex.getSize().y);
                 }
+                item->coverSprite.setPosition(280, itemY);
 
                 auto setupText = [&](sf::Text& txt, std::string s, float x, sf::Color c = Theme::TextDark) { txt.setFont(font); txt.setString(s); txt.setCharacterSize(FONT_SIZE); txt.setFillColor(c); txt.setPosition(std::floor(x), std::floor(itemY + (ITEM_HEIGHT/2) - 12)); };
                 
                 setupText(item->maSachText, book->getMaSach(), 340, Theme::Primary); 
-                
                 std::string tName = book->getTenSach(); if(tName.size() > 28) tName = tName.substr(0, 25) + "..."; 
                 setupText(item->tenSachText, tName, 440); 
-                
-                // Cắt tên tác giả ngắn lại để không đè lên Thể loại
                 std::string tAuth = book->getTacGia(); if(tAuth.size() > 22) tAuth = tAuth.substr(0, 19) + "..."; 
                 setupText(item->tacGiaText, tAuth, 740, Theme::TextLight); 
-                
                 setupText(item->theLoaiText, book->getTheLoai(), 960, Theme::TextLight); 
                 setupText(item->namXBText, std::to_string(book->getNamXuatBan()), 1110); 
                 
-                // [LOGIC HIỂN THỊ SỐ LƯỢNG]
                 int conLai = book->getSoLuong();
                 int dangMuon = libSystem->DemTongSachDangMuon(book->getMaSach());
                 int tongSo = conLai + dangMuon;
@@ -345,7 +360,7 @@ public:
         windowRef->setView(getListView()); 
         for (auto item : bookItems) { 
             windowRef->draw(item->box); 
-            if (item->coverTexture.getSize().x > 0) windowRef->draw(item->coverSprite);
+            if (item->coverSprite.getTexture()) windowRef->draw(item->coverSprite);
             windowRef->draw(item->maSachText); windowRef->draw(item->tenSachText); windowRef->draw(item->tacGiaText); windowRef->draw(item->theLoaiText); windowRef->draw(item->namXBText); windowRef->draw(item->soLuongText); 
         } 
         windowRef->setView(windowRef->getDefaultView()); 

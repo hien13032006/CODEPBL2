@@ -1,21 +1,74 @@
-#ifndef RESOURCE_MANAGER_H
-#define RESOURCE_MANAGER_H
+#ifndef RESOURCE_MANAGER_HPP
+#define RESOURCE_MANAGER_HPP
 
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <string>
+#include <iostream>
 
 class ResourceManager {
 private:
-    std::map<std::string, sf::Font> fonts;
-    static ResourceManager* instance;
+    // Map lưu trữ texture: Key là đường dẫn file, Value là Texture
+    std::map<std::string, sf::Texture> textures;
     
-    ResourceManager() {}
+    // Texture mặc định dùng khi không tìm thấy ảnh
+    sf::Texture defaultTexture;
+
+    // Singleton instance
+    static ResourceManager* instance;
+
+    // Constructor private
+    ResourceManager() {
+        // Tải sẵn ảnh default khi khởi tạo
+        // Đảm bảo bạn có file default_book.png, nếu không nó sẽ tạo màu xám
+        if (!defaultTexture.loadFromFile("default_book.png")) {
+            sf::Image img;
+            img.create(50, 70, sf::Color(200, 200, 200));
+            defaultTexture.loadFromImage(img);
+        }
+        defaultTexture.setSmooth(true);
+    }
 
 public:
-    static ResourceManager* getInstance();
-    bool loadFont(const std::string& name, const std::string& path);
-    sf::Font& getFont(const std::string& name);
+    // Lấy instance duy nhất (Singleton)
+    static ResourceManager* getInstance() {
+        if (instance == nullptr) {
+            instance = new ResourceManager();
+        }
+        return instance;
+    }
+
+    // Hàm lấy Texture (Có cache)
+    sf::Texture& getTexture(const std::string& path) {
+        // 1. Nếu đường dẫn rỗng, trả về mặc định
+        if (path.empty()) return defaultTexture;
+
+        // 2. Kiểm tra xem đã load chưa
+        if (textures.find(path) == textures.end()) {
+            sf::Texture tex;
+            if (tex.loadFromFile(path)) {
+                tex.setSmooth(true);
+                textures[path] = tex; // Lưu vào cache
+            } else {
+                // Nếu load lỗi, lưu texture mặc định vào map với key này 
+                // để lần sau không phải thử load lại file lỗi nữa (tối ưu tốc độ)
+                textures[path] = defaultTexture;
+            }
+        }
+
+        // 3. Trả về texture từ RAM
+        return textures[path];
+    }
+    
+    static void cleanup() {
+        if (instance) {
+            delete instance;
+            instance = nullptr;
+        }
+    }
 };
+
+// Khởi tạo biến static
+ResourceManager* ResourceManager::instance = nullptr;
 
 #endif

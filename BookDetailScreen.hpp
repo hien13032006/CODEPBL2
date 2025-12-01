@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iomanip>
-#include <algorithm> // Cần cho std::min
+#include <algorithm> 
 #include "Modal.hpp"
 #include "Button.hpp"
 #include "Book.h"
@@ -12,6 +12,7 @@
 #include "LibrarySystem.h"
 #include "ScrollView.hpp"
 #include "Node.h" 
+#include "ResourceManager.hpp" // [QUAN TRỌNG]
 
 struct BorrowerItem { sf::Text nameText, dateText, statusText; sf::Color statusColor; };
 
@@ -19,7 +20,7 @@ class BookDetailScreen {
 private:
     Modal* modal; 
     sf::RectangleShape detailPanel, coverBox; 
-    sf::Texture bookCoverTexture; 
+    // Không cần lưu bookCoverTexture nữa vì đã có ResourceManager
     sf::Sprite bookCoverSprite;   
     sf::Text titleText, infoLabels, infoValues, borrowerTitle, notBorrowedText;
     sf::Text headerName, headerDate, headerStatus; 
@@ -44,10 +45,10 @@ public:
         detailPanel.setOutlineColor(Theme::Primary); 
         detailPanel.setPosition(200, 35); 
 
-        // Khung ảnh bìa (Kích thước cố định 240x360)
+        // Khung ảnh bìa
         coverBox.setSize(sf::Vector2f(240, 360)); 
         coverBox.setPosition(250, 70); 
-        coverBox.setFillColor(sf::Color(200, 200, 200)); // Màu xám mặc định khi chưa có ảnh
+        coverBox.setFillColor(sf::Color(200, 200, 200)); 
 
         // Tên sách
         titleText.setFont(font); titleText.setCharacterSize(32); 
@@ -110,41 +111,36 @@ public:
         }
     }
 
-// [HÀM setBook ĐÃ SỬA LỖI ĐÈ CHỮ]
     void setBook(Sach* book, UserRole role, LibrarySystem* libSystem) { 
-        currentBook = book; 
-        userRole = role; 
-        borrowerItems.clear();
+        currentBook = book; userRole = role; borrowerItems.clear();
         
-        // ---------------------------------------------------------
-        // 1. XỬ LÝ ẢNH BÌA (Giữ nguyên)
-        // ---------------------------------------------------------
-        bookCoverTexture = sf::Texture(); 
-        bookCoverSprite.setScale(1, 1);
-        bookCoverSprite.setOrigin(0, 0);
-        bookCoverSprite.setPosition(coverBox.getPosition());
+        // 1. XỬ LÝ ẢNH BÌA DÙNG RESOURCE MANAGER
+        // Lấy texture từ cache
+        sf::Texture& tex = ResourceManager::getInstance()->getTexture(book->getImagePath());
+        bookCoverSprite.setTexture(tex, true); // Reset rect
 
         float targetW = 240.0f; 
         float targetH = 360.0f; 
 
-        if (!book->getImagePath().empty() && bookCoverTexture.loadFromFile(book->getImagePath())) { 
-            bookCoverTexture.setSmooth(true);
-            bookCoverSprite.setTexture(bookCoverTexture, true);
-            sf::Vector2u imgSize = bookCoverTexture.getSize();
+        if (tex.getSize().x > 0) { 
+            sf::Vector2u imgSize = tex.getSize();
             float scaleX = targetW / (float)imgSize.x;
             float scaleY = targetH / (float)imgSize.y;
             float scale = std::min(scaleX, scaleY); 
+
             bookCoverSprite.setScale(scale, scale);
             float finalW = imgSize.x * scale;
             float finalH = imgSize.y * scale;
             float offsetX = (targetW - finalW) / 2.0f;
             float offsetY = (targetH - finalH) / 2.0f;
+
             bookCoverSprite.setPosition(coverBox.getPosition().x + offsetX, coverBox.getPosition().y + offsetY);
             coverBox.setFillColor(sf::Color::White); 
         } else { 
             coverBox.setFillColor(sf::Color(200, 200, 200)); 
         }
-        // A. Tên sách (Xuống dòng nếu dài)
+
+        // 2. XỬ LÝ TÊN SÁCH & LAYOUT
         std::string title = book->getTenSach(); 
         if (title.length() > 28) {
             size_t splitPos = title.find_last_of(' ', 28);
@@ -152,47 +148,34 @@ public:
         }
         titleText.setString(title);
 
-        // B. Tính vị trí bắt đầu của Thông tin chi tiết
         sf::FloatRect titleBounds = titleText.getGlobalBounds(); 
         float infoY = titleBounds.top + titleBounds.height + 25.0f;
         
-        // Set vị trí cho 2 cột thông tin
         infoLabels.setPosition(530, infoY);
         infoValues.setPosition(650, infoY);
 
-        // C. Điền dữ liệu vào trước để tính chiều cao thực tế
         infoLabels.setString("Ma sach:\nTac gia:\nThe loai:\nNam XB:\nNha XB:\nSo luong:\nDanh gia:");
         
         char ratingStr[50]; 
         sprintf(ratingStr, "%.1f/10 (%d luot)", book->getDiemTrungBinh() > 10 ? 10 : book->getDiemTrungBinh(), book->getSoDanhGia());
-        
-        std::string values = book->getMaSach() + "\n" + 
-                             book->getTacGia() + "\n" + 
-                             book->getTheLoai() + "\n" + 
-                             std::to_string(book->getNamXuatBan()) + "\n" + 
-                             book->getNhaXuatBan() + "\n" + 
-                             std::to_string(book->getSoLuong()) + " cuon\n" + 
-                             std::string(ratingStr);
+                
+        std::string values = book->getMaSach() + "\n" + book->getTacGia() + "\n" + book->getTheLoai() + "\n" + 
+                             std::to_string(book->getNamXuatBan()) + "\n" + book->getNhaXuatBan() + "\n" + 
+                             std::to_string(book->getSoLuong()) + " cuon\n" + std::string(ratingStr);
         infoValues.setString(values);
 
-        // [QUAN TRỌNG] Tính vị trí phần "Người Đang Mượn" dựa trên đáy của phần Thông tin
         sf::FloatRect infoBounds = infoValues.getGlobalBounds();
-        
-        // Vị trí tiêu đề "Người Đang Mượn" = Đáy thông tin + 30px đệm
         float borrowerTitleY = infoBounds.top + infoBounds.height + 30.0f;
         borrowerTitle.setPosition(530, borrowerTitleY);
         
-        // Vị trí dòng Header bảng (Doc gia, Han tra...) = Tiêu đề + 30px
         float headerY = borrowerTitleY + 30.0f;
-        
-        // Cập nhật vị trí các Header
         headerName.setPosition(530, headerY);
         headerDate.setPosition(780, headerY);
         headerStatus.setPosition(920, headerY);
-        notBorrowedText.setPosition(530, headerY); // Dòng "Chưa có ai mượn" cũng nằm đây
+        notBorrowedText.setPosition(530, headerY);
 
-        // Vị trí bắt đầu danh sách item = Header + 30px
         float listStartY = headerY + 30.0f;
+
         if (role == UserRole::LIBRARIAN && libSystem) {
              NodeBorrowerInfo* headList = libSystem->TimNguoiMuonSach(book->getMaSach());
              
@@ -202,7 +185,7 @@ public:
              
              borrowerTitle.setString("Nguoi Dang Muon (" + std::to_string(count) + "):"); 
              
-             float currentItemY = listStartY; // Sử dụng vị trí động đã tính
+             float currentItemY = listStartY;
              const float TEXT_SIZE = 16;
              const float ROW_H = 35.0f;
              
@@ -222,18 +205,9 @@ public:
                  item.statusText.setString(res.daQuaHan ? "QUA HAN" : "OK");
                  item.statusColor = res.daQuaHan ? Theme::Error : Theme::Success;
                  
-                 // Set vị trí dựa trên currentItemY động
-                 item.nameText.setCharacterSize(TEXT_SIZE); 
-                 item.nameText.setPosition(530, currentItemY); 
-                 item.nameText.setFillColor(Theme::TextDark);
-                 
-                 item.dateText.setCharacterSize(TEXT_SIZE); 
-                 item.dateText.setPosition(780, currentItemY); 
-                 item.dateText.setFillColor(Theme::TextLight);
-                 
-                 item.statusText.setCharacterSize(TEXT_SIZE); 
-                 item.statusText.setPosition(920, currentItemY); 
-                 item.statusText.setFillColor(item.statusColor);
+                 item.nameText.setCharacterSize(TEXT_SIZE); item.nameText.setPosition(530, currentItemY); item.nameText.setFillColor(Theme::TextDark);
+                 item.dateText.setCharacterSize(TEXT_SIZE); item.dateText.setPosition(780, currentItemY); item.dateText.setFillColor(Theme::TextLight);
+                 item.statusText.setCharacterSize(TEXT_SIZE); item.statusText.setPosition(920, currentItemY); item.statusText.setFillColor(item.statusColor);
                  
                  borrowerItems.push_back(item); 
                  currentItemY += ROW_H; 
@@ -245,15 +219,16 @@ public:
                  headList = headList->next;
                  delete temp;
              }
-             float visibleH = 650.0f - (listStartY - 35.0f) - 60.0f; 
-             if (visibleH < 100) visibleH = 100; // Tối thiểu
 
+             float visibleH = 650.0f - (listStartY - 35.0f) - 60.0f; 
+             if (visibleH < 100) visibleH = 100;
              float totalContentH = borrowerItems.size() * ROW_H;
              scrollView->setMaxScroll(std::max(0.0f, totalContentH - visibleH)); 
              scrollView->reset();
         }
     }
- void update(sf::Vector2f mousePos) { 
+
+    void update(sf::Vector2f mousePos) { 
         closeButton->update(mousePos); 
         if (userRole == UserRole::LIBRARIAN) { btnDelete->update(mousePos); btnEdit->update(mousePos); } 
     }
@@ -271,15 +246,8 @@ public:
         if (modal && modal->isShown()) {
             modal->draw(window); 
             window.draw(detailPanel); 
-            
-            // Vẽ hộp nền trước
             window.draw(coverBox); 
-            
-            // Nếu có texture hợp lệ thì vẽ sprite lên trên
-            if (bookCoverTexture.getSize().x > 0) {
-                window.draw(bookCoverSprite);
-            }
-
+            if (bookCoverSprite.getTexture()) window.draw(bookCoverSprite);
             window.draw(titleText); window.draw(infoLabels); window.draw(infoValues);
             
             if (userRole == UserRole::LIBRARIAN) { 
@@ -288,17 +256,14 @@ public:
                     window.draw(notBorrowedText); 
                 } else { 
                     window.draw(headerName); window.draw(headerDate); window.draw(headerStatus);
-                    
                     sf::View listView = window.getDefaultView();
                     float vpX = LIST_START_X / 1300.0f;
                     float vpY = LIST_START_Y / 720.0f;
                     float vpW = LIST_VISIBLE_W / 1300.0f;
                     float vpH = LIST_VISIBLE_H / 720.0f;
-
                     listView.setViewport(sf::FloatRect(vpX, vpY, vpW, vpH));
                     listView.setSize(LIST_VISIBLE_W, LIST_VISIBLE_H);
                     listView.setCenter(LIST_START_X + LIST_VISIBLE_W/2.0f, LIST_START_Y + LIST_VISIBLE_H/2.0f + scrollView->getScrollOffset());
-                    
                     window.setView(listView);
                     for (const auto& item : borrowerItems) { 
                         window.draw(item.nameText); window.draw(item.dateText); window.draw(item.statusText); 
@@ -312,5 +277,4 @@ public:
     }
     Sach* getCurrentBook() { return currentBook; }
 };
-
 #endif

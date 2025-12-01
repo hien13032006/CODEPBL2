@@ -40,8 +40,6 @@ class LibrarySystem {
         NodeReader *HeadDsDocGia; 
         NodeLibrarian *HeadDsTThu; 
         HashNode* hashTable[TABLE_SIZE];
-        
-        // Mảng tĩnh cho Top 10 (Thay thế Vector)
         std::string top10BookIDs[10]; 
         int top10Count = 0; 
 
@@ -50,7 +48,7 @@ class LibrarySystem {
         ~LibrarySystem();
 
         int hashFunction(const string& s);
-        int DemTongSachDangMuon(const string& maSach);
+
         void DocFileSach(const string& fileName);
         void GhiFileSach(const string& fileName) const;
         void GhiFileHeThong(const string& fileName) const;
@@ -64,11 +62,7 @@ class LibrarySystem {
         void TimSach(const string& keyword);
         void BuildHashTable();
         void MuonSach(Reader* docGia, const string& maSach);
-        
-        // [CẬP NHẬT] TraSach không còn hỏi đánh giá console
         void TraSach(Reader* docGia, const string& maSach);
-
-        // [CẬP NHẬT] Thêm tham số int diem để gọi từ GUI
         void DanhGiaSach(Reader* docGia, Sach* sach, int diem);
         
         bool KiemTraDaDanhGia(const string& maDocGia, const string& maSach);
@@ -90,15 +84,18 @@ class LibrarySystem {
         NodeBook* getDanhSachSach() { return HeadDsSach; }
         NodeReader* getDanhSachDocGia() { return HeadDsDocGia; }
 
-        void DocTatCaDanhSachMuon();       
-        // Cấu trúc trả về danh sách liên kết thay vì vector
+        void DocTatCaDanhSachMuon();
+        void XemThongKe();
+        int DemTongSachDangMuon(const string& maSach);
+
         NodeBorrowerInfo* TimNguoiMuonSach(const std::string& maSach) const;
-        
-        // Getter cho mảng Top 10
         int getTop10Count() const { return top10Count; }
         std::string getTop10ID(int index) const { 
             if (index >= 0 && index < top10Count) return top10BookIDs[index];
             return "";
         }
+
+        void ThemSachMoi(Sach* sachMoi);
 };
+        
 #endif
