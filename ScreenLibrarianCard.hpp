@@ -18,6 +18,10 @@ private:
     Button* btnUpdate;
     bool updateRequested;
 
+    sf::Texture bgTexture;
+    sf::Sprite background;
+    bool bgLoaded = false;
+
 public:
     ScreenLibrarianCard(sf::Font &f, Librarian *l) 
         : font(f), librarian(l), 
@@ -25,6 +29,19 @@ public:
     {
         closed = false;
         updateRequested = false;
+
+        if (bgTexture.loadFromFile("picCard.png")) {
+            bgLoaded = true;
+
+            background.setTexture(bgTexture);
+
+            // Phù hợp với kích thước màn hình 1300x720
+            float scaleX = 600.f / bgTexture.getSize().x;
+            float scaleY = 450.f  / bgTexture.getSize().y;
+            background.setScale(scaleX, scaleY);
+
+            background.setPosition(350, 135);
+        }
 
         panel.setSize({600, 450}); 
         panel.setCornerRadius(20.0f); 
@@ -37,26 +54,26 @@ public:
         title.setString("THE THU THU");
         title.setCharacterSize(36); 
         title.setFillColor(Theme::TextDark); 
-        title.setPosition(530, 160);
+        title.setPosition(550, 205);
 
         auto setTxt = [&](sf::Text& t, std::string s, float y) {
             t.setFont(font); t.setString(s); 
             t.setCharacterSize(20); 
             t.setFillColor(Theme::TextLight);
-            t.setPosition(400, y);
+            t.setPosition(530, y);
         };
 
         if (librarian) {
-            setTxt(lbMaID,  "ID: " + librarian->getMaID(), 230);
-            setTxt(lbHoTen, "Ten: " + librarian->getHoTen(), 270);
-            setTxt(lbEmail, "Email: " + librarian->getEmail(), 310);
-            setTxt(lbSDT,   "SDT: " + librarian->getSDT(), 350);
-            setTxt(lbChucVu,"Chuc vu: " + librarian->getChucVu(), 390);
+            setTxt(lbMaID,  "ID: " + librarian->getMaID(), 255);
+            setTxt(lbHoTen, "Ten: " + librarian->getHoTen(), 295);
+            setTxt(lbEmail, "Email: " + librarian->getEmail(), 335);
+            setTxt(lbSDT,   "SDT: " + librarian->getSDT(), 375);
+            setTxt(lbChucVu,"Chuc vu: " + librarian->getChucVu(), 415);
         } else {
             setTxt(lbMaID, "Loi: Khong co du lieu!", 230);
         }
 
-        btnUpdate = new Button({500, 460}, {300, 50}, "Cap Nhat Thong Tin", font, 1, Theme::Secondary);
+        btnUpdate = new Button({500, 470}, {300, 50}, "Cap Nhat Thong Tin", font, 1, Theme::Secondary);
     }
     
     ~ScreenLibrarianCard() { delete btnUpdate; }
@@ -78,6 +95,8 @@ public:
 
     void render(sf::RenderWindow &window) { 
         window.draw(panel); 
+        if (bgLoaded)
+           window.draw(background);
         window.draw(title); 
         window.draw(lbMaID); window.draw(lbHoTen); 
         window.draw(lbEmail); window.draw(lbSDT); window.draw(lbChucVu);

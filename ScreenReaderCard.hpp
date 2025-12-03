@@ -20,6 +20,11 @@ private:
     Button* btnUpdate; 
     bool updateRequested;
 
+    sf::Texture bgTexture;
+    sf::Sprite background;
+    bool bgLoaded = false;
+
+
 public:
     ScreenReaderCard(sf::Font &f, Reader *r) 
         : font(f), reader(r), 
@@ -27,6 +32,19 @@ public:
     {
         closed = false;
         updateRequested = false;
+
+        if (bgTexture.loadFromFile("picCard.png")) {
+            bgLoaded = true;
+
+            background.setTexture(bgTexture);
+
+            // Phù hợp với kích thước màn hình 1300x720
+            float scaleX = 600.f / bgTexture.getSize().x;
+            float scaleY = 450.f  / bgTexture.getSize().y;
+            background.setScale(scaleX, scaleY);
+
+            background.setPosition(350, 135);
+        }
 
         // Panel 600x450, Căn giữa màn hình 1300x720
         // X = (1300-600)/2 = 350, Y = (720-450)/2 = 135
@@ -41,13 +59,13 @@ public:
         title.setString("THE BAN DOC");
         title.setCharacterSize(36); 
         title.setFillColor(Theme::TextDark); 
-        title.setPosition(530, 160);
+        title.setPosition(550, 205);
 
         auto setTxt = [&](sf::Text& t, std::string s, float y) {
             t.setFont(font); t.setString(s); 
             t.setCharacterSize(20); 
             t.setFillColor(Theme::TextLight);
-            t.setPosition(400, y);
+            t.setPosition(530, y);
         };
 
         if (reader) {
@@ -57,16 +75,16 @@ public:
             if(ltm) strftime(dateBuf, 20, "%d/%m/%Y", ltm);
             else sprintf(dateBuf, "N/A");
 
-            setTxt(lbMaID,   "ID: " + reader->getMaID(), 230);
-            setTxt(lbHoTen,  "Ten: " + reader->getHoTen(), 270);
-            setTxt(lbEmail,  "Email: " + reader->getEmail(), 310);
-            setTxt(lbSDT,    "SDT: " + reader->getSDT(), 350);
-            setTxt(lbNgayDK, "Ngay DK: " + std::string(dateBuf), 390);
+            setTxt(lbMaID,   "ID: " + reader->getMaID(), 255);
+            setTxt(lbHoTen,  "Ten: " + reader->getHoTen(), 295);
+            setTxt(lbEmail,  "Email: " + reader->getEmail(), 335);
+            setTxt(lbSDT,    "SDT: " + reader->getSDT(), 375);
+            setTxt(lbNgayDK, "Ngay DK: " + std::string(dateBuf), 415);
         } else {
              setTxt(lbMaID, "Loi: Khong co du lieu doc gia!", 230);
         }
 
-        btnUpdate = new Button({500, 460}, {300, 50}, "Cap Nhat Thong Tin", font, 1, Theme::Secondary);
+        btnUpdate = new Button({500, 470}, {300, 50}, "Cap Nhat Thong Tin", font, 1, Theme::Secondary);
     }
     
     ~ScreenReaderCard() { delete btnUpdate; }
@@ -85,6 +103,8 @@ public:
 
     void render(sf::RenderWindow &window) { 
         window.draw(panel); 
+        if (bgLoaded)
+           window.draw(background);
         window.draw(title); 
         window.draw(lbMaID); window.draw(lbHoTen); 
         window.draw(lbEmail); window.draw(lbSDT); window.draw(lbNgayDK);
