@@ -23,12 +23,23 @@ struct BookTableItem {
     sf::Text maSachText, tenSachText, tacGiaText, theLoaiText, namXBText, soLuongText; 
 };
 
-enum class AddMode { SELECTION, MANUAL, AUTO_FILE };
+enum class AddMode { 
+SELECTION,
+MANUAL,
+AUTO_FILE
+};
 
 class ManageBooksScreen {
 private:
-    sf::RenderWindow* windowRef; sf::RectangleShape background; sf::Text titleText; Sidebar* sidebar; InputField* searchField; Button *searchButton, *addBookButton; 
-    ScrollView* scrollView; std::vector<BookTableItem*> bookItems; std::vector<sf::Text*> tableHeaders;
+    sf::RenderWindow* windowRef;
+    sf::RectangleShape background;
+    sf::Text titleText;
+    Sidebar* sidebar;
+    InputField* searchField;
+    Button *searchButton, *addBookButton; 
+    ScrollView* scrollView;
+    std::vector<BookTableItem*> bookItems;
+    std::vector<sf::Text*> tableHeaders;
     
     Modal* addBookModal; 
     sf::Text formTitle;
@@ -41,31 +52,47 @@ private:
     Button *btnExecFile; 
     Button *cancelButton; 
 
-    LibrarySystem* libSystem; Sach* bookToEdit; bool isEditing;   
+    LibrarySystem* libSystem; 
+    Sach* bookToEdit;
+    bool isEditing;   
     sf::Font storedFont;
-
     sf::View getListView() {
-        if (!windowRef) return sf::View(); sf::View view = windowRef->getDefaultView();
+        if (!windowRef)
+            return sf::View(); 
+        sf::View view = windowRef->getDefaultView();
         view.setViewport(sf::FloatRect(250.f/1300.f, 180.f/720.f, 1050.f/1300.f, 540.f/720.f)); 
         view.setSize(1050, 540); 
-        view.setCenter(250 + 1050/2, 180 + 540/2 + scrollView->getScrollOffset()); return view;
+        view.setCenter(250 + 1050/2, 180 + 540/2 + scrollView->getScrollOffset());
+        return view;
     }
 
 public:
     ManageBooksScreen(sf::Font& font, LibrarySystem* lib) : libSystem(lib), storedFont(font) {
-        windowRef = nullptr; bookToEdit = nullptr; isEditing = false;
+        windowRef = nullptr; 
+        bookToEdit = nullptr;
+        isEditing = false;
         currentMode = AddMode::SELECTION; 
 
-        background.setSize(sf::Vector2f(1300, 720)); background.setPosition(250, 0); background.setFillColor(Theme::Background);
-        titleText.setFont(font); titleText.setString("QUAN LY SACH"); titleText.setCharacterSize(30); titleText.setFillColor(Theme::TextDark); titleText.setPosition(280, 30);
+        background.setSize(sf::Vector2f(1300, 720));
+        background.setPosition(250, 0); 
+        background.setFillColor(Theme::Background);
+        titleText.setFont(font); 
+        titleText.setString("QUAN LY SACH");
+        titleText.setCharacterSize(30); 
+        titleText.setFillColor(Theme::TextDark);
+        titleText.setPosition(280, 30);
         scrollView = new ScrollView(sf::FloatRect(250, 180, 1050, 540)); 
         sidebar = new Sidebar(font);
         searchField = new InputField(sf::Vector2f(280, 80), sf::Vector2f(500, 50), "Tim sach, tac gia...", font);
         searchButton = new Button(sf::Vector2f(800, 80), sf::Vector2f(120, 50), "Tim", font, 0, Theme::Primary);
-        addBookButton = new Button(sf::Vector2f(940, 75), sf::Vector2f(60, 60), "+", font, 0, Theme::Primary); addBookButton->getText().setCharacterSize(40); 
+        addBookButton = new Button(sf::Vector2f(940, 75), sf::Vector2f(60, 60), "+", font, 0, Theme::Primary);
+        addBookButton->getText().setCharacterSize(40); 
         
         addBookModal = new Modal(font); 
-        formTitle.setFont(font); formTitle.setCharacterSize(24); formTitle.setFillColor(Theme::Primary); formTitle.setPosition(470, 150);
+        formTitle.setFont(font); 
+        formTitle.setCharacterSize(24);
+        formTitle.setFillColor(Theme::Primary); 
+        formTitle.setPosition(470, 150);
 
         btnOptManual = new Button({450, 250}, {240, 150}, "NHAP THU CONG", font, 10, Theme::Secondary);
         btnOptFile = new Button({710, 250}, {240, 150}, "THEM TU FILE", font, 11, Theme::Primary);
@@ -92,12 +119,30 @@ public:
     }
 
     ~ManageBooksScreen() { 
-        delete sidebar; delete searchField; delete searchButton; delete addBookButton; delete scrollView; 
-        for (auto item : bookItems) delete item; for (auto header : tableHeaders) delete header; 
+        delete sidebar; 
+        delete searchField; 
+        delete searchButton;
+        delete addBookButton;
+        delete scrollView; 
+        for (auto item : bookItems)
+            delete item;
+        for (auto header : tableHeaders)
+            delete header; 
         delete addBookModal; 
-        delete nameField; delete authorField; delete categoryField; delete yearField; delete publisherField; delete quantityField; delete imagePathField; 
+        delete nameField;
+        delete authorField;
+        delete categoryField; 
+        delete yearField;
+        delete publisherField;
+        delete quantityField;
+        delete imagePathField; 
         delete fileNameField;
-        delete submitButton; delete updateSubmitButton; delete cancelButton; delete btnExecFile; delete btnOptManual; delete btnOptFile;
+        delete submitButton;
+        delete updateSubmitButton;
+        delete cancelButton;
+        delete btnExecFile;
+        delete btnOptManual;
+        delete btnOptFile;
     }
 
     void setWindow(sf::RenderWindow* win) { windowRef = win; }
@@ -112,7 +157,12 @@ public:
 
     void handleRowClick(const std::string& bookID) { 
         NodeBook* cur = libSystem->getDanhSachSach(); 
-        while(cur) { if(cur->data->getMaSach() == bookID) { bookToEdit = cur->data; break; } cur = cur->next; } 
+        while(cur) { if(cur->data->getMaSach() == bookID) {
+            bookToEdit = cur->data; 
+            break; 
+        } 
+                    cur = cur->next;
+                   } 
         showUpdateModal(); 
     }
 
@@ -133,7 +183,7 @@ public:
         addBookModal->show(); 
     }
 
-    // [MỚI] Hàm thêm sách trực tiếp vào bộ nhớ, không qua file tạm
+    // Hàm thêm sách trực tiếp vào bộ nhớ, không qua file tạm
     void handleAddManual() { 
         // 1. Lấy dữ liệu từ các ô nhập
         std::string ten = nameField->getText();
@@ -145,8 +195,11 @@ public:
         int nam = 0;
         int sl = 0;
         
-        try { nam = std::stoi(yearField->getText()); } catch(...) { nam = 2000; }
-        try { sl = std::stoi(quantityField->getText()); } catch(...) { sl = 0; }
+        try { nam = std::stoi(yearField->getText()); } 
+        catch(...) { nam = 2000; }
+        try { 
+            sl = std::stoi(quantityField->getText()); 
+        } catch(...) { sl = 0; }
 
         // 2. Tạo đối tượng sách (Hàm createFromData đã tự sinh mã ID theo thể loại)
         Sach* s = Sach::createFromData(ten, tg, tl, nam, nxb);
@@ -177,13 +230,20 @@ public:
     }
 
     void handleUpdateBookLogic() { 
-        if (!bookToEdit) return; 
+        if (!bookToEdit) 
+            return; 
         bookToEdit->setTenSach(nameField->getText()); 
         bookToEdit->setTacGia(authorField->getText()); 
         bookToEdit->setTheLoai(categoryField->getText()); 
-        try { bookToEdit->setNamXuatBan(std::stoi(yearField->getText())); } catch(...) {} 
+        try { 
+            bookToEdit->setNamXuatBan(std::stoi(yearField->getText()));
+        } 
+        catch(...) {} 
         bookToEdit->setNhaXuatBan(publisherField->getText()); 
-        try { bookToEdit->setSoLuong(std::stoi(quantityField->getText())); } catch(...) {} 
+        try { 
+            bookToEdit->setSoLuong(std::stoi(quantityField->getText()));
+        } 
+        catch(...) {} 
         bookToEdit->setImagePath(imagePathField->getText()); 
         libSystem->GhiFileHeThong("DanhSachSach.txt"); 
         loadBooksTable(storedFont); 
@@ -193,8 +253,16 @@ public:
     }
 
     void clearFields() { 
-        nameField->clear(); authorField->clear(); categoryField->clear(); yearField->clear(); publisherField->clear(); quantityField->clear(); imagePathField->clear(); fileNameField->setText("ThemSach.txt");
-        bookToEdit = nullptr; isEditing = false; 
+        nameField->clear(); 
+        authorField->clear(); 
+        categoryField->clear(); 
+        yearField->clear(); 
+        publisherField->clear();
+        quantityField->clear();
+        imagePathField->clear(); 
+        fileNameField->setText("ThemSach.txt");
+        bookToEdit = nullptr;
+        isEditing = false; 
     }
 
     void loadBooksTable(sf::Font& font, std::string keyword = "") {
@@ -202,19 +270,39 @@ public:
             libSystem->DocTatCaDanhSachMuon();
         }
 
-        for (auto item : bookItems) delete item; bookItems.clear(); for (auto header : tableHeaders) delete header; tableHeaders.clear(); if (!libSystem) return;
-        std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::tolower); const float ITEM_HEIGHT = 80.0f; const int FONT_SIZE = 18; float itemY = 180; 
+        for (auto item : bookItems) 
+            delete item;
+        bookItems.clear(); 
+        for (auto header : tableHeaders)
+            delete header; 
+        tableHeaders.clear();
+        if (!libSystem)
+            return;
+        std::transform(keyword.begin(), keyword.end(), keyword.begin(), ::tolower);
+        const float ITEM_HEIGHT = 80.0f; const int FONT_SIZE = 18; float itemY = 180; 
         
         std::vector<std::pair<std::string, float>> headers = { {"MA SACH", 340}, {"TEN SACH", 440}, {"TAC GIA", 740}, {"THE LOAI", 960}, {"NAM XB", 1110}, {"SL", 1210} };
-        for (const auto& pair : headers) { sf::Text* headerText = new sf::Text(pair.first, font, 16); headerText->setFillColor(Theme::TextLight); headerText->setPosition(pair.second, 150); tableHeaders.push_back(headerText); }
+        for (const auto& pair : headers) {
+            sf::Text* headerText = new sf::Text(pair.first, font, 16); 
+            headerText->setFillColor(Theme::TextLight);
+            headerText->setPosition(pair.second, 150);
+            tableHeaders.push_back(headerText); 
+        }
         
         NodeBook* current = libSystem->getDanhSachSach();
         while (current != nullptr) {
-            Sach* book = current->data; std::string ten = book->getTenSach(), tg = book->getTacGia(), tl = book->getTheLoai(), ma = book->getMaSach(); std::string sLower = ten + tg + tl + ma; std::transform(sLower.begin(), sLower.end(), sLower.begin(), ::tolower);
+            Sach* book = current->data;
+            std::string ten = book->getTenSach(), tg = book->getTacGia(), tl = book->getTheLoai(), ma = book->getMaSach(); 
+            std::string sLower = ten + tg + tl + ma; 
+            std::transform(sLower.begin(), sLower.end(), sLower.begin(), ::tolower);
             if (keyword.empty() || sLower.find(keyword) != std::string::npos) {
                 BookTableItem* item = new BookTableItem(); 
                 item->box.setSize(sf::Vector2f(1030, ITEM_HEIGHT - 10)); 
-                item->box.setCornerRadius(8.0f); item->box.setPosition(270, itemY); item->box.setFillColor(sf::Color::White); item->box.setOutlineThickness(1); item->box.setOutlineColor(Theme::Border);
+                item->box.setCornerRadius(8.0f); 
+                item->box.setPosition(270, itemY);
+                item->box.setFillColor(sf::Color::White);
+                item->box.setOutlineThickness(1);
+                item->box.setOutlineColor(Theme::Border);
 
                 sf::Texture& tex = ResourceManager::getInstance()->getTexture(book->getImagePath());
                 item->coverSprite.setTexture(tex);
@@ -224,12 +312,22 @@ public:
                 }
                 item->coverSprite.setPosition(280, itemY);
 
-                auto setupText = [&](sf::Text& txt, std::string s, float x, sf::Color c = Theme::TextDark) { txt.setFont(font); txt.setString(s); txt.setCharacterSize(FONT_SIZE); txt.setFillColor(c); txt.setPosition(std::floor(x), std::floor(itemY + (ITEM_HEIGHT/2) - 12)); };
+                auto setupText = [&](sf::Text& txt, std::string s, float x, sf::Color c = Theme::TextDark) { 
+                    txt.setFont(font); 
+                    txt.setString(s); 
+                    txt.setCharacterSize(FONT_SIZE);
+                    txt.setFillColor(c);
+                    txt.setPosition(std::floor(x), std::floor(itemY + (ITEM_HEIGHT/2) - 12));
+                };
                 
                 setupText(item->maSachText, book->getMaSach(), 340, Theme::Primary); 
-                std::string tName = book->getTenSach(); if(tName.size() > 28) tName = tName.substr(0, 25) + "..."; 
+                std::string tName = book->getTenSach(); 
+                if(tName.size() > 28) 
+                    tName = tName.substr(0, 25) + "..."; 
                 setupText(item->tenSachText, tName, 440); 
-                std::string tAuth = book->getTacGia(); if(tAuth.size() > 22) tAuth = tAuth.substr(0, 19) + "..."; 
+                std::string tAuth = book->getTacGia(); 
+                if(tAuth.size() > 22)
+                    tAuth = tAuth.substr(0, 19) + "..."; 
                 setupText(item->tacGiaText, tAuth, 740, Theme::TextLight); 
                 setupText(item->theLoaiText, book->getTheLoai(), 960, Theme::TextLight); 
                 setupText(item->namXBText, std::to_string(book->getNamXuatBan()), 1110); 
@@ -258,8 +356,16 @@ public:
                 btnOptFile->update(mousePos);
             }
             else if (currentMode == AddMode::MANUAL) {
-                nameField->update(); authorField->update(); categoryField->update(); yearField->update(); publisherField->update(); quantityField->update(); imagePathField->update(); 
-                if(isEditing) updateSubmitButton->update(mousePos); else submitButton->update(mousePos); 
+                nameField->update(); 
+                authorField->update(); 
+                categoryField->update(); 
+                yearField->update(); 
+                publisherField->update(); 
+                quantityField->update(); 
+                imagePathField->update(); 
+                if(isEditing)
+                    updateSubmitButton->update(mousePos);
+                else submitButton->update(mousePos); 
             }
             else if (currentMode == AddMode::AUTO_FILE) {
                 fileNameField->update();
@@ -275,7 +381,11 @@ public:
             sf::View listView = getListView(); 
             sf::Vector2f listMousePos = windowRef->mapPixelToCoords(pixelMouse, listView); 
             for (auto item : bookItems) { 
-                if (item->box.getGlobalBounds().contains(listMousePos)) { item->box.setFillColor(sf::Color(255, 245, 250)); } else { item->box.setFillColor(sf::Color::White); } 
+                if (item->box.getGlobalBounds().contains(listMousePos)) {
+                    item->box.setFillColor(sf::Color(255, 245, 250)); 
+                } else { 
+                    item->box.setFillColor(sf::Color::White);
+                } 
             } 
         } 
     }
@@ -285,12 +395,19 @@ public:
     void handleEvent(sf::Event& event, sf::Vector2f mousePos) { 
         if (addBookModal->isShown()) { 
             if (currentMode == AddMode::MANUAL) {
-                nameField->handleEvent(event, mousePos); authorField->handleEvent(event, mousePos); categoryField->handleEvent(event, mousePos); yearField->handleEvent(event, mousePos); publisherField->handleEvent(event, mousePos); quantityField->handleEvent(event, mousePos); imagePathField->handleEvent(event, mousePos); 
+                nameField->handleEvent(event, mousePos);
+                authorField->handleEvent(event, mousePos);
+                categoryField->handleEvent(event, mousePos);
+                yearField->handleEvent(event, mousePos); 
+                publisherField->handleEvent(event, mousePos); 
+                quantityField->handleEvent(event, mousePos);
+                imagePathField->handleEvent(event, mousePos); 
             } else if (currentMode == AddMode::AUTO_FILE) {
                 fileNameField->handleEvent(event, mousePos);
             }
         } else { 
-            searchField->handleEvent(event, mousePos); scrollView->handleScroll(event, mousePos); 
+            searchField->handleEvent(event, mousePos);
+            scrollView->handleScroll(event, mousePos); 
         } 
     }
 
@@ -348,26 +465,54 @@ public:
         return 0;
     }
 
-    std::string getClickedBookId(sf::Vector2f mousePos) { sf::Vector2i pixelMouse = sf::Mouse::getPosition(*windowRef); sf::View listView = getListView(); sf::Vector2f listMousePos = windowRef->mapPixelToCoords(pixelMouse, listView); for (auto item : bookItems) { if (item->box.getGlobalBounds().contains(listMousePos)) return item->maSachText.getString(); } return ""; }
-    void setUserRole(UserRole role, sf::Font& font) { sidebar->setUserRole(role, font); } Sidebar* getSidebar() { return sidebar; }
+    std::string getClickedBookId(sf::Vector2f mousePos) { 
+        sf::Vector2i pixelMouse = sf::Mouse::getPosition(*windowRef);
+        sf::View listView = getListView(); 
+        sf::Vector2f listMousePos = windowRef->mapPixelToCoords(pixelMouse, listView);
+        for (auto item : bookItems) {
+            if (item->box.getGlobalBounds().contains(listMousePos)) 
+                return item->maSachText.getString(); 
+        } 
+        return ""; 
+    }
+    void setUserRole(UserRole role, sf::Font& font) { sidebar->setUserRole(role, font); } 
+    Sidebar* getSidebar() { return sidebar; }
     
     void render() { 
-        if (!windowRef) return; 
+        if (!windowRef)
+            return; 
         windowRef->setView(windowRef->getDefaultView()); 
-        windowRef->draw(background); sidebar->draw(*windowRef); windowRef->draw(titleText); searchField->draw(*windowRef); searchButton->draw(*windowRef); addBookButton->draw(*windowRef); 
-        for (auto header : tableHeaders) windowRef->draw(*header); 
+        windowRef->draw(background); 
+        sidebar->draw(*windowRef);
+        windowRef->draw(titleText);
+        searchField->draw(*windowRef);
+        searchButton->draw(*windowRef); 
+        addBookButton->draw(*windowRef); 
+        for (auto header : tableHeaders)
+            windowRef->draw(*header); 
         
         windowRef->setView(getListView()); 
         for (auto item : bookItems) { 
             windowRef->draw(item->box); 
-            if (item->coverSprite.getTexture()) windowRef->draw(item->coverSprite);
-            windowRef->draw(item->maSachText); windowRef->draw(item->tenSachText); windowRef->draw(item->tacGiaText); windowRef->draw(item->theLoaiText); windowRef->draw(item->namXBText); windowRef->draw(item->soLuongText); 
+            if (item->coverSprite.getTexture()) 
+                windowRef->draw(item->coverSprite);
+            windowRef->draw(item->maSachText);
+            windowRef->draw(item->tenSachText); 
+            windowRef->draw(item->tacGiaText); 
+            windowRef->draw(item->theLoaiText);
+            windowRef->draw(item->namXBText); 
+            windowRef->draw(item->soLuongText); 
         } 
         windowRef->setView(windowRef->getDefaultView()); 
         
         if (addBookModal->isShown()) { 
             addBookModal->draw(*windowRef); 
-            sf::RectangleShape formBg({600, 500}); formBg.setPosition(400, 130); formBg.setFillColor(sf::Color::White); formBg.setOutlineColor(Theme::Primary); formBg.setOutlineThickness(2); windowRef->draw(formBg); 
+            sf::RectangleShape formBg({600, 500});
+            formBg.setPosition(400, 130);
+            formBg.setFillColor(sf::Color::White);
+            formBg.setOutlineColor(Theme::Primary);
+            formBg.setOutlineThickness(2);
+            windowRef->draw(formBg); 
             windowRef->draw(formTitle); 
 
             if (currentMode == AddMode::SELECTION) {
@@ -375,8 +520,17 @@ public:
                 btnOptFile->draw(*windowRef);
             }
             else if (currentMode == AddMode::MANUAL) {
-                nameField->draw(*windowRef); authorField->draw(*windowRef); categoryField->draw(*windowRef); yearField->draw(*windowRef); publisherField->draw(*windowRef); quantityField->draw(*windowRef); imagePathField->draw(*windowRef); 
-                if (isEditing) updateSubmitButton->draw(*windowRef); else submitButton->draw(*windowRef); 
+                nameField->draw(*windowRef);
+                authorField->draw(*windowRef);
+                categoryField->draw(*windowRef); 
+                yearField->draw(*windowRef);
+                publisherField->draw(*windowRef);
+                quantityField->draw(*windowRef); 
+                imagePathField->draw(*windowRef); 
+                if (isEditing)
+                    updateSubmitButton->draw(*windowRef);
+                else 
+                    submitButton->draw(*windowRef); 
                 cancelButton->draw(*windowRef);
             }
             else if (currentMode == AddMode::AUTO_FILE) {
