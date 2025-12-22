@@ -106,13 +106,19 @@ public:
         return 0;
     }
 
-    void setUserRole(UserRole role, sf::Font& font) { sidebar->setUserRole(role, font); }
+    void setUserRole(UserRole role, sf::Font& font) { 
+        sidebar->setUserRole(role, font); 
+    }
     Sidebar* getSidebar() { return sidebar; }
 
     void render(sf::RenderWindow& window) {
-        window.draw(background); sidebar->draw(window); window.draw(titleText);
+        window.draw(background); 
+        sidebar->draw(window); 
+        window.draw(titleText);
         for(int i=0; i<4; i++) {
-            window.draw(stats[i].box); window.draw(stats[i].title); window.draw(stats[i].value);
+            window.draw(stats[i].box); 
+            window.draw(stats[i].title); 
+            window.draw(stats[i].value);
         }
     }
 };
