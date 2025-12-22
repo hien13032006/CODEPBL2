@@ -58,26 +58,37 @@ public:
     }
 
     ~HomeScreen() { 
-        delete sidebar; delete searchBox; delete searchBtnIcon; 
-        delete scrollTop10; delete scrollAll; 
-        for (auto card : top10Cards) delete card; 
-        for (auto card : allBookCards) delete card; 
+        delete sidebar; 
+        delete searchBox;
+        delete searchBtnIcon; 
+        delete scrollTop10;
+        delete scrollAll; 
+        for (auto card : top10Cards)
+            delete card; 
+        for (auto card : allBookCards)
+            delete card; 
     }
 
     void loadBooks(sf::Font& font) {
         // Xóa dữ liệu cũ
-        for (auto card : top10Cards) delete card; top10Cards.clear(); 
-        for (auto card : allBookCards) delete card; allBookCards.clear(); 
+        for (auto card : top10Cards)
+            delete card; 
+        top10Cards.clear(); 
+        for (auto card : allBookCards)
+            delete card;
+        allBookCards.clear(); 
         
-        if (!libSystem) return;
+        if (!libSystem)
+            return;
         
         // Cập nhật xếp hạng
         libSystem->XepHangSach(); 
         
         std::vector<sf::Color> colors = { sf::Color(255, 182, 193), sf::Color(176, 224, 230), sf::Color(255, 228, 181), sf::Color(221, 160, 221), sf::Color(152, 251, 152) };
-        float startX = 10; float cardW = 160; float cardH = 240; float gapX = 180;  
-        
-        // --- LOAD TOP 10 (Đã sửa logic không dùng vector) ---
+        float startX = 10; 
+        float cardW = 160;
+        float cardH = 240;
+        float gapX = 180;  
         int topCount = libSystem->getTop10Count(); // Lấy số lượng
         int idx = 0;
 
@@ -102,8 +113,6 @@ public:
             }
         }
         scrollTop10->setMaxScroll(idx * gapX + 400.0f); 
-
-        // --- LOAD ALL BOOKS ---
         idx = 0; 
         NodeBook* curr = libSystem->getDanhSachSach();
         while (curr) {
@@ -178,13 +187,17 @@ public:
         float offsetTop = scrollTop10->getScrollOffset(); 
         if (mousePos.y >= TOP_Y && mousePos.y <= TOP_Y + TOP_H && mousePos.x >= VIEW_X) { 
             sf::Vector2f rel(mousePos.x - VIEW_X + offsetTop, mousePos.y - TOP_Y); 
-            for (auto card : top10Cards) if (card->isClicked(rel)) return card->getBookId(); 
+            for (auto card : top10Cards)
+                if (card->isClicked(rel)) 
+                    return card->getBookId(); 
         } 
         
         float offsetAll = scrollAll->getScrollOffset(); 
         if (mousePos.y >= ALL_Y && mousePos.y <= ALL_Y + ALL_H && mousePos.x >= VIEW_X) { 
             sf::Vector2f rel(mousePos.x - VIEW_X + offsetAll, mousePos.y - ALL_Y); 
-            for (auto card : allBookCards) if (card->isClicked(rel)) return card->getBookId(); 
+            for (auto card : allBookCards)
+                if (card->isClicked(rel))
+                    return card->getBookId(); 
         } 
         return ""; 
     }
@@ -203,7 +216,8 @@ public:
         viewTop.setSize(VIEW_W, TOP_H); 
         viewTop.setCenter(VIEW_W/2.f + scrollTop10->getScrollOffset(), TOP_H/2.f); 
         window.setView(viewTop); 
-        for (auto card : top10Cards) card->draw(window);
+        for (auto card : top10Cards)
+            card->draw(window);
         
         // Render All Books Viewport
         sf::View viewAll = window.getDefaultView(); 
@@ -211,7 +225,8 @@ public:
         viewAll.setSize(VIEW_W, ALL_H); 
         viewAll.setCenter(VIEW_W/2.f + scrollAll->getScrollOffset(), ALL_H/2.f); 
         window.setView(viewAll); 
-        for (auto card : allBookCards) card->draw(window);
+        for (auto card : allBookCards) 
+            card->draw(window);
         
         // Render UI Elements
         window.setView(window.getDefaultView()); 
