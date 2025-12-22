@@ -77,8 +77,12 @@ public:
     }
 
     ~BorrowedBooksScreen() { 
-        delete sidebar; delete scrollView; 
-        for (auto item : bookItems) { delete item->rateButton; delete item; } 
+        delete sidebar; 
+        delete scrollView; 
+        for (auto item : bookItems) { 
+            delete item->rateButton; 
+            delete item; 
+        } 
     }
 
     void handleScrollEvent(sf::Event& event, sf::Vector2f mousePos) {
@@ -86,7 +90,8 @@ public:
     }
 
     void loadBorrowedBooks(sf::Font& font) {
-        for (auto item : bookItems) { delete item->rateButton; delete item; } 
+        for (auto item : bookItems) { 
+            delete item->rateButton; delete item; } 
         bookItems.clear(); 
         if (!currentReader) return;
 
@@ -114,8 +119,10 @@ public:
             item->titleText.setPosition(305, itemY + 20);
 
             struct tm tmMuon, tmHan;
-            tm* temp = localtime(&phieu->ngayMuon); if (temp) tmMuon = *temp;
-            temp = localtime(&phieu->ngayHetHan); if (temp) tmHan = *temp;
+            tm* temp = localtime(&phieu->ngayMuon); 
+            if (temp) tmMuon = *temp;
+            temp = localtime(&phieu->ngayHetHan); 
+            if (temp) tmHan = *temp;
 
             char dateBuffer[120]; 
             sprintf(dateBuffer, "Ma: %s  |  Ngay muon: %02d/%02d/%04d  |  Han tra: %02d/%02d/%04d", 
@@ -144,20 +151,15 @@ public:
             } 
             item->statusText.setPosition(305, itemY + 85);
 
-            // --- LOGIC NÚT ĐÁNH GIÁ MỚI ---
             bool rated = false;
             if(libSystem) rated = libSystem->KiemTraDaDanhGia(currentReader->getMaID(), phieu->sach->getMaSach());
             
-            // Màu nền nút: Vàng (đã đánh giá) hoặc Xám (chưa đánh giá)
             sf::Color btnColor = rated ? sf::Color(255, 193, 7) : sf::Color(200, 200, 200);
             
-            // Tạo nút với TEXT RỖNG (để không bị lỗi font ô vuông)
             item->rateButton = new Button(sf::Vector2f(1150, itemY + 35), sf::Vector2f(60, 50), "", font, index, btnColor);
             item->rateButton->setCornerRadius(15.0f); // Bo tròn nút
 
-            // Tạo hình ngôi sao trắng nằm đè lên nút
-            // Vị trí nút là (1150, itemY+35). Kích thước 60x50. 
-            // Tâm nút là (1150 + 30, itemY + 35 + 25) = (1180, itemY + 60)
+
             item->starIcon = createStarShape(1180, itemY + 60, 15.0f); // Bán kính sao 15
             item->starIcon.setFillColor(sf::Color::White); // Sao màu trắng
 
@@ -188,7 +190,9 @@ public:
         } 
     }
 
-    int handleSidebarClick(sf::Vector2f mousePos) { return sidebar->handleClick(mousePos); }
+    int handleSidebarClick(sf::Vector2f mousePos) { 
+        return sidebar->handleClick(mousePos); 
+    }
     
     std::string handleRateClick(sf::Vector2f mousePos) { 
         float scrollOffset = scrollView->getScrollOffset(); 
@@ -206,7 +210,10 @@ public:
     }
     
     void setUserRole(UserRole role, sf::Font& font) { sidebar->setUserRole(role, font); } 
-    Sidebar* getSidebar() { return sidebar; }
+    
+    Sidebar* getSidebar() { 
+        return sidebar; 
+    }
     
     void render(sf::RenderWindow& window) { 
         window.setView(window.getDefaultView()); 
