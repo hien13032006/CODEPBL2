@@ -20,7 +20,6 @@ private:
     // Constructor private
     ResourceManager() {
         // Tải sẵn ảnh default khi khởi tạo
-        // Đảm bảo bạn có file default_book.png, nếu không nó sẽ tạo màu xám
         if (!defaultTexture.loadFromFile("default_book.png")) {
             sf::Image img;
             img.create(50, 70, sf::Color(200, 200, 200));
@@ -38,11 +37,9 @@ public:
         return instance;
     }
 
-    // Hàm lấy Texture (Có cache)
     sf::Texture& getTexture(const std::string& path) {
         // 1. Nếu đường dẫn rỗng, trả về mặc định
         if (path.empty()) return defaultTexture;
-
         // 2. Kiểm tra xem đã load chưa
         if (textures.find(path) == textures.end()) {
             sf::Texture tex;
@@ -50,16 +47,12 @@ public:
                 tex.setSmooth(true);
                 textures[path] = tex; // Lưu vào cache
             } else {
-                // Nếu load lỗi, lưu texture mặc định vào map với key này 
-                // để lần sau không phải thử load lại file lỗi nữa (tối ưu tốc độ)
                 textures[path] = defaultTexture;
             }
         }
-
         // 3. Trả về texture từ RAM
         return textures[path];
-    }
-    
+    }  
     static void cleanup() {
         if (instance) {
             delete instance;
@@ -68,7 +61,6 @@ public:
     }
 };
 
-// Khởi tạo biến static
 ResourceManager* ResourceManager::instance = nullptr;
 
 #endif
