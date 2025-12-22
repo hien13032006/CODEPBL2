@@ -51,18 +51,21 @@ public:
         coverBox.setFillColor(sf::Color(200, 200, 200)); 
 
         // Tên sách
-        titleText.setFont(font); titleText.setCharacterSize(32); 
+        titleText.setFont(font); 
+        titleText.setCharacterSize(32); 
         titleText.setFillColor(Theme::TextDark); 
         titleText.setStyle(sf::Text::Bold);
         titleText.setPosition(530, 70);
 
         // Thông tin chi tiết
-        infoLabels.setFont(font); infoLabels.setCharacterSize(18); 
+        infoLabels.setFont(font); 
+        infoLabels.setCharacterSize(18); 
         infoLabels.setFillColor(Theme::TextLight); 
         infoLabels.setPosition(530, 130); 
         infoLabels.setLineSpacing(1.6f); 
 
-        infoValues.setFont(font); infoValues.setCharacterSize(18); 
+        infoValues.setFont(font); 
+        infoValues.setCharacterSize(18); 
         infoValues.setFillColor(Theme::TextDark); 
         infoValues.setPosition(650, 130); 
         infoValues.setLineSpacing(1.6f);
@@ -73,14 +76,18 @@ public:
         borrowerTitle.setStyle(sf::Text::Bold);
         borrowerTitle.setPosition(530, 400);
         
-        notBorrowedText.setFont(font); notBorrowedText.setCharacterSize(16); 
+        notBorrowedText.setFont(font); 
+        notBorrowedText.setCharacterSize(16); 
         notBorrowedText.setFillColor(Theme::TextLight); 
         notBorrowedText.setPosition(530, 440); 
         notBorrowedText.setString("(Hien chua co ai muon)");
 
         auto setupHeader = [&](sf::Text& t, string s, float x) {
-            t.setFont(font); t.setString(s); t.setCharacterSize(14); 
-            t.setFillColor(sf::Color(150, 150, 150)); t.setStyle(sf::Text::Bold);
+            t.setFont(font); 
+            t.setString(s); 
+            t.setCharacterSize(14); 
+            t.setFillColor(sf::Color(150, 150, 150)); 
+            t.setStyle(sf::Text::Bold);
             t.setPosition(x, 430); 
         };
         setupHeader(headerName, "DOC GIA", 530);
@@ -97,7 +104,10 @@ public:
     }
 
     ~BookDetailScreen() { 
-        delete closeButton; delete borrowButton; delete btnDelete; delete btnEdit; 
+        delete closeButton; 
+        delete borrowButton; 
+        delete btnDelete; 
+        delete btnEdit; 
         delete scrollView; 
     }
 
@@ -112,7 +122,9 @@ public:
     }
 
     void setBook(Sach* book, UserRole role, LibrarySystem* libSystem) { 
-        currentBook = book; userRole = role; borrowerItems.clear();
+        currentBook = book; 
+        userRole = role; 
+        borrowerItems.clear();
         
         // 1. XỬ LÝ ẢNH BÌA DÙNG RESOURCE MANAGER
         // Lấy texture từ cache
@@ -177,60 +189,69 @@ public:
         float listStartY = headerY + 30.0f;
 
         if (role == UserRole::LIBRARIAN && libSystem) {
-             NodeBorrowerInfo* headList = libSystem->TimNguoiMuonSach(book->getMaSach());
+            NodeBorrowerInfo* headList = libSystem->TimNguoiMuonSach(book->getMaSach());
              
-             int count = 0;
-             NodeBorrowerInfo* p = headList;
-             while(p != nullptr) { count++; p = p->next; }
+            int count = 0;
+            NodeBorrowerInfo* p = headList;
+            while(p != nullptr) { count++; p = p->next; }
              
-             borrowerTitle.setString("Nguoi Dang Muon (" + std::to_string(count) + "):"); 
+            borrowerTitle.setString("Nguoi Dang Muon (" + std::to_string(count) + "):"); 
              
-             float currentItemY = listStartY;
-             const float TEXT_SIZE = 16;
-             const float ROW_H = 35.0f;
+            float currentItemY = listStartY;
+            const float TEXT_SIZE = 16;
+            const float ROW_H = 35.0f;
              
-             p = headList;
-             while (p != nullptr) {
-                 const BorrowerInfo& res = p->data; 
-                 BorrowerItem item; 
-                 const sf::Font& f = closeButton->getFont();
+            p = headList;
+            while (p != nullptr) {
+                const BorrowerInfo& res = p->data; 
+                BorrowerItem item; 
+                const sf::Font& f = closeButton->getFont();
                  
-                 item.nameText.setFont(f); item.dateText.setFont(f); item.statusText.setFont(f);
+                item.nameText.setFont(f); item.dateText.setFont(f); item.statusText.setFont(f);
                  
-                 std::string nameStr = res.maDocGia + " - " + res.tenDocGia;
-                 if (nameStr.length() > 22) nameStr = nameStr.substr(0, 19) + "...";
+                std::string nameStr = res.maDocGia + " - " + res.tenDocGia;
+                if (nameStr.length() > 22) nameStr = nameStr.substr(0, 19) + "...";
                  
-                 item.nameText.setString(nameStr);
-                 item.dateText.setString(timeString(res.ngayHetHan)); 
-                 item.statusText.setString(res.daQuaHan ? "QUA HAN" : "OK");
-                 item.statusColor = res.daQuaHan ? Theme::Error : Theme::Success;
+                item.nameText.setString(nameStr);
+                item.dateText.setString(timeString(res.ngayHetHan)); 
+                item.statusText.setString(res.daQuaHan ? "QUA HAN" : "OK");
+                item.statusColor = res.daQuaHan ? Theme::Error : Theme::Success;
                  
-                 item.nameText.setCharacterSize(TEXT_SIZE); item.nameText.setPosition(530, currentItemY); item.nameText.setFillColor(Theme::TextDark);
-                 item.dateText.setCharacterSize(TEXT_SIZE); item.dateText.setPosition(780, currentItemY); item.dateText.setFillColor(Theme::TextLight);
-                 item.statusText.setCharacterSize(TEXT_SIZE); item.statusText.setPosition(920, currentItemY); item.statusText.setFillColor(item.statusColor);
+                item.nameText.setCharacterSize(TEXT_SIZE); 
+                item.nameText.setPosition(530, currentItemY); 
+                item.nameText.setFillColor(Theme::TextDark);
+                item.dateText.setCharacterSize(TEXT_SIZE); 
+                item.dateText.setPosition(780, currentItemY); 
+                item.dateText.setFillColor(Theme::TextLight);
+                item.statusText.setCharacterSize(TEXT_SIZE); 
+                item.statusText.setPosition(920, currentItemY); 
+                item.statusText.setFillColor(item.statusColor);
                  
-                 borrowerItems.push_back(item); 
-                 currentItemY += ROW_H; 
-                 p = p->next; 
-             }
+                borrowerItems.push_back(item); 
+                currentItemY += ROW_H; 
+                p = p->next; 
+            }
 
-             while (headList != nullptr) {
-                 NodeBorrowerInfo* temp = headList;
-                 headList = headList->next;
-                 delete temp;
-             }
+            while (headList != nullptr) {
+                NodeBorrowerInfo* temp = headList;
+                headList = headList->next;
+                delete temp;
+            }
 
-             float visibleH = 650.0f - (listStartY - 35.0f) - 60.0f; 
-             if (visibleH < 100) visibleH = 100;
-             float totalContentH = borrowerItems.size() * ROW_H;
-             scrollView->setMaxScroll(std::max(0.0f, totalContentH - visibleH)); 
-             scrollView->reset();
+            float visibleH = 650.0f - (listStartY - 35.0f) - 60.0f; 
+            if (visibleH < 100) visibleH = 100;
+            float totalContentH = borrowerItems.size() * ROW_H;
+            scrollView->setMaxScroll(std::max(0.0f, totalContentH - visibleH)); 
+            scrollView->reset();
         }
     }
 
     void update(sf::Vector2f mousePos) { 
         closeButton->update(mousePos); 
-        if (userRole == UserRole::LIBRARIAN) { btnDelete->update(mousePos); btnEdit->update(mousePos); } 
+        if (userRole == UserRole::LIBRARIAN) { 
+            btnDelete->update(mousePos); 
+            btnEdit->update(mousePos); 
+        } 
     }
 
     int handleClick(sf::Vector2f mousePos) { 
@@ -248,14 +269,18 @@ public:
             window.draw(detailPanel); 
             window.draw(coverBox); 
             if (bookCoverSprite.getTexture()) window.draw(bookCoverSprite);
-            window.draw(titleText); window.draw(infoLabels); window.draw(infoValues);
+            window.draw(titleText); 
+            window.draw(infoLabels); 
+            window.draw(infoValues);
             
             if (userRole == UserRole::LIBRARIAN) { 
                 window.draw(borrowerTitle); 
                 if (borrowerItems.empty()) {
                     window.draw(notBorrowedText); 
                 } else { 
-                    window.draw(headerName); window.draw(headerDate); window.draw(headerStatus);
+                    window.draw(headerName); 
+                    window.draw(headerDate); 
+                    window.draw(headerStatus);
                     sf::View listView = window.getDefaultView();
                     float vpX = LIST_START_X / 1300.0f;
                     float vpY = LIST_START_Y / 720.0f;
@@ -266,11 +291,14 @@ public:
                     listView.setCenter(LIST_START_X + LIST_VISIBLE_W/2.0f, LIST_START_Y + LIST_VISIBLE_H/2.0f + scrollView->getScrollOffset());
                     window.setView(listView);
                     for (const auto& item : borrowerItems) { 
-                        window.draw(item.nameText); window.draw(item.dateText); window.draw(item.statusText); 
+                        window.draw(item.nameText); 
+                        window.draw(item.dateText); 
+                        window.draw(item.statusText); 
                     } 
                     window.setView(window.getDefaultView()); 
                 }
-                btnDelete->draw(window); btnEdit->draw(window); 
+                btnDelete->draw(window); 
+                btnEdit->draw(window); 
             }
             closeButton->draw(window);
         }
