@@ -37,15 +37,12 @@ public:
             bgLoaded = true;
 
             background.setTexture(bgTexture);
-
-            // Phù hợp với kích thước màn hình 1300x720
             float scaleX = 600.f / bgTexture.getSize().x;
             float scaleY = 450.f  / bgTexture.getSize().y;
             background.setScale(scaleX, scaleY);
 
             background.setPosition(350, 135);
         }
-
         // Panel 600x450, Căn giữa màn hình 1300x720
         // X = (1300-600)/2 = 350, Y = (720-450)/2 = 135
         panel.setSize({600, 450}); 
@@ -62,7 +59,8 @@ public:
         title.setPosition(550, 205);
 
         auto setTxt = [&](sf::Text& t, std::string s, float y) {
-            t.setFont(font); t.setString(s); 
+            t.setFont(font);
+            t.setString(s); 
             t.setCharacterSize(20); 
             t.setFillColor(Theme::TextLight);
             t.setPosition(530, y);
@@ -91,8 +89,10 @@ public:
 
     void handleEvent(sf::Event &e, const sf::Vector2f &mousePos) { 
         if (e.type == sf::Event::MouseButtonPressed) {
-            if (btnClose.handleClick(mousePos)) closed = true;
-            if (btnUpdate->handleClick(mousePos)) updateRequested = true;
+            if (btnClose.handleClick(mousePos)) 
+                closed = true;
+            if (btnUpdate->handleClick(mousePos)) 
+                updateRequested = true;
         }
     }
     
@@ -106,8 +106,11 @@ public:
         if (bgLoaded)
            window.draw(background);
         window.draw(title); 
-        window.draw(lbMaID); window.draw(lbHoTen); 
-        window.draw(lbEmail); window.draw(lbSDT); window.draw(lbNgayDK);
+        window.draw(lbMaID); 
+        window.draw(lbHoTen); 
+        window.draw(lbEmail); 
+        window.draw(lbSDT); 
+        window.draw(lbNgayDK);
         btnClose.draw(window);
         btnUpdate->draw(window);
     }
@@ -115,7 +118,10 @@ public:
     bool wasClosed() const { return closed; }
     
     bool isUpdateRequested() { 
-        if (updateRequested) { updateRequested = false; return true; }
+        if (updateRequested) { 
+            updateRequested = false;
+            return true; 
+        }
         return false;
     }
 };
