@@ -15,16 +15,13 @@ private:
     RoundedRectangleShape panel; 
     sf::Text title; 
     sf::Text message;
-    
-    sf::ConvexShape starShapes[5];
-    
+    sf::ConvexShape starShapes[5];    
     Button* btnSubmit; 
-    Button* btnCancel;
-    
+    Button* btnCancel;    
     int currentRating; 
     std::string maSach;
 
-    // [ĐÃ SỬA] Hàm tạo ngôi sao chuẩn để Scale từ tâm
+    // Hàm tạo ngôi sao chuẩn để Scale từ tâm
     sf::ConvexShape createStar(float x, float y, float radius) {
         sf::ConvexShape star;
         star.setPointCount(10); 
@@ -36,7 +33,7 @@ private:
         for (int i = 0; i < 10; i++) {
             float r = (i % 2 == 0) ? radius : innerRadius;
             
-            // [QUAN TRỌNG] Tính toán điểm dựa trên gốc (0,0) thay vì (x,y)
+            //  Tính toán điểm dựa trên gốc (0,0) thay vì (x,y)
             star.setPoint(i, sf::Vector2f(
                 std::cos(angle) * r,
                 std::sin(angle) * r
@@ -44,7 +41,7 @@ private:
             angle += step;
         }
         
-        // [QUAN TRỌNG] Đặt vị trí sau khi tạo hình
+        // Đặt vị trí sau khi tạo hình
         star.setPosition(x, y);
 
         star.setOutlineThickness(2);
@@ -108,14 +105,15 @@ public:
             title.setString("DANH GIA SACH");
             message.setString("Ban cam thay cuon sach nay the nao?");
         }
-        sf::FloatRect tB = title.getLocalBounds(); title.setOrigin(tB.width/2, 0);
-        sf::FloatRect mB = message.getLocalBounds(); message.setOrigin(mB.width/2, 0);
+        sf::FloatRect tB = title.getLocalBounds();
+        title.setOrigin(tB.width/2, 0);
+        sf::FloatRect mB = message.getLocalBounds();
+        message.setOrigin(mB.width/2, 0);
     }
 
     void update(sf::Vector2f mousePos) {
         for(int i=0; i<5; i++) {
             if (starShapes[i].getGlobalBounds().contains(mousePos)) {
-                // [ĐÃ SỬA] Chỉ phóng to 1.1 lần (10%) để nảy nhẹ nhàng hơn
                 starShapes[i].setScale(1.1f, 1.1f); 
             } else {
                 starShapes[i].setScale(1.0f, 1.0f);
@@ -133,8 +131,10 @@ public:
                 return 0; 
             }
         }
-        if (btnSubmit->handleClick(mousePos)) return 1; 
-        if (btnCancel->handleClick(mousePos)) return 2; 
+        if (btnSubmit->handleClick(mousePos))
+            return 1; 
+        if (btnCancel->handleClick(mousePos))
+            return 2; 
         return 0;
     }
 
@@ -160,8 +160,10 @@ public:
         currentRating = 0; 
         title.setString("DANH GIA SACH");
         message.setString("Ban cam thay cuon sach nay the nao?");
-        sf::FloatRect tB = title.getLocalBounds(); title.setOrigin(tB.width/2, 0);
-        sf::FloatRect mB = message.getLocalBounds(); message.setOrigin(mB.width/2, 0);
+        sf::FloatRect tB = title.getLocalBounds();
+        title.setOrigin(tB.width/2, 0);
+        sf::FloatRect mB = message.getLocalBounds();
+        message.setOrigin(mB.width/2, 0);
         highlightStars(); 
     }
     
@@ -173,8 +175,8 @@ public:
             window.draw(panel); 
             window.draw(title); 
             window.draw(message);
-            for(int i=0; i<5; i++) window.draw(starShapes[i]);
-            
+            for(int i=0; i<5; i++) 
+                window.draw(starShapes[i]);
             btnSubmit->draw(window); 
             btnCancel->draw(window);
         }
