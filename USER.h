@@ -26,10 +26,16 @@ class USER {
 
         virtual void HienThiThongTin() const;
         virtual void CapNhatThongTin();
-        virtual UserRole getVaiTro() const { return vaiTro; }
+        virtual UserRole getVaiTro() const { 
+            return vaiTro; 
+        }
 
-        bool isLibrarian() const { return vaiTro == UserRole::LIBRARIAN; }
-        bool isReader() const { return vaiTro == UserRole::READER; }
+        bool isLibrarian() const { 
+            return vaiTro == UserRole::LIBRARIAN; 
+        }
+        bool isReader() const { 
+            return vaiTro == UserRole::READER; 
+        }
 
         bool Login(string username, string password);
         void Logout();
@@ -42,8 +48,7 @@ class USER {
         string getPassword() const { return password; }
         string getTenVaiTro() const {
             return (vaiTro == UserRole::LIBRARIAN) ? "LIBRARIAN" : "READER";
-    }
-
+        }
         void setMaID(string newMaID) { maID = newMaID; }
         void setHoTen(string newHoTen) { hoTen = newHoTen; }
         void setSDT(string newSDT)  { SDT = newSDT; }
@@ -52,4 +57,5 @@ class USER {
         void setPassword(string newPassword) { password = newPassword; }
         void setTrangThai(bool active) { trangThaiHoatDong = active; }
 };
+
 #endif
