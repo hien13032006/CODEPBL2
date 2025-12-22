@@ -8,13 +8,13 @@
 #include <sstream>
 #include "RoundedRectangle.hpp"
 #include "Theme.hpp"
-#include "ResourceManager.hpp" // [QUAN TRỌNG]
+#include "ResourceManager.hpp"
 
 class Card {
 private:
     RoundedRectangleShape cardShape;
     sf::RectangleShape coverImage;
-    sf::Sprite coverSprite; // Dùng Sprite thay vì Shape để dễ scale
+    sf::Sprite coverSprite;
     sf::Text titleText;
     sf::Text authorText;
     sf::Text ratingText;
@@ -25,18 +25,17 @@ private:
     sf::Vector2f originalPos;
     std::string bookId;
     bool isHotBook;
-    
-    // sf::Texture bookTexture; // Xóa dòng này để tiết kiệm RAM
-
     std::string truncate(std::string str, size_t width) {
-        if (str.length() > width) return str.substr(0, width - 3) + "...";
+        if (str.length() > width)
+            return str.substr(0, width - 3) + "...";
         return str;
     }
 
     void createStar(float x, float y, float size) {
         starShape.setPointCount(10);
         starShape.setFillColor(sf::Color(255, 193, 7)); 
-        float angle = -3.14159 / 2; float step = 3.14159 / 5;
+        float angle = -3.14159 / 2;
+        float step = 3.14159 / 5;
         for (int i = 0; i < 10; i++) {
             float r = (i % 2 == 0) ? size : size / 2.2f;
             starShape.setPoint(i, sf::Vector2f(x + cos(angle) * r, y + sin(angle) * r));
@@ -62,12 +61,11 @@ public:
         cardShape.setOutlineColor(Theme::Border);
         isHovered = false;
 
-        // --- ẢNH BÌA (DÙNG RESOURCE MANAGER) ---
         float coverHeight = size.y * 0.55f; 
         // Dùng coverImage làm nền (placeholder)
         coverImage.setSize(sf::Vector2f(size.x - 20, coverHeight));
         coverImage.setPosition(position.x + 10, position.y + 10);
-        coverImage.setFillColor(coverColor); // Màu nền nếu ảnh trong suốt
+        coverImage.setFillColor(coverColor); 
 
         // Lấy texture từ Cache
         sf::Texture& tex = ResourceManager::getInstance()->getTexture(imagePath);
@@ -79,8 +77,6 @@ public:
         if (tex.getSize().x > 0) {
             float scaleX = targetW / tex.getSize().x;
             float scaleY = targetH / tex.getSize().y;
-            // Chọn scale sao cho lấp đầy (Cover) hoặc vừa khít (Fit)
-            // Ở đây dùng Fit + Crop (đơn giản là ép size cho đều đẹp)
              coverSprite.setScale(scaleX, scaleY);
              coverSprite.setPosition(position.x + 10, position.y + 10);
         }
@@ -123,9 +119,13 @@ public:
         authorText.setPosition(position.x + 12, bottomLineY - 6);
         
         if (isHotBook) {
-            hotTag.setFont(font); hotTag.setString("HOT"); hotTag.setCharacterSize(10);
-            hotTag.setStyle(sf::Text::Bold); hotTag.setFillColor(sf::Color::White);
-            hotTag.setOutlineColor(Theme::Primary); hotTag.setOutlineThickness(3); 
+            hotTag.setFont(font);
+            hotTag.setString("HOT");
+            hotTag.setCharacterSize(10);
+            hotTag.setStyle(sf::Text::Bold);
+            hotTag.setFillColor(sf::Color::White);
+            hotTag.setOutlineColor(Theme::Primary); 
+            hotTag.setOutlineThickness(3); 
             hotTag.setPosition(position.x + size.x - 30, position.y + 5);
         }
     }
@@ -149,24 +149,34 @@ public:
         ratingText.setPosition(ratingX, bottomLineY - 6);
         createStar(ratingX - 12, bottomLineY, 6.0f);
         authorText.setPosition(pos.x + 12, bottomLineY - 6);
-        if (isHotBook) hotTag.setPosition(pos.x + size.x - 30, pos.y + 5);
+        if (isHotBook) 
+            hotTag.setPosition(pos.x + size.x - 30, pos.y + 5);
 
         if (cardShape.getGlobalBounds().contains(mousePos)) {
-            if (!isHovered) { isHovered = true; cardShape.setOutlineThickness(2.0f); cardShape.setOutlineColor(Theme::Secondary); }
+            if (!isHovered) {
+                isHovered = true;
+                cardShape.setOutlineThickness(2.0f);
+                cardShape.setOutlineColor(Theme::Secondary); 
+            }
         } else {
-            if (isHovered) { isHovered = false; cardShape.setOutlineThickness(1); cardShape.setOutlineColor(Theme::Border); }
+            if (isHovered) { 
+                isHovered = false;
+                cardShape.setOutlineThickness(1);
+                cardShape.setOutlineColor(Theme::Border); 
+            }
         }
     }
 
     void draw(sf::RenderWindow& window) {
         window.draw(cardShape);
-        // Vẽ nền trước (phòng khi ảnh trong suốt hoặc load lỗi về default)
         window.draw(coverImage);
-        // Vẽ ảnh thật lên trên
-        if (coverSprite.getTexture()) window.draw(coverSprite);
+        if (coverSprite.getTexture())
+            window.draw(coverSprite);
         
-        window.draw(titleText); window.draw(authorText);
-        window.draw(starShape); window.draw(ratingText);
+        window.draw(titleText);
+        window.draw(authorText);
+        window.draw(starShape);
+        window.draw(ratingText);
         if (isHotBook) window.draw(hotTag);
     }
 
