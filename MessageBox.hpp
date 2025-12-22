@@ -7,7 +7,13 @@
 #include "RoundedRectangle.hpp"
 #include "Theme.hpp"
 
-enum class MsgType { INFO, SUCCESS, WARNING, ERROR, CONFIRM };
+enum class MsgType { 
+INFO, 
+SUCCESS,
+WARNING, 
+ERROR, 
+CONFIRM 
+};
 
 class MessageBox {
 private:
@@ -29,14 +35,22 @@ public:
         box.setOutlineThickness(2);
         box.setPosition(400, 235); 
 
-        titleText.setFont(font); titleText.setCharacterSize(24); titleText.setPosition(430, 255);
-        msgText.setFont(font); msgText.setCharacterSize(18); msgText.setFillColor(Theme::TextDark); msgText.setPosition(430, 300);
+        titleText.setFont(font);
+        titleText.setCharacterSize(24); 
+        titleText.setPosition(430, 255);
+        msgText.setFont(font);
+        msgText.setCharacterSize(18);
+        msgText.setFillColor(Theme::TextDark); 
+        msgText.setPosition(430, 300);
 
         btnOK = new Button({430, 420}, {200, 45}, "OK", font, 1, Theme::Success);
         btnCancel = new Button({660, 420}, {200, 45}, "Huy", font, 2, sf::Color(150, 150, 150));
     }
 
-    ~MessageBox() { delete btnOK; delete btnCancel; }
+    ~MessageBox() { 
+        delete btnOK;
+        delete btnCancel;
+    }
 
     // Hàm mới để đổi chữ nút bấm
     void setButtonLabels(std::string okLabel, std::string cancelLabel = "Huy") {
@@ -84,8 +98,10 @@ public:
 
     int handleClick(sf::Vector2f mousePos) {
         if (!visible) return 0;
-        if (btnOK->handleClick(mousePos)) return 1;
-        if (hasCancel && btnCancel->handleClick(mousePos)) return 2;
+        if (btnOK->handleClick(mousePos)) 
+            return 1;
+        if (hasCancel && btnCancel->handleClick(mousePos))
+            return 2;
         return 0;
     }
 
