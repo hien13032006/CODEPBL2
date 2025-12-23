@@ -39,12 +39,7 @@ string Librarian::toCSV(ostream &out) const {
    out << csv;
    return csv;
 }
-void Librarian::XoaSach(LibrarySystem &L) {
-    string maSach;
-    cout << "Nhap ma sach can xoa: ";
-    getline(cin,maSach);
-    L.XoaSach(maSach);
-}
+
 
 void Librarian::CapNhatThongTinSach(LibrarySystem &L) {
     L.CapNhatThongTinSach();

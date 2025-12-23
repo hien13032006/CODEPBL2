@@ -375,17 +375,25 @@ public:
     }
 
     void handleEvents() {
-        sf::Event event; sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        sf::Event event; 
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) window.close();
             switch (currentState) {
-                case AppState::SPLASH: if(event.type==sf::Event::MouseButtonPressed && splashScreen->handleClick(mousePos)) changeState(AppState::HOME); break;
+
+                case AppState::SPLASH: 
+                    if(event.type==sf::Event::MouseButtonPressed && splashScreen->handleClick(mousePos)) 
+                        changeState(AppState::HOME); 
+                    break;
+
                 case AppState::HOME:
                     homeScreen->handleSearchEvent(event, mousePos);
+
                     if (homeScreen->isSearchRequested() || homeScreen->checkSearchClick(mousePos)) { 
                         searchScreen->setSearchQuery(homeScreen->getSearchQuery()); 
                         searchScreen->performSearch(mainFont); 
                         changeState(AppState::SEARCH); }
+
                     if (event.type == sf::Event::MouseButtonPressed) {
                         int m = homeScreen->handleSidebarClick(mousePos); 
                         if (m >= 0) handleSidebarNavigation(m, homeScreen->getSidebar());
@@ -400,8 +408,11 @@ public:
                         }
                     } 
                     break;
-                case AppState::TOP_BOOKS: topBooksScreen->handleScrollEvent(event, mousePos); 
-                    if(event.type==sf::Event::MouseButtonPressed){ 
+
+                case AppState::TOP_BOOKS: 
+                    topBooksScreen->handleScrollEvent(event, mousePos); 
+
+                    if(event.type==sf::Event::MouseButtonPressed) { 
                         int m=topBooksScreen->handleSidebarClick(mousePos); 
                         if(m>=0) handleSidebarNavigation(m, topBooksScreen->getSidebar()); 
                         std::string b=topBooksScreen->handleCardClick(mousePos); 
@@ -415,7 +426,10 @@ public:
                         }
                     } 
                     break;
-                case AppState::ALL_BOOKS_LIST: allBooksListScreen->handleScrollEvent(event, mousePos); 
+
+                case AppState::ALL_BOOKS_LIST: 
+                    allBooksListScreen->handleScrollEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed) { 
                         int m=allBooksListScreen->handleSidebarClick(mousePos); 
                         if(m>=0) handleSidebarNavigation(m, allBooksListScreen->getSidebar()); 
@@ -431,26 +445,83 @@ public:
                         }
                     } 
                     break;
-                case AppState::CATEGORY: categoryScreen->handleScrollEvent(event, mousePos); 
+
+                case AppState::CATEGORY: 
+                    categoryScreen->handleScrollEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed) { 
                         int m=categoryScreen->handleSidebarClick(mousePos); 
                         if(m>=0) handleSidebarNavigation(m, categoryScreen->getSidebar()); 
-                        if(categoryScreen->handleCategoryButtonClick(mousePos, mainFont)) break; categoryScreen->handleClick(mousePos, mainFont); std::string b=categoryScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::CATEGORY; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
-                case AppState::SEARCH: searchScreen->handleEvent(event, mousePos); if(event.type==sf::Event::MouseButtonPressed){ int m=searchScreen->handleSidebarClick(mousePos); if(m>=0) handleSidebarNavigation(m, searchScreen->getSidebar()); searchScreen->handleSearchClick(mousePos, mainFont); std::string b=searchScreen->handleCardClick(mousePos); if(!b.empty()){ Sach* s=findBookById(b); if(s){ previousState=AppState::SEARCH; bookDetailScreen->setBook(s, currentUserRole, libSystem); detailModal->show(); changeState(AppState::BOOK_DETAIL); }}} break;
+                        if(categoryScreen->handleCategoryButtonClick(mousePos, mainFont)) 
+                            break; 
+
+                        categoryScreen->handleClick(mousePos, mainFont); 
+                        std::string b=categoryScreen->handleCardClick(mousePos); 
+
+                        if(!b.empty()){ 
+                            Sach* s=findBookById(b); 
+                            if(s){ 
+                                previousState=AppState::CATEGORY; 
+                                bookDetailScreen->setBook(s, currentUserRole, libSystem); 
+                                detailModal->show(); 
+                                changeState(AppState::BOOK_DETAIL); 
+                            }
+                        }
+                    } 
+                    break;
+
+                case AppState::SEARCH: 
+                    searchScreen->handleEvent(event, mousePos); 
+
+                    if(event.type==sf::Event::MouseButtonPressed){ 
+                        int m=searchScreen->handleSidebarClick(mousePos); 
+                    
+                        if(m>=0) handleSidebarNavigation(m, searchScreen->getSidebar()); 
+                        searchScreen->handleSearchClick(mousePos, mainFont); 
+                        std::string b=searchScreen->handleCardClick(mousePos); 
+
+                        if(!b.empty()){ 
+                            Sach* s=findBookById(b); 
+                            if(s){ 
+                                previousState=AppState::SEARCH; 
+                                bookDetailScreen->setBook(s, currentUserRole, libSystem); 
+                                detailModal->show(); changeState(AppState::BOOK_DETAIL); 
+                            }
+                        }
+                    } 
+                    break;
 
                 case AppState::BOOK_DETAIL: 
                     bookDetailScreen->handleScrollEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
-                        if(detailModal->handleClose(mousePos)){ detailModal->hide(); changeState(previousState); } 
+                        if(detailModal->handleClose(mousePos)){ 
+                            detailModal->hide(); 
+                            changeState(previousState); } 
                         else { 
                             int a = bookDetailScreen->handleClick(mousePos); 
-                            if(a==0){ detailModal->hide(); changeState(previousState); } 
-                            else if(a==2){ detailModal->hide(); deleteBookScreen->setBookID(bookDetailScreen->getCurrentBook()->getMaSach()); modal->show(); changeState(AppState::DELETE_BOOK); } 
-                            else if(a==3){ detailModal->hide(); manageBooksScreen->setBookToEdit(bookDetailScreen->getCurrentBook()); manageBooksScreen->showUpdateModal(); changeState(AppState::MANAGE_BOOKS); }
+                            if(a==0){ 
+                                detailModal->hide(); 
+                                changeState(previousState); } 
+                            else if(a==2){ 
+                                detailModal->hide(); 
+                                deleteBookScreen->setBookID(bookDetailScreen->getCurrentBook()->getMaSach()); 
+                                modal->show(); 
+                                changeState(AppState::DELETE_BOOK); 
+                            } 
+                            else if(a==3){ 
+                                detailModal->hide(); 
+                                manageBooksScreen->setBookToEdit(bookDetailScreen->getCurrentBook()); 
+                                manageBooksScreen->showUpdateModal(); 
+                                changeState(AppState::MANAGE_BOOKS); 
+                            }
                         } 
-                    } break;
+                    } 
+                    break;
                 
-                case AppState::LOGIN_CHOICE: loginChoiceScreen->handleEvent(event, mousePos); 
+                case AppState::LOGIN_CHOICE: 
+                    loginChoiceScreen->handleEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
                         if(loginChoiceScreen->isClosed()){ modal->hide(); 
                             changeState(AppState::HOME); 
@@ -461,7 +532,10 @@ public:
                         } 
                     } 
                     break;
-                case AppState::LOGIN_LIBRARIAN: loginLibrarianScreen->handleEvent(event, mousePos); 
+
+                case AppState::LOGIN_LIBRARIAN: 
+                    loginLibrarianScreen->handleEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
                         if(modal->handleClose(mousePos)){ 
                             modal->hide(); changeState(AppState::HOME); 
@@ -473,7 +547,10 @@ public:
                         } 
                     } 
                     break;
-                case AppState::LOGIN_READER: loginReaderScreen->handleEvent(event, mousePos); 
+
+                case AppState::LOGIN_READER: 
+                    loginReaderScreen->handleEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
                         if(modal->handleClose(mousePos)){ 
                             modal->hide(); 
@@ -486,7 +563,10 @@ public:
                         } 
                     } 
                     break;
-                case AppState::REGISTER_READER: registerReaderScreen->handleEvent(event, mousePos); 
+
+                case AppState::REGISTER_READER: 
+                    registerReaderScreen->handleEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed) { 
                         if(modal->handleClose(mousePos)){ 
                             modal->hide(); changeState(AppState::HOME); 
@@ -503,6 +583,7 @@ public:
 
                 case AppState::BORROWED_BOOKS: 
                     borrowedBooksScreen->handleScrollEvent(event, mousePos);
+
                     if (event.type == sf::Event::MouseButtonPressed) {
                         int m = borrowedBooksScreen->handleSidebarClick(mousePos); 
                         if (m >= 0) handleSidebarNavigation(m, borrowedBooksScreen->getSidebar()); 
@@ -520,6 +601,7 @@ public:
 
                 case AppState::HISTORY: 
                     readerHistoryScreen->handleEvent(event, mousePos); 
+
                     if (event.type == sf::Event::MouseButtonPressed) {
                         std::string bookID = readerHistoryScreen->handleClickRate(mousePos);
                         if (!bookID.empty()) {
@@ -551,16 +633,16 @@ public:
                         }
                     } 
                     break;
+
                 case AppState::MANAGE_BOOKS: 
                     manageBooksScreen->handleEvent(event, mousePos); 
-                    if(event.type == sf::Event::MouseButtonPressed){ 
+
+                    if(event.type == sf::Event::MouseButtonPressed) { 
                         int m = manageBooksScreen->handleSidebarClick(mousePos); 
                         if(m >= 0) handleSidebarNavigation(m, manageBooksScreen->getSidebar()); 
                         
-                        // Lấy kết quả từ màn hình
                         int act = manageBooksScreen->handleClick(mousePos); 
                         
-                        // act 1 (add), 5 (update) -> reload data
                         if(act == 1 || act == 5){
                             libSystem->BuildHashTable(); 
                             homeScreen->loadBooks(mainFont);
@@ -581,6 +663,7 @@ public:
                 
                 case AppState::MANAGE_READERS: 
                     manageReadersScreen->handleEvent(event, mousePos); 
+
                     if (messageBox->isShown()) {
                         if (event.type == sf::Event::MouseButtonPressed) {
                             int choice = messageBox->handleClick(mousePos);
@@ -627,8 +710,10 @@ public:
                 
                 case AppState::STATISTICS: 
                     if(event.type == sf::Event::MouseButtonPressed) { 
-                        int m = statisticsScreen->handleSidebarClick(mousePos); if(m >= 0) handleSidebarNavigation(m, statisticsScreen->getSidebar()); 
-                        int c = statisticsScreen->handleClick(mousePos); 
+                        int m = statisticsScreen->handleSidebarClick(mousePos); 
+
+                        if(m >= 0) handleSidebarNavigation(m, statisticsScreen->getSidebar()); 
+                            int c = statisticsScreen->handleClick(mousePos); 
                         if(c == 1) { 
                             manageBooksScreen->loadBooksTable(mainFont); 
                             changeState(AppState::MANAGE_BOOKS); } 
@@ -641,7 +726,9 @@ public:
                     } 
                     break;
 
-                case AppState::OVERDUE_READERS: overdueReadersScreen->handleScrollEvent(event, mousePos); 
+                case AppState::OVERDUE_READERS: 
+                    overdueReadersScreen->handleScrollEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed) { 
                        int m=overdueReadersScreen->handleSidebarClick(mousePos); 
                     if(m>=0) handleSidebarNavigation(m, overdueReadersScreen->getSidebar()); 
@@ -650,6 +737,7 @@ public:
                 
                 case AppState::BORROW_BOOK: 
                     borrowBookScreen->handleEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
                         int a=borrowBookScreen->handleClick(mousePos); 
                         if(a==1){ 
@@ -691,6 +779,7 @@ public:
                 
                 case AppState::RETURN_BOOK: 
                     returnBookScreen->handleEvent(event, mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
                         int a=returnBookScreen->handleClick(mousePos); 
                         if(a==1){
@@ -715,6 +804,7 @@ public:
                 
                 case AppState::RATING_BOOK: 
                     ratingBookScreen->update(mousePos); 
+
                     if(event.type==sf::Event::MouseButtonPressed){ 
                         int a=ratingBookScreen->handleClick(mousePos); 
                         if(a==1){ // Submit
@@ -742,30 +832,51 @@ public:
                         } 
                     } 
                     break;
-                case AppState::ADD_BOOK: addBookScreen->handleEvent(event, mousePos); 
+
+                case AppState::ADD_BOOK: 
+                    addBookScreen->handleEvent(event, mousePos); 
                     if(addBookScreen->isClosed()){ 
                         modal->hide(); 
                         homeScreen->loadBooks(mainFont); 
                         changeState(AppState::MANAGE_BOOKS); 
-                    } break;
-                case AppState::DELETE_BOOK: deleteBookScreen->handleEvent(event, mousePos); 
-                    if(event.type==sf::Event::MouseButtonPressed){ 
-                        int a=deleteBookScreen->handleClick(mousePos); 
-                        if(a==1){if(deleteBookScreen->validate()){
-                            std::string id=deleteBookScreen->getMaSach(); 
-                            libSystem->XoaSach(id); 
-                            libSystem->GhiFileHeThong("DanhSachSach.txt"); 
-                            deleteBookScreen->setResult("Xoa thanh cong!"); 
-                            manageBooksScreen->loadBooksTable(mainFont);
-                        }
                     } 
-                            else if(a==2){modal->hide(); 
-                                changeState(AppState::MANAGE_BOOKS);
-                            } 
-                        } 
+                    break;
+
+                case AppState::DELETE_BOOK:
+
+                    deleteBookScreen->handleEvent(event, mousePos);
+
+                    if (event.type == sf::Event::MouseButtonPressed) {
+                        int a = deleteBookScreen->handleClick(mousePos);
+
+                        if (a == 1) {
+                            if (deleteBookScreen->validate()) {
+
+                                std::string maSach = deleteBookScreen->getMaSach();
+                                int soLuong = deleteBookScreen->getSoLuong();
+
+                                std::string ketQua = libSystem->XoaSach(maSach, soLuong);
+
+                                libSystem->GhiFileHeThong("DanhSachSach.txt");
+
+                                deleteBookScreen->setResult(ketQua);
+
+                                manageBooksScreen->loadBooksTable(mainFont);
+                            }
+                        }
+
+                        else if (a == 2) {
+                            deleteBookScreen->clear();
+                            modal->hide();
+                            changeState(AppState::MANAGE_BOOKS);
+                        }
+    
                         break;
-                case AppState::READER_CARD: if(readerCardScreen){
-                    readerCardScreen->handleEvent(event, mousePos); 
+                    }
+
+                case AppState::READER_CARD: 
+                    if(readerCardScreen){
+                        readerCardScreen->handleEvent(event, mousePos); 
                     if(readerCardScreen->wasClosed()){
                         modal->hide(); 
                         if (readerCardScreen->isUpdateRequested()) { 
@@ -773,11 +884,13 @@ public:
                                 delete updateReaderScreen; 
                             updateReaderScreen = new UpdateReaderScreen(mainFont, currentReader); 
                             changeState(AppState::UPDATE_READER_INFO); 
-                        } else { changeState(previousState); 
+                        } else { 
+                            changeState(previousState); 
                         } 
                     } 
                 } 
                 break;
+
                 case AppState::LIBRARIAN_CARD: 
                     if(librarianCardScreen){
                         librarianCardScreen->handleEvent(event, mousePos); 
@@ -794,17 +907,20 @@ public:
                         } 
                     } 
                     break;
+
                 case AppState::UPDATE_LIBRARIAN_INFO: 
                     if(updateLibrarianScreen) { 
                         updateLibrarianScreen->handleEvent(event, mousePos); 
-                        if(updateLibrarianScreen->isClosed()) changeState(AppState::HOME); 
+                        if(updateLibrarianScreen->isClosed()) 
+                            changeState(AppState::HOME); 
                     } 
                     break;
+
                 case AppState::UPDATE_READER_INFO: 
-                if(updateReaderScreen) { 
-                    updateReaderScreen->handleEvent(event, mousePos); 
-                    if(updateReaderScreen->isClosed()) 
-                        changeState(AppState::HOME); 
+                    if(updateReaderScreen) { 
+                        updateReaderScreen->handleEvent(event, mousePos); 
+                        if(updateReaderScreen->isClosed()) 
+                            changeState(AppState::HOME); 
                     } 
                     break;
             }

@@ -404,21 +404,44 @@ void LibrarySystem::TimSach(const string& keyword) {
     if (!found) cout << "Khong tim thay sach.\n";
 }
 
-void LibrarySystem::XoaSach(const string &maSach) {
+string LibrarySystem::XoaSach(const string &maSach, int soLuongXoa) {
     NodeBook *current = HeadDsSach;
     NodeBook *prev = nullptr;
+
     while (current != nullptr) {
         if (current->data->getMaSach() == maSach) {
-            if (prev == nullptr) HeadDsSach = current->next;
-            else prev->next = current->next;
-            delete current;
-            cout << "Da xoa sach: " << maSach << endl;
-            return;
+
+            int slHienCo = current->data->getSoLuong();
+
+            if (soLuongXoa > slHienCo) {
+                return "So luong xoa lon hon so luong hien co!";
+            }
+
+            // TH1: cập nhật số lượng
+            if (soLuongXoa < slHienCo) {
+                current->data->setSoLuong(slHienCo - soLuongXoa);
+                return "Da cap nhat so luong. Con lai: " + std::to_string(slHienCo - soLuongXoa);
+            }
+
+            // TH2: xóa node khi sl=0
+            if (soLuongXoa == slHienCo) {
+                if (prev == nullptr) {
+                    HeadDsSach = current->next;
+                } else {
+                    prev->next = current->next;
+                }
+                delete current;
+                return "Da xoa sach khoi he thong";
+            }
         }
+
         prev = current;
         current = current->next;
     }
+
+    return "Khong tim thay sach voi ma: " + maSach;
 }
+
 
 void LibrarySystem::CapNhatThongTinSach() {
     // Logic cập nhật trên console (giữ nguyên nếu cần hoặc để trống nếu dùng GUI hoàn toàn)
