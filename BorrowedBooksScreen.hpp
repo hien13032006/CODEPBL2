@@ -17,8 +17,6 @@
 struct BorrowedBookItem { 
     RoundedRectangleShape box; 
     sf::Text titleText, infoText, statusText; 
-    Button* rateButton; 
-    sf::ConvexShape starIcon; // [MỚI] Hình ngôi sao vẽ bằng code
 };
 
 class BorrowedBooksScreen {
@@ -33,23 +31,7 @@ private:
     const float LIST_Y_START = 120.0f; 
     const float VIEW_HEIGHT = 600.0f;
 
-    // [MỚI] Hàm tạo hình ngôi sao (Copy từ RatingBookScreen sang)
-    sf::ConvexShape createStarShape(float x, float y, float radius) {
-        sf::ConvexShape star;
-        star.setPointCount(10); 
-        float angle = -3.14159 / 2; 
-        float step = 3.14159 / 5;   
-        float innerRadius = radius * 0.45f; 
 
-        for (int i = 0; i < 10; i++) {
-            float r = (i % 2 == 0) ? radius : innerRadius;
-            star.setPoint(i, sf::Vector2f(std::cos(angle) * r, std::sin(angle) * r));
-            angle += step;
-        }
-        // Đặt vị trí
-        star.setPosition(x, y);
-        return star;
-    }
 
 public:
     BorrowedBooksScreen(sf::Font& font, Reader* reader, LibrarySystem* lib = nullptr) 
@@ -79,8 +61,7 @@ public:
     ~BorrowedBooksScreen() { 
         delete sidebar; 
         delete scrollView; 
-        for (auto item : bookItems) { 
-            delete item->rateButton; 
+        for (auto item : bookItems) {  
             delete item; 
         } 
     }
@@ -91,7 +72,8 @@ public:
 
     void loadBorrowedBooks(sf::Font& font) {
         for (auto item : bookItems) { 
-            delete item->rateButton; delete item; } 
+            delete item; 
+        } 
         bookItems.clear(); 
         if (!currentReader) return;
 
@@ -155,13 +137,7 @@ public:
             if(libSystem) rated = libSystem->KiemTraDaDanhGia(currentReader->getMaID(), phieu->sach->getMaSach());
             
             sf::Color btnColor = rated ? sf::Color(255, 193, 7) : sf::Color(200, 200, 200);
-            
-            item->rateButton = new Button(sf::Vector2f(1150, itemY + 35), sf::Vector2f(60, 50), "", font, index, btnColor);
-            item->rateButton->setCornerRadius(15.0f); // Bo tròn nút
 
-
-            item->starIcon = createStarShape(1180, itemY + 60, 15.0f); // Bán kính sao 15
-            item->starIcon.setFillColor(sf::Color::White); // Sao màu trắng
 
             bookItems.push_back(item); 
             itemY += ITEM_HEIGHT + 15.0f; 
@@ -178,15 +154,6 @@ public:
         float scrollOffset = scrollView->getScrollOffset(); 
         if (mousePos.y > LIST_Y_START) { 
             sf::Vector2f adjustedMousePos(mousePos.x, mousePos.y + scrollOffset); 
-            for (auto item : bookItems) {
-                item->rateButton->update(adjustedMousePos);
-                // Hiệu ứng hover nhẹ cho ngôi sao
-                if (item->rateButton->handleClick(adjustedMousePos)) { // Kiểm tra vùng hover
-                     item->starIcon.setScale(1.2f, 1.2f);
-                } else {
-                     item->starIcon.setScale(1.0f, 1.0f);
-                }
-            }
         } 
     }
 
@@ -198,13 +165,6 @@ public:
         float scrollOffset = scrollView->getScrollOffset(); 
         if (mousePos.y > LIST_Y_START) { 
             sf::Vector2f adjustedMousePos(mousePos.x, mousePos.y + scrollOffset); 
-            for (auto item : bookItems) 
-                if (item->rateButton->handleClick(adjustedMousePos)) { 
-                    int idx = item->rateButton->getId(); 
-                    NodeMuonSach* temp = currentReader->getDanhSachPhieuMuon(); 
-                    for(int i=0; i<idx && temp!=nullptr; ++i) temp = temp->next; 
-                    if(temp) return temp->phieu->sach->getMaSach(); 
-                } 
         } 
         return ""; 
     }
@@ -236,10 +196,6 @@ public:
                 window.draw(item->infoText); 
                 window.draw(item->statusText); 
                 
-                // Vẽ nút nền trước
-                item->rateButton->draw(window); 
-                // Vẽ hình ngôi sao đè lên
-                window.draw(item->starIcon);
             } 
             window.setView(window.getDefaultView()); 
         } 

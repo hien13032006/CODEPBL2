@@ -8,3 +8,4 @@ TTR00007|Naruto Vol.1|Masashi Kishimoto|1999|Shueisha|R0091|baytoiday|Rat hay|8
 TTR00020|My Hero Academia Vol.2|Kohei Horikoshi|2014|Shueisha|R0091|baytoiday|Rat hay|8
 TT00016|The Old Man and the Sea|Ernest Hemingway|1952|Charles Scribner's Sons|R0091|baytoiday|Rat hay|8
 GT00025|Clean Code|Robert C. Martin|2008|Prentice Hall|R0091|baytoiday|Xuat sac|10
+TTR00018|Attack on Titan Vol.3|Hajime Isayama|2010|Kodansha|R0001|hien2006|Xuat sac|10

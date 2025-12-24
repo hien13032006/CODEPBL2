@@ -107,13 +107,12 @@ public:
         imagePathField = new InputField(sf::Vector2f(450, formY + 300), sf::Vector2f(500, 45), "Link anh bia", font); 
         
         submitButton = new Button(sf::Vector2f(450, formY + 380), sf::Vector2f(240, 50), "Luu Sach", font, 0, Theme::Success);
-        updateSubmitButton = new Button(sf::Vector2f(450, formY + 380), sf::Vector2f(240, 50), "Cap Nhat", font, 0, Theme::Secondary); 
+        updateSubmitButton = new Button(sf::Vector2f(450, formY + 365), sf::Vector2f(240, 50), "Cap Nhat", font, 0, Theme::Secondary); 
         
         fileNameField = new InputField({450, 280}, {500, 50}, "Nhap ten file...", font);
-        fileNameField->setText("ThemSach.txt"); 
         btnExecFile = new Button({450, 350}, {240, 50}, "Nap Du Lieu", font, 12, Theme::Primary);
 
-        cancelButton = new Button(sf::Vector2f(710, formY + 380), sf::Vector2f(240, 50), "Huy", font, 0, sf::Color(150, 150, 150));
+        cancelButton = new Button(sf::Vector2f(710, formY + 365), sf::Vector2f(240, 50), "Huy", font, 0, sf::Color(150, 150, 150));
 
         loadBooksTable(font);
     }

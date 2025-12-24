@@ -75,6 +75,7 @@ public:
 
             setTxt(lbMaID,   "ID: " + reader->getMaID(), 255);
             setTxt(lbHoTen,  "Ten: " + reader->getHoTen(), 295);
+            setTxt(lbHoTen,  "Ten: " + reader->getHoTen(), 295);
             setTxt(lbEmail,  "Email: " + reader->getEmail(), 335);
             setTxt(lbSDT,    "SDT: " + reader->getSDT(), 375);
             setTxt(lbNgayDK, "Ngay DK: " + std::string(dateBuf), 415);

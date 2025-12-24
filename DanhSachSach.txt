@@ -12,7 +12,7 @@ GT00011|Pattern Recognition and Machine Learning|Christopher M. Bishop|Giao trin
 GT00012|Digital Design|M. Morris Mano|Giao trinh|2017|Pearson|29|66|9|images/GT00012.png
 GT00013|Data Mining: Concepts and Techniques|Jiawei Han|Giao trinh|2011|Morgan Kaufmann|50|30|5|images/GT00013.png
 GT00014|Numerical Recipes|William H. Press|Giao trinh|2007|Cambridge University Press|28|30|5|images/GT00014.png
-GT00015|Introduction to the Theory of Computation|Michael Sipser|Giao trinh|2012|Cengage|40|18|3|images/GT00015.png
+GT00015|Introduction to the Theory of Computation|Michael Sipser|Giao trinh|2012|Cengage|39|18|3|images/GT00015.png
 GT00016|Modern Operating Systems|Andrew S. Tanenbaum|Giao trinh|2014|Pearson|30|12|4|images/GT00016.png
 GT00017|Distributed Systems|Andrew S. Tanenbaum|Giao trinh|2017|Pearson|40|30|5|images/GT00017.png
 GT00018|Computer Security: Art and Science|Matt Bishop|Giao trinh|2018|Addison-Wesley|50|44|5|images/GT00018.png
@@ -31,7 +31,6 @@ GT00030|Introduction to Linear Algebra|Gilbert Strang|Giao trinh|2016|Wellesley-
 TK00001|Structure and Interpretation of Computer Programs|Harold Abelson|Tham khao|1996|MIT Press|30|36|7|images/TK00001.png
 TK00002|Introduction to the Design and Analysis of Algorithms|Anany Levitin|Tham khao|2011|Pearson|30|10|3|images/TK00002.png
 TK00003|The Art of Computer Programming Vol.1|Donald E. Knuth|Tham khao|1997|Addison-Wesley|40|20|3|images/TK00003.png
-TK00004|The Art of Computer Programming Vol.2|Donald E. Knuth|Tham khao|1998|Addison-Wesley|50|40|5|images/TK00004.png
 TK00005|The Art of Computer Programming Vol.3|Donald E. Knuth|Tham khao|1998|Addison-Wesley|30|20|3|images/TK00005.png
 TK00006|Code Complete|Steve McConnell|Tham khao|2004|Microsoft Press|50|22|5|images/TK00006.png
 TK00007|Domain-Driven Design|Eric Evans|Tham khao|2003|Addison-Wesley|50|22|3|images/TK00007.png
@@ -45,7 +44,6 @@ TK00014|You Don't Know JS: Up & Going|Kyle Simpson|Tham khao|2015|O'Reilly|40|20
 TK00015|JavaScript: The Good Parts|Douglas Crockford|Tham khao|2008|O'Reilly|30|38|7|images/TK00015.png
 TK00016|Effective Java|Joshua Bloch|Tham khao|2018|Addison-Wesley|50|30|3|images/TK00016.png
 TK00017|Effective Modern C++|Scott Meyers|Tham khao|2005|Addison-Wesley|30|20|4|images/TK00017.png
-TK00018|Linux Kernel Development|Robert Love|Tham khao|2010|Addison-Wesley|40|24|4|images/TK00018.png
 TK00019|Computer Architecture: A Quantitative Approach|John L. Hennessy|Tham khao|2017|Morgan Kaufmann|30|4|2|images/TK00019.png
 TK00020|TCP/IP Illustrated Vol 1|W. Richard Stevens|Tham khao|1994|Addison-Wesley|50|6|2|images/TK00020.png
 TK00021|Hands-On Machine Learning with Scikit-Learn and TensorFlow|Aurélien Géron|Tham khao|2017|O'Reilly|30|52|10|images/TK00021.png
@@ -61,7 +59,6 @@ TK00030|Python Cookbook|David Beazley|Tham khao|2013|O'Reilly|50|20|5|images/TK0
 TT00001|Mat biec|Nguyen Nhat Anh|Tieu thuyet|1990|NXB Tre|40|36|6|images/TT00001.png
 TT00002|Cho toi xin mot ve di tuoi tho|Nguyen Nhat Anh|Tieu thuyet|2007|NXB Tre|40|46|7|images/TT00002.png
 TT00003|Toi thay hoa vang tren co xanh|Nguyen Nhat Anh|Tieu thuyet|2010|NXB Tre|40|26|5|images/TT00003.png
-TT00004|mua he khong ten|Nguyen Nhat Anh|Tieu thuyet|2013|NXB Tre|30|46|6|images/TT00004.png
 TT00005|Harry Potter and the Philosopher's Stone|J.K. Rowling|Tieu thuyet|1997|Bloomsbury|40|16|4|images/TT00005.png
 TT00006|Harry Potter and the Chamber of Secrets|J.K. Rowling|Tieu thuyet|1998|Bloomsbury|50|42|7|images/TT00006.png
 TT00007|Harry Potter and the Prisoner of Azkaban|J.K. Rowling|Tieu thuyet|1999|Bloomsbury|30|26|3|images/TT00007.png
@@ -88,7 +85,7 @@ TT00027|The Hunger Games|Suzanne Collins|Tieu thuyet|2008|Scholastic Press|50|40
 TT00028|Twilight|Stephenie Meyer|Tieu thuyet|2005|Little, Brown and Company|30|30|5|images/TT00028.png
 TT00029|Dune|Frank Herbert|Tieu thuyet|1965|Chilton Books|30|2|1|images/TT00029.png
 TT00030|The Hobbit|J.R.R. Tolkien|Tieu thuyet|1937|George Allen & Unwin|30|18|3|images/TT00030.png
-TTR00001|Doraemon Vol.1|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|49|66|10|images/TTR00001.png
+TTR00001|Doraemon Vol.1|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|50|66|10|images/TTR00001.png
 TTR00002|Doraemon Vol.2|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|30|20|2|images/TTR00002.png
 TTR00003|Doraemon Vol.3|Fujiko F. Fujio|Truyen tranh|1970|Shogakukan|50|0|0|images/TTR00003.png
 TTR00004|One Piece Vol.1|Eiichiro Oda|Truyen tranh|1997|Shueisha|40|26|3|images/TTR00004.png
@@ -105,7 +102,7 @@ TTR00014|Dragon Ball Vol.2|Akira Toriyama|Truyen tranh|1985|Shueisha|50|20|4|ima
 TTR00015|Dragon Ball Vol.3|Akira Toriyama|Truyen tranh|1985|Shueisha|40|22|3|images/TTR00015.png
 TTR00016|Attack on Titan Vol.1|Hajime Isayama|Truyen tranh|2009|Kodansha|30|26|5|images/TTR00016.png
 TTR00017|Attack on Titan Vol.2|Hajime Isayama|Truyen tranh|2010|Kodansha|40|14|2|images/TTR00017.png
-TTR00018|Attack on Titan Vol.3|Hajime Isayama|Truyen tranh|2010|Kodansha|40|16|3|images/TTR00018.png
+TTR00018|Attack on Titan Vol.3|Hajime Isayama|Truyen tranh|2010|Kodansha|40|26|4|images/TTR00018.png
 TTR00019|My Hero Academia Vol.1|Kohei Horikoshi|Truyen tranh|2014|Shueisha|50|38|4|images/TTR00019.png
 TTR00020|My Hero Academia Vol.2|Kohei Horikoshi|Truyen tranh|2014|Shueisha|30|12|2|images/TTR00020.png
 TTR00021|My Hero Academia Vol.3|Kohei Horikoshi|Truyen tranh|2015|Shueisha|50|36|7|images/TTR00021.png
@@ -130,7 +127,7 @@ TN00009|Nguoi Lai Do Song Da|Nguyen Tuan|Truyen ngan|1960|NXB Van Hoc|50|40|7|im
 TN00010|Mien Thao Nguyen|Nguyen Ngoc Tu|Truyen ngan|2005|NXB Tre|50|10|2|images/TN00010.png
 TN00011|Canh Dong Bat Tan|Nguyen Ngoc Tu|Truyen ngan|2005|NXB Tre|30|40|7|images/TN00011.png
 TN00012|Mot Lan Cuoi|Nguyen Ngoc Tu|Truyen ngan|2006|NXB Tre|30|30|3|images/TN00012.png
-TN00013|Tuong Ve Huu|Nguyen Hien Le|Truyen ngan|1960|NXB Van Hoc|50|34|5|images/TN00013.png
+TN00013|Tuong Ve Huu|Nguyen Hien Le|Truyen ngan|1960|NXB Van Hoc|30|34|5|images/TN00013.png
 TN00014|Chiec Thuyen Ngoai Xa|Nguyen Minh Chau|Truyen ngan|1983|NXB Van Hoc|50|24|4|images/TN00014.png
 TN00015|Doan Tau Trong Dem|Nguyen The Phong|Truyen ngan|1990|NXB Tre|30|20|4|images/TN00015.png
 TN00016|Pho Dem|Nam Cao|Truyen ngan|1941|NXB Van Hoc|40|16|3|images/TN00016.png

@@ -17,7 +17,7 @@ private:
     InputField *nameField, *phoneField, *emailField, *usernameField, *passwordField, *confirmPasswordField; 
     Button *registerButton, *backButton;
     bool checkSDT(const std::string& s) { 
-        return s.length() >= 10 && s.find_first_not_of("0123456789") == std::string::npos; 
+        return s.length() == 10 && s.find_first_not_of("0123456789") == std::string::npos; 
     }
     bool checkEmail(const std::string& s) {
         return s.find("@") != std::string::npos && s.find(".com") != std::string::npos; 

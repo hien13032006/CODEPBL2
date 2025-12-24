@@ -51,11 +51,7 @@ public:
         
         loginButton = new Button({630, 390}, {440, 60}, "Dang Nhap", font, 0, Theme::Primary); 
         backButton = new Button({630, 470}, {440, 50}, "Quay Lai", font, 0, sf::Color(150, 150, 150));
-        switchText.setFont(font); 
-        switchText.setString("Chua co tai khoan? Dang ky ngay");
-        switchText.setCharacterSize(16);
-        switchText.setFillColor(Theme::Secondary); 
-        switchText.setPosition(630, 560);
+        
     }
 
     ~LoginReaderScreen() { 

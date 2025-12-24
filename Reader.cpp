@@ -39,7 +39,7 @@ Reader::Reader() : USER() {
     fileLichSu = "history/LichSu_" + maID + ".txt";
 }
 
-Reader::Reader(string ma, string hoTen, string sdt, string email, string username, string password, time_t ngaydk) 
+Reader::Reader(string ma, string hoTen, string sdt, string email, int namSinh, string username, string password, time_t ngaydk) 
     : USER(ma, hoTen, sdt, email, username, password), ngayDangKy(ngaydk) {
     vaiTro = UserRole::READER;
     gioiHanSachMuon = 5;
@@ -58,10 +58,12 @@ Reader::~Reader() {
     }
 }
 
-void Reader::SignUp(string hoTen, string SDT, string Email, string username, string password) {
+void Reader::SignUp(string hoTen, string SDT, string Email, int namSinh, string username, string password) {
+    
     this->hoTen = hoTen;
     this->SDT = SDT;
     this->Email = Email;
+    this->namSinh = namSinh;
     this->username = username;
     this->password = password;
     cout << "Dang ky thanh cong! Ma ID cua ban la: " << maID << endl;
@@ -234,7 +236,7 @@ void Reader::HienThiThongTin() const {
 
 string Reader::toCSV() const {
     ostringstream oss;
-    oss << maID << "|" << hoTen << "|" << SDT << "|" << Email << "|" << username << "|" << password << "|"
+    oss << maID << "|" << hoTen << "|" << SDT << "|" << Email << "|" << namSinh << "|"<< username << "|" << password << "|"
         << layNgayDangKy(ngayDangKy);
     return oss.str();
 }

@@ -25,6 +25,12 @@ RoundedRectangleShape box;
 sf::Text idText, nameText, infoText, statusText; 
 };
 
+int getCurrentYear() {
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    return 1900 + ltm->tm_year;
+}
+
 // Struct cho dòng chi tiết sách
 struct DetailBookRow { 
     sf::Text stt, tenSach, ngayMuon, hanTra, trangThai, soNgayQH, tienPhat; 
@@ -57,8 +63,8 @@ private:
 
     Modal* addReaderModal; 
     RoundedRectangleShape addPanel; 
-    sf::Text addTitle, addMsg;
-    InputField *inName, *inPhone, *inEmail, *inUser, *inPass;
+    sf::Text addTitle, addMsg, addName, addPhone, addUser, addEmail, addNamSinh, addPass;
+    InputField *inName, *inPhone, *inEmail, *inYear, *inUser, *inPass;
     Button *btnAddSave, *btnAddCancel;
     std::string clickedReturnBookID;
     sf::View getListView() {
@@ -137,7 +143,7 @@ public:
             txt.setStyle(sf::Text::Bold); 
             txt.setPosition(x, y); 
         };
-        float tY = 300; 
+        float tY = 315; 
         setupHeader(headerSTT, "STT", 100, tY); 
         setupHeader(headerTen, "TEN SACH", 150, tY); 
         setupHeader(headerMuon, "NGAY MUON", 400, tY); 
@@ -148,29 +154,48 @@ public:
         setupHeader(headerTacVu, "TAC VU", 1050, tY); // Thêm cột tác vụ
 
         addReaderModal = new Modal(font);
-        addPanel.setSize({600, 550});
+        addPanel.setSize({600, 680});
         addPanel.setCornerRadius(15.0f);
         addPanel.setFillColor(sf::Color::White);
         addPanel.setOutlineThickness(2); 
         addPanel.setOutlineColor(Theme::Primary);
-        addPanel.setPosition(350, 85);
+        addPanel.setPosition(350, 30);
         addTitle.setFont(font);
         addTitle.setString("THEM DOC GIA MOI"); 
         addTitle.setCharacterSize(26); 
         addTitle.setFillColor(Theme::Primary);
-        addTitle.setPosition(530, 110);
-        float formY = 160;
-        float gap = 70;
+        addTitle.setPosition(530, 50);
+        float formY = 100;
+        float gap = 85;
         inName = new InputField({450, formY}, {400, 50}, "Ho va Ten", font); 
         inPhone = new InputField({450, formY+gap}, {400, 50}, "So Dien Thoai", font);
         inEmail = new InputField({450, formY+gap*2}, {400, 50}, "Email", font);
-        inUser = new InputField({450, formY+gap*3}, {400, 50}, "Username", font); 
-        inPass = new InputField({450, formY+gap*4}, {400, 50}, "Password", font, true);
+        inYear = new InputField({450, formY+gap*3}, {400, 50}, "Nam sinh", font); 
+        inUser = new InputField({450, formY+gap*4}, {400, 50}, "Username", font); 
+        inPass = new InputField({450, formY+gap*5}, {400, 50}, "Password", font, true);
+        addName.setFont(font);
+        addName.setCharacterSize(16); 
+        addName.setPosition(450, formY+gap*0.7);
+        addPhone.setFont(font);
+        addPhone.setCharacterSize(16); 
+        addPhone.setPosition(450, formY+gap*1.7);
+        addEmail.setFont(font);
+        addEmail.setCharacterSize(16); 
+        addEmail.setPosition(450, formY+gap*2.7);
+        addNamSinh.setFont(font);
+        addNamSinh.setCharacterSize(16); 
+        addNamSinh.setPosition(450, formY+gap*3.7);
+        addUser.setFont(font);
+        addUser.setCharacterSize(16); 
+        addUser.setPosition(450, formY+gap*4.7);
+        addPass.setFont(font);
+        addPass.setCharacterSize(16); 
+        addPass.setPosition(450, formY+gap*5.7);
         addMsg.setFont(font);
         addMsg.setCharacterSize(16); 
-        addMsg.setPosition(450, formY + gap*5 + 5);
-        btnAddSave = new Button({450, 550}, {190, 50}, "Dang Ky", font, 0, Theme::Success);
-        btnAddCancel = new Button({660, 550}, {190, 50}, "Huy", font, 0, sf::Color(150, 150, 150));
+        addMsg.setPosition(450, formY + gap*6 + 5);
+        btnAddSave = new Button({450, 645}, {190, 50}, "Dang Ky", font, 0, Theme::Success);
+        btnAddCancel = new Button({660, 645}, {190, 50}, "Huy", font, 0, sf::Color(150, 150, 150));
         loadReaders(font);
     }
     
@@ -192,25 +217,76 @@ public:
         inName->clear(); 
         inPhone->clear(); 
         inEmail->clear();
+        inYear->clear();
         inUser->clear(); 
         inPass->clear(); 
         addMsg.setString("");
+        addName.setString("");
+        addPhone.setString("");
+        addEmail.setString("");
+        addNamSinh.setString("");
+        addUser.setString("");
+        addPass.setString("");
         addReaderModal->show();
     }
     
     void handleAddReaderLogic(sf::Font& font) {
+
+        bool hasError = false; 
+
         if (inName->getText().empty() || inUser->getText().empty() || inPass->getText().empty()) { 
             addMsg.setString("Vui long nhap du thong tin!"); 
             addMsg.setFillColor(Theme::Error);
-            return;
+            hasError = true;
+        }
+
+        if (!libSystem->kiemTraHoTen(inName->getText())) {
+            addName.setString("Ho ten khong hop le!");
+            addName.setFillColor(Theme::Error);
+            hasError = true; 
         }
         if (libSystem->KiemTraDocGiaDaDangKy(inUser->getText())) {
-            addMsg.setString("Username da ton tai!");
-            addMsg.setFillColor(Theme::Error); 
-            return; 
+            addUser.setString("Username da ton tai!");
+            addUser.setFillColor(Theme::Error); 
+            hasError = true; 
+        }
+        if (!(libSystem->kiemTraSDT(inPhone->getText()))) {
+            addPhone.setString("So dien thoai khong hop le!");
+            addPhone.setFillColor(Theme::Error); 
+            hasError = true; 
+        }
+        if (!(libSystem->kiemTraEmail(inEmail->getText()))) {
+            addEmail.setString("Email khong hop le!");
+            addEmail.setFillColor(Theme::Error); 
+            hasError = true;
+        }
+        if (!(libSystem->kiemTraMatKhau(inPass->getText()))) {
+            addPass.setString("Mat khau phai dung 8 ki tu!");
+            addPass.setFillColor(Theme::Error); 
+            hasError = true;
         }
         Reader* newR = new Reader();
-        newR->SignUp(inName->getText(), inPhone->getText(), inEmail->getText(), inUser->getText(), inPass->getText());
+        int namSinh;
+        try {
+            namSinh = std::stoi(inYear->getText());
+        } catch (...) {
+            addNamSinh.setString("Nam sinh khong hop le!");
+            addNamSinh.setFillColor(Theme::Error);
+            hasError = true;
+        }
+
+        int namHienTai = getCurrentYear();
+        int tuoi = namHienTai - namSinh;
+
+        if (tuoi <= 8 || tuoi >= 100) {
+            addNamSinh.setString("Nam sinh khong hop le!");
+            addNamSinh.setFillColor(Theme::Error);
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        newR->SignUp(inName->getText(), inPhone->getText(), inEmail->getText(), namSinh, inUser->getText(), inPass->getText());
         std::ofstream out("DocGia.txt", std::ios::app);
         if (out.is_open()) { 
             out << newR->toCSV() << "\n"; 
@@ -237,7 +313,8 @@ public:
     }
     void prepareModalData(Reader* r, sf::Font& font) {
         dtTitle.setString("THONG TIN: " + r->getHoTen());
-        std::string s = "Ma ID: " + r->getMaID() + "\nUsername: " + r->getUsername() + "   |   Email: " + r->getEmail() + "\nSo dien thoai: " + r->getSDT() + "\nTong sach dang muon: " + std::to_string(r->DemSachDaMuon()) + " cuon\nSach qua han: " + std::to_string(r->DemSachQuaHan()) + " cuon\n"; dtInfo.setString(s);
+        std::string s = "Ma ID: " + r->getMaID() + "\nUsername: " + r->getUsername() + "   |   Email: " + r->getEmail() + "\nSo dien thoai: " + r->getSDT() +  "\nTong sach dang muon: " + std::to_string(r->DemSachDaMuon()) + " cuon\nSach qua han: " + std::to_string(r->DemSachQuaHan()) + " cuon\n"; 
+        dtInfo.setString(s);
         
         for(auto row : detailBookRows) { 
             delete row->btnReturn;
@@ -348,6 +425,7 @@ public:
             inName->update(); 
             inPhone->update(); 
             inEmail->update(); 
+            inYear->update();
             inUser->update();
             inPass->update(); 
             btnAddSave->update(mousePos);
@@ -380,6 +458,7 @@ public:
             inName->handleEvent(event, mousePos);
             inPhone->handleEvent(event, mousePos);
             inEmail->handleEvent(event, mousePos);
+            inYear->handleEvent(event, mousePos);
             inUser->handleEvent(event, mousePos);
             inPass->handleEvent(event, mousePos); 
         } else if (!readerDetailModal->isShown()) { 
@@ -400,7 +479,10 @@ public:
         }
         
         if (readerDetailModal->isShown()) { 
-            if (dtCloseBtn->handleClick(mousePos) || readerDetailModal->handleClose(mousePos)) { readerDetailModal->hide(); return 0; }
+            if (dtCloseBtn->handleClick(mousePos) || readerDetailModal->handleClose(mousePos)) { 
+                readerDetailModal->hide(); 
+                return 0; 
+            }
             if (btnAdminBorrow->handleClick(mousePos)) return 101;
             if (btnAdminHistory->handleClick(mousePos)) return 103;
             // Check click nút trả trong list
@@ -413,9 +495,19 @@ public:
             return 0;
         }
 
-        if (addReaderButton->handleClick(mousePos)) { showAddModal(); return 0; } 
-        if (searchButton->handleClick(mousePos)) { loadReaders(font, searchField->getText()); return 0; }
-        if (viewAllButton->handleClick(mousePos)) { searchField->clear(); loadReaders(font); return 0; }
+        if (addReaderButton->handleClick(mousePos)) { 
+            showAddModal(); 
+            return 0; 
+        } 
+        if (searchButton->handleClick(mousePos)) { 
+            loadReaders(font, searchField->getText()); 
+            return 0; 
+        }
+        if (viewAllButton->handleClick(mousePos)) { 
+            searchField->clear(); 
+            loadReaders(font); 
+            return 0; 
+        }
         sf::Vector2i pixelMouse = sf::Mouse::getPosition(*windowRef);
         if (pixelMouse.y > 180) { 
             sf::View listView = getListView();
@@ -495,9 +587,16 @@ public:
             inName->draw(window); 
             inPhone->draw(window); 
             inEmail->draw(window);
+            inYear->draw(window);
             inUser->draw(window); 
             inPass->draw(window); 
             window.draw(addMsg); 
+            window.draw(addName);
+            window.draw(addPhone);
+            window.draw(addEmail);
+            window.draw(addNamSinh);
+            window.draw(addUser);
+            window.draw(addPass);
             btnAddSave->draw(window); 
             btnAddCancel->draw(window); 
         }

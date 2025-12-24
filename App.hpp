@@ -304,28 +304,7 @@ public:
         }
     }
 
-    void handleRegister() {
-        if (!registerReaderScreen->validate()) return; 
-        if (libSystem->KiemTraDocGiaDaDangKy(registerReaderScreen->getUsername())) { 
-            registerReaderScreen->setUsernameError("Username da ton tai!"); 
-            return; 
-        }
-        Reader* r = new Reader(); 
-        r->SignUp(registerReaderScreen->getName(), 
-            registerReaderScreen->getPhone(), 
-            registerReaderScreen->getEmail(), 
-            registerReaderScreen->getUsername(), 
-            registerReaderScreen->getPassword()
-        );
-        std::ofstream o("DocGia.txt", std::ios::app); 
-        if (o.is_open()) { 
-            o << r->toCSV() << std::endl; o.close(); 
-        }
-        libSystem->DocFileDocGia(); 
-        registerReaderScreen->clearFields(); 
-        changeState(AppState::LOGIN_READER);
-    }
-
+    
     void handleReaderLogin() {
         loginReaderScreen->update(sf::Vector2f(0,0));
         if (!loginReaderScreen->validate()) return;
@@ -564,23 +543,7 @@ public:
                     } 
                     break;
 
-                case AppState::REGISTER_READER: 
-                    registerReaderScreen->handleEvent(event, mousePos); 
-
-                    if(event.type==sf::Event::MouseButtonPressed) { 
-                        if(modal->handleClose(mousePos)){ 
-                            modal->hide(); changeState(AppState::HOME); 
-                        } else { 
-                            int a=registerReaderScreen->handleClick(mousePos); 
-                            if(a==1){ 
-                                handleRegister(); 
-                            } 
-                            else if(a==2) changeState(AppState::LOGIN_READER); 
-                            else if(a==3) changeState(AppState::LOGIN_CHOICE); 
-                        } 
-                    } 
-                    break;
-
+        
                 case AppState::BORROWED_BOOKS: 
                     borrowedBooksScreen->handleScrollEvent(event, mousePos);
 
@@ -589,13 +552,7 @@ public:
                         if (m >= 0) handleSidebarNavigation(m, borrowedBooksScreen->getSidebar()); 
                         
                         std::string bookID = borrowedBooksScreen->handleRateClick(mousePos);
-                        if (!bookID.empty()) {
-                            ratingBookScreen->setBookID(bookID);
-                            int oldScore = libSystem->LayDiemDanhGia(currentReader->getMaID(), bookID);
-                            ratingBookScreen->setExistingRating(oldScore);
-                            modal->show();
-                            changeState(AppState::RATING_BOOK);
-                        }
+                        
                     } 
                     break;
 

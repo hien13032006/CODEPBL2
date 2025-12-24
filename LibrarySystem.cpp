@@ -144,7 +144,6 @@ void LibrarySystem::GhiFileSach(const string& fileName) const {
 void LibrarySystem::DocFileHeThong(const string& fileName) {
     ifstream in(fileName);
     if (!in.is_open()) {
-        // Nếu không có file thì thôi, không báo lỗi để tránh phiền
         return;
     }
 
@@ -169,7 +168,7 @@ void LibrarySystem::DocFileHeThong(const string& fileName) {
         getline(ss, diemTBStr, '|');
         getline(ss, soDanhGiaStr, '|');
         getline(ss, imagePath);  
-        // [SỬA LỖI] Dùng try-catch để bắt lỗi nếu dữ liệu không phải số
+        // Dùng try-catch để bắt lỗi nếu dữ liệu không phải số
         try {
             if (!namStr.empty()) namXB = stoi(namStr);
         } catch (...) { namXB = 0; }
@@ -230,7 +229,6 @@ void LibrarySystem::GhiFileHeThong(const string& fileName) const {
     cout << "Da cap nhat file he thong.\n";
 }
 
-// --- QUẢN LÝ ĐỘC GIẢ ---
 
 void LibrarySystem::DocFileDocGia() {
     ifstream in("DocGia.txt");
@@ -248,20 +246,28 @@ void LibrarySystem::DocFileDocGia() {
 
         stringstream ss(line);
         string ma, hoten, sdt, email, user, pass, ngayDKStr;
+        int nam = 0;
         getline(ss, ma, '|');
         getline(ss, hoten, '|');
         getline(ss, sdt, '|');
         getline(ss, email, '|');
+        string namsinh;
+        getline(ss, namsinh, '|');
         getline(ss, user, '|');
         getline(ss, pass, '|');
         getline(ss, ngayDKStr);
+
+        try {
+            nam = stoi(namsinh);
+        } catch (...) { nam = 0; }
+
 
         std::tm tm = {};
         std::istringstream ssNgay(ngayDKStr);
         ssNgay >> std::get_time(&tm, "%d/%m/%Y"); 
         time_t ngayDK = mktime(&tm);
 
-        Reader* newReader = new Reader(ma, hoten, sdt, email, user, pass, ngayDK);
+        Reader* newReader = new Reader(ma, hoten, sdt, email, nam, user, pass, ngayDK);
         NodeReader* newNode = new NodeReader(newReader);
         newNode->next = nullptr;
 
@@ -281,9 +287,10 @@ void LibrarySystem::DocFileDocGia() {
     in.close();
     Reader::setReaderCount(maxID + 1);
     cout << " Da nap danh sach doc gia (" << count << " doc gia).\n";
+    
 }
 
-// Trả về danh sách liên kết thay vì vector
+
 NodeBorrowerInfo* LibrarySystem::TimNguoiMuonSach(const std::string& maSach) const {
     NodeBorrowerInfo* head = nullptr; 
     
@@ -314,7 +321,7 @@ NodeBorrowerInfo* LibrarySystem::TimNguoiMuonSach(const std::string& maSach) con
     return head;
 }
 
-// [SỬA LỖI] Xóa danh sách cũ trước khi đọc
+
 void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
     NodeMuonSach* oldHead = docGia->getDanhSachPhieuMuon();
     while (oldHead != nullptr) {
@@ -362,7 +369,7 @@ void LibrarySystem::DocDanhSachMuonCuaDocGia(Reader* docGia) {
     file.close();
 }
 
-// [SỬA LỖI] Dùng ios::trunc
+
 void LibrarySystem::GhiDanhSachMuonCuaDocGia(Reader* docGia) {
     string fileName = "muon_tra/MuonSach_" + docGia->getMaID() + ".txt";
     ofstream file(fileName, ios::trunc); 
@@ -444,18 +451,14 @@ string LibrarySystem::XoaSach(const string &maSach, int soLuongXoa) {
 
 
 void LibrarySystem::CapNhatThongTinSach() {
-    // Logic cập nhật trên console (giữ nguyên nếu cần hoặc để trống nếu dùng GUI hoàn toàn)
     if (!HeadDsSach) { cout << "Khong co sach.\n"; return; }
     string maSach; cout << "Nhap ma sach: "; getline(cin, maSach);
     NodeBook* current = HeadDsSach;
     while (current && current->data->getMaSach() != maSach) current = current->next;
     if (!current) { cout << "Khong tim thay.\n"; return; }
-    // ... (code nhập liệu console cũ, có thể giữ hoặc bỏ)
 }
 
-// --- MƯỢN TRẢ & ĐÁNH GIÁ ---
 
-// [MỚI] Hàm đếm tổng số sách đang được mượn
 int LibrarySystem::DemTongSachDangMuon(const string& maSach) {
     int count = 0;
     NodeReader* readerNode = HeadDsDocGia;
@@ -495,7 +498,6 @@ void LibrarySystem::MuonSach(Reader* docGia, const string& maSach) {
     }
 }
 
-// [CẬP NHẬT] Không hỏi đánh giá console
 void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
     if (!docGia->DaMuonSach(maSach)) return;
 
@@ -517,10 +519,9 @@ void LibrarySystem::TraSach(Reader* docGia, const string& maSach) {
 void LibrarySystem::DanhGiaSach(Reader* docGia, Sach* sach, int diem) {
     sach->themDanhGia(diem);
     
-    // 2. Lưu cập nhật điểm trung bình vào file sách
     GhiFileHeThong("DanhSachSach.txt");
 
-    // 3. Tạo text mô tả
+    //Tạo text mô tả
     string danhGiaText;
     if (diem >= 9) danhGiaText = "Xuat sac";
     else if (diem >= 8) danhGiaText = "Rat hay";
@@ -584,12 +585,69 @@ int LibrarySystem::LayDiemDanhGia(const string& maDocGia, const string& maSach) 
 }
 
 double LibrarySystem::TinhDiemTrungBinhTuFile(const string& tenSach, const string& tacGia, int namXB, const string& nhaXB) {
-    // Logic tính điểm trung bình từ file DanhGia.txt (giữ nguyên nếu cần dùng)
     return 0.0; 
 }
 
-// --- AUTHENTICATION & KHÁC ---
+bool LibrarySystem::kiemTraHoTen(const std::string& name) {
+    if (name.empty()) return false;
 
+    // Không cho khoảng trắng đầu / cuối
+    if (name.front() == ' ' || name.back() == ' ')
+        return false;
+
+    int wordCount = 0;
+    bool inWord = false;
+
+    for (char c : name) {
+        if (isalpha((unsigned char)c)) {
+            inWord = true;
+        }
+        else if (c == ' ') {
+            if (inWord) {
+                wordCount++;
+                inWord = false;
+            }
+        }
+        else {
+            // Gặp số hoặc ký tự đặc biệt
+            return false;
+        }
+    }
+
+    if (inWord) wordCount++;
+
+    // Ít nhất 2 từ (VD: Nguyen Van A)
+    return wordCount >= 2;
+}
+
+//kiểm tra tính hợp lệ của SĐT
+bool LibrarySystem::kiemTraSDT(const string& sdt) const {
+    if (sdt.length() != 10 || sdt[0] != '0') return false; // phải đủ 10 số và bắt đầu bằng số 0
+    // số thứ 2 phải trong các số 3,5,7,8,9
+    char dauSo = sdt[1];
+    if (dauSo != '3' && dauSo != '5' && dauSo != '7' && dauSo != '8' && dauSo != '9') {
+        return false;
+    }
+    // Kiểm tra tất cả là số
+    for (char c : sdt) {
+        if (!isdigit(c)) return false;
+    }
+    return true;
+}
+
+//kiểm tra tính hợp lệ của email với đuôi @gmail.com
+bool LibrarySystem::kiemTraEmail(const string& email) const {
+    const string duoi = "@gmail.com";
+    if (email.length() <= duoi.length()) return false;
+    return email.substr(email.length() - duoi.length()) == duoi;
+}
+
+//Kiểm tra độ dài của mật khẩu: giới hạn = 8
+bool LibrarySystem::kiemTraMatKhau(const string& pass) const {
+    return pass.length() == 8;
+} 
+
+//Kiem tra username
 bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
     NodeReader* current = HeadDsDocGia;
     while (current != nullptr) {
@@ -599,13 +657,13 @@ bool LibrarySystem::KiemTraDocGiaDaDangKy(const string& tenDangNhap) const {
     return false;
 }
 
-void LibrarySystem::DangKyDocGia() { /* Logic console cũ... */ }
-bool LibrarySystem::DangNhapDocGia(USER* &currentUser) { /* Logic console cũ... */ return false; }
-bool LibrarySystem::DangXuat(USER* &currentUser) { /* ... */ return true; }
-void LibrarySystem::HienThiTatCaDocGia() const { /* ... */ }
-void LibrarySystem::HienThiDanhSachSach() { /* ... */ }
-void LibrarySystem::HienThiDocGiaQuaHan() { /* ... */ }
-void LibrarySystem::ThongKeSachQuaHan() { /* ... */ }
+void LibrarySystem::DangKyDocGia() {  }
+bool LibrarySystem::DangNhapDocGia(USER* &currentUser) {  return false; }
+bool LibrarySystem::DangXuat(USER* &currentUser) {  return true; }
+void LibrarySystem::HienThiTatCaDocGia() const {  }
+void LibrarySystem::HienThiDanhSachSach() {  }
+void LibrarySystem::HienThiDocGiaQuaHan() {  }
+void LibrarySystem::ThongKeSachQuaHan() {  }
 
 bool LibrarySystem::DangNhapThuThu(const string &usernameInput, const string &passwordInput, USER* &currentUser) {
     ifstream in("ThuThu.txt");
@@ -627,7 +685,7 @@ bool LibrarySystem::DangNhapThuThu(const string &usernameInput, const string &pa
     in.close(); return false;
 }
 
-// --- THỐNG KÊ & XẾP HẠNG (MẢNG TĨNH) ---
+
 
 void LibrarySystem::XepHangSach() {
     if (HeadDsSach == nullptr) return;

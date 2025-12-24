@@ -73,6 +73,10 @@ class LibrarySystem {
         void HienThiDocGiaQuaHan();
         void ThongKeSachQuaHan();
 
+        bool kiemTraHoTen(const std::string& name);
+        bool kiemTraSDT(const string& sdt) const;
+        bool kiemTraEmail(const string& email) const;
+        bool kiemTraMatKhau(const string& pass) const;
         bool KiemTraDocGiaDaDangKy(const string& tenDangNhap) const;
         void DangKyDocGia();
         bool DangNhapDocGia(USER* &currentUser);
